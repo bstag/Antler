@@ -79,5 +79,6 @@ Each content type has its own schema defined in `src/content/config.ts` for type
 ## Next Steps
 
 - [Content Creation Guide](./content-creation)
+- [Contact Form Setup](./contact-form-setup) - Configure serverless contact form functionality
 - [Customization Options](./customization)
 - [Deployment Instructions](./deployment)
