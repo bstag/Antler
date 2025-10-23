@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await doc.render();
+
+// Get all docs for navigation
+const allDocs = await getCollection('docs');
+const sortedDocs = allDocs.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+
+// Group docs by category for navigation
+const groupedDocs = sortedDocs.reduce((acc, docItem) => {
+  const group = docItem.data.group || 'General';
+  if (!acc[group]) {
+    acc[group] = [];
+  }
+  acc[group].push(docItem);
+  return acc;
+}, {} as Record<string, typeof allDocs>);
+
+// Find current doc index for navigation
+const currentIndex = sortedDocs.findIndex(d => d.slug === doc.slug);
+const prevDoc = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextDoc = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
+
+const title = doc.data.title;
+const description = doc.data.description;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <div class="container mx-auto px-4 py-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <!-- Sidebar Navigation -->
+          <aside class="lg:col-span-1">
+            <div class="sticky top-8">
+              <!-- Back to Docs -->
+              <div class="mb-6">
+                <a 
+                  href="/docs" 
+                  class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                  </svg>
+                  Back to Documentation
+                </a>
+              </div>
+
+              <!-- Navigation Menu -->
+              <nav class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
+                  Documentation
+                </h3>
+                
+                <div class="space-y-4">
+                  {Object.entries(groupedDocs).map(([group, docs]) => (
+                    <div>
+                      <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wide">
+                        {group}
+                      </h4>
+                      <ul class="space-y-1 ml-2">
+                        {docs.map(docItem => (
+                          <li>
+                            <a 
+                              href={`/docs/${docItem.slug}`}
+                              class={`block px-3 py-2 text-sm rounded-lg transition-colors ${
+                                docItem.slug === doc.slug
+                                  ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-medium'
+                                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
+                              }`}
+                            >
+                              {docItem.data.title}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </nav>
+            </div>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="lg:col-span-3">
+            <article class="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+              <!-- Article Header -->
+              <header class="px-8 py-6 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-3 mb-4">
+                  {doc.data.group && (
+                    <span class="px-3 py-1 text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                      {doc.data.group}
+                    </span>
+                  )}
+                  {doc.data.order && (
+                    <span class="px-2 py-1 text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded">
+                      #{doc.data.order}
+                    </span>
+                  )}
+                </div>
+                
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                  {doc.data.title}
+                </h1>
+                
+                {doc.data.description && (
+                  <p class="text-xl text-slate-600 dark:text-slate-300">
+                    {doc.data.description}
+                  </p>
+                )}
+              </header>
+
+              <!-- Article Content -->
+              <div class="px-8 py-8">
+                <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-pre:bg-slate-900 prose-pre:text-slate-100">
+                  <Content />
+                </div>
+              </div>
+
+              <!-- Article Footer -->
+              <footer class="px-8 py-6 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                <!-- Navigation -->
+                <div class="flex flex-col sm:flex-row justify-between gap-4">
+                  {prevDoc ? (
+                    <a 
+                      href={`/docs/${prevDoc.slug}`}
+                      class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow group"
+                    >
+                      <svg class="w-5 h-5 text-slate-400 group-hover:text-purple-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                      </svg>
+                      <div class="text-left">
+                        <div class="text-sm text-slate-500 dark:text-slate-400">Previous</div>
+                        <div class="font-medium text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                          {prevDoc.data.title}
+                        </div>
+                      </div>
+                    </a>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  {nextDoc && (
+                    <a 
+                      href={`/docs/${nextDoc.slug}`}
+                      class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow group text-right"
+                    >
+                      <div>
+                        <div class="text-sm text-slate-500 dark:text-slate-400">Next</div>
+                        <div class="font-medium text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                          {nextDoc.data.title}
+                        </div>
+                      </div>
+                      <svg class="w-5 h-5 text-slate-400 group-hover:text-purple-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+
+                <!-- Help Section -->
+                <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <div class="flex items-start gap-3">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                      <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                        Need Help?
+                      </h3>
+                      <p class="text-blue-800 dark:text-blue-200 text-sm mb-3">
+                        If you're having trouble with this guide or have questions, we're here to help.
+                      </p>
+                      <div class="flex flex-wrap gap-3">
+                        <a 
+                          href="/contact" 
+                          class="inline-flex items-center gap-1 text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 font-medium text-sm transition-colors"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                          </svg>
+                          Contact Support
+                        </a>
+                        <a 
+                          href="/api-reference" 
+                          class="inline-flex items-center gap-1 text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 font-medium text-sm transition-colors"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                          </svg>
+                          API Reference
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </footer>
+            </article>
+          </main>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  // Smooth scrolling for anchor links
+  document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('a[href^="#"]');
+    
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href')?.substring(1);
+        const targetElement = document.getElementById(targetId || '');
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+</script>

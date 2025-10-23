@@ -1,0 +1,276 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+
+// Get related projects (same technologies)
+const allProjects = await getCollection('projects');
+const relatedProjects = allProjects
+  .filter(p => p.slug !== project.slug)
+  .filter(p => p.data.technologies.some(tech => project.data.technologies.includes(tech)))
+  .slice(0, 3);
+
+const title = project.data.projectName;
+const description = project.data.description;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <!-- Hero Section -->
+    <section class="relative py-16 overflow-hidden">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <!-- Back Navigation -->
+          <div class="mb-8">
+            <a 
+              href="/projects" 
+              class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              Back to Projects
+            </a>
+          </div>
+
+          <!-- Project Header -->
+          <div class="text-center mb-12">
+            <div class="flex flex-wrap justify-center gap-2 mb-4">
+              {project.data.technologies.map(tech => (
+                <span class="px-3 py-1 text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                  {tech}
+                </span>
+              ))}
+            </div>
+            
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+              {project.data.projectName}
+            </h1>
+            
+            <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-8">
+              {project.data.description}
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-4">
+              {project.data.liveUrl && (
+                <a 
+                  href={project.data.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  View Live Site
+                </a>
+              )}
+              
+              {project.data.githubLink && (
+                <a 
+                  href={project.data.githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  View Source
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Image/Gallery -->
+    {project.data.projectImage && (
+      <section class="py-8">
+        <div class="container mx-auto px-4">
+          <div class="max-w-6xl mx-auto">
+            <div class="rounded-2xl overflow-hidden shadow-2xl">
+              <img 
+                src={project.data.projectImage} 
+                alt={project.data.projectName}
+                class="w-full h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Project Content -->
+    <section class="py-16">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 md:p-12">
+            <div class="prose prose-slate dark:prose-invert max-w-none">
+              <Content />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-16 bg-white/50 dark:bg-slate-800/50">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+            Project Details
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Technologies -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+                Technologies Used
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {project.data.technologies.map(tech => (
+                  <span class="px-3 py-1 text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Project Info -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Project Information
+              </h3>
+              <div class="space-y-3">
+                {project.data.createdAt && (
+                  <div class="flex justify-between">
+                    <span class="text-slate-600 dark:text-slate-400">Created:</span>
+                    <span class="text-slate-900 dark:text-white font-medium">
+                      {new Date(project.data.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                )}
+                
+                {project.data.featured && (
+                  <div class="flex justify-between">
+                    <span class="text-slate-600 dark:text-slate-400">Status:</span>
+                    <span class="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-medium">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                      Featured Project
+                    </span>
+                  </div>
+                )}
+                
+                <div class="flex justify-between">
+                  <span class="text-slate-600 dark:text-slate-400">Category:</span>
+                  <span class="text-slate-900 dark:text-white font-medium">Web Development</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Projects -->
+    {relatedProjects.length > 0 && (
+      <section class="py-16">
+        <div class="container mx-auto px-4">
+          <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+              Related Projects
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedProjects.map(relatedProject => (
+                <article class="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                  <div class="aspect-video bg-gradient-to-br from-purple-400 to-blue-500 relative overflow-hidden">
+                    {relatedProject.data.projectImage ? (
+                      <img 
+                        src={relatedProject.data.projectImage} 
+                        alt={relatedProject.data.projectName}
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div class="w-full h-full flex items-center justify-center">
+                        <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div class="p-6">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      {relatedProject.data.technologies.slice(0, 2).map(tech => (
+                        <span class="px-2 py-1 text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                      <a href={`/projects/${relatedProject.slug}`} class="hover:underline">
+                        {relatedProject.data.projectName}
+                      </a>
+                    </h3>
+                    
+                    <p class="text-slate-600 dark:text-slate-300 text-sm mb-4 line-clamp-2">
+                      {relatedProject.data.description}
+                    </p>
+                    
+                    <a 
+                      href={`/projects/${relatedProject.slug}`}
+                      class="inline-flex items-center gap-1 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium text-sm transition-colors"
+                    >
+                      View Project
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

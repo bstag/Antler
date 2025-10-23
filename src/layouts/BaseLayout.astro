@@ -1,0 +1,111 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: string;
+}
+
+const { 
+  title, 
+  description = 'A modern flat-file SSG engine built with Astro',
+  image = '/og-image.jpg',
+  type = 'website'
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Your Name" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#8b5cf6" />
+    
+    <title>{title}</title>
+    
+    <!-- Prevent theme flash (FOUC) -->
+    <script is:inline>
+      (function() {
+        // Get saved theme or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        
+        // Apply theme immediately
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      })();
+    </script>
+    
+    <!-- Import animations CSS -->
+    <link rel="stylesheet" href="/src/styles/animations.css" />
+  </head>
+  <body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
+    <slot />
+    
+    <!-- Intersection Observer for scroll animations -->
+    <script>
+      // Intersection Observer for fade-in animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, observerOptions);
+
+      // Observe all elements with fade-in-on-scroll class
+      document.addEventListener('DOMContentLoaded', () => {
+        const elements = document.querySelectorAll('.fade-in-on-scroll');
+        elements.forEach(el => observer.observe(el));
+      });
+
+      // Theme toggle functionality
+      function initTheme() {
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      }
+
+      // Initialize theme on page load
+      initTheme();
+    </script>
+  </body>
+</html>

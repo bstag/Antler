@@ -1,0 +1,304 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+
+const title = 'Resume';
+const description = 'Professional experience, skills, and achievements in web development and software engineering.';
+
+// Sample data - in a real application, this could come from a CMS or API
+const experience = [
+  {
+    title: 'Senior Full Stack Developer',
+    company: 'Tech Innovations Inc.',
+    location: 'San Francisco, CA',
+    period: '2022 - Present',
+    description: 'Lead development of modern web applications using React, TypeScript, and Node.js. Architected scalable solutions serving 100k+ users.',
+    achievements: [
+      'Reduced application load time by 40% through performance optimization',
+      'Led a team of 5 developers in building a real-time collaboration platform',
+      'Implemented CI/CD pipelines reducing deployment time by 60%'
+    ]
+  },
+  {
+    title: 'Frontend Developer',
+    company: 'Digital Solutions LLC',
+    location: 'Austin, TX',
+    period: '2020 - 2022',
+    description: 'Developed responsive web applications and collaborated with design teams to create exceptional user experiences.',
+    achievements: [
+      'Built 15+ responsive websites with 99% client satisfaction',
+      'Introduced modern development practices including TypeScript and testing',
+      'Mentored junior developers and conducted code reviews'
+    ]
+  },
+  {
+    title: 'Junior Web Developer',
+    company: 'StartupXYZ',
+    location: 'Remote',
+    period: '2019 - 2020',
+    description: 'Contributed to various web projects and gained experience in full-stack development.',
+    achievements: [
+      'Developed RESTful APIs using Node.js and Express',
+      'Created interactive dashboards with React and D3.js',
+      'Participated in agile development processes'
+    ]
+  }
+];
+
+const education = [
+  {
+    degree: 'Bachelor of Science in Computer Science',
+    school: 'University of Technology',
+    location: 'California, USA',
+    period: '2015 - 2019',
+    details: 'Graduated Magna Cum Laude with focus on Software Engineering and Web Technologies'
+  }
+];
+
+const skills = {
+  'Frontend': ['React', 'TypeScript', 'Next.js', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'JavaScript'],
+  'Backend': ['Node.js', 'Express', 'Python', 'PostgreSQL', 'MongoDB', 'Redis', 'GraphQL'],
+  'Tools & Technologies': ['Git', 'Docker', 'AWS', 'Vercel', 'Supabase', 'Figma', 'Jest', 'Cypress'],
+  'Soft Skills': ['Team Leadership', 'Project Management', 'Problem Solving', 'Communication', 'Mentoring']
+};
+
+const certifications = [
+  {
+    name: 'AWS Certified Solutions Architect',
+    issuer: 'Amazon Web Services',
+    date: '2023',
+    credentialId: 'AWS-CSA-2023-001'
+  },
+  {
+    name: 'React Developer Certification',
+    issuer: 'Meta',
+    date: '2022',
+    credentialId: 'META-REACT-2022-456'
+  }
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <div class="container mx-auto px-4 py-16">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+          Resume
+        </h1>
+        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-8">
+          Passionate full-stack developer with expertise in modern web technologies 
+          and a track record of delivering high-quality solutions.
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap justify-center gap-4">
+          <button class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Download PDF
+          </button>
+          
+          <a 
+            href="/contact" 
+            class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            Get In Touch
+          </a>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-12">
+            <!-- Experience -->
+            <section>
+              <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                </svg>
+                Professional Experience
+              </h2>
+              
+              <div class="space-y-8">
+                {experience.map((job, index) => (
+                  <div class="relative">
+                    {/* Timeline line */}
+                    {index < experience.length - 1 && (
+                      <div class="absolute left-6 top-16 w-0.5 h-full bg-purple-200 dark:bg-purple-800"></div>
+                    )}
+                    
+                    <div class="flex gap-6">
+                      {/* Timeline dot */}
+                      <div class="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                      </div>
+                      
+                      {/* Content */}
+                      <div class="flex-1 bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+                        <div class="flex flex-wrap items-start justify-between mb-4">
+                          <div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">
+                              {job.title}
+                            </h3>
+                            <p class="text-purple-600 dark:text-purple-400 font-medium">
+                              {job.company} • {job.location}
+                            </p>
+                          </div>
+                          <span class="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                            {job.period}
+                          </span>
+                        </div>
+                        
+                        <p class="text-slate-600 dark:text-slate-300 mb-4">
+                          {job.description}
+                        </p>
+                        
+                        <div class="space-y-2">
+                          <h4 class="text-sm font-semibold text-slate-900 dark:text-white">Key Achievements:</h4>
+                          <ul class="space-y-1">
+                            {job.achievements.map(achievement => (
+                              <li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                {achievement}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <!-- Education -->
+            <section>
+              <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                </svg>
+                Education
+              </h2>
+              
+              <div class="space-y-6">
+                {education.map(edu => (
+                  <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+                    <div class="flex flex-wrap items-start justify-between mb-4">
+                      <div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">
+                          {edu.degree}
+                        </h3>
+                        <p class="text-blue-600 dark:text-blue-400 font-medium">
+                          {edu.school} • {edu.location}
+                        </p>
+                      </div>
+                      <span class="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                        {edu.period}
+                      </span>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-300">
+                      {edu.details}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="space-y-8">
+            <!-- Skills -->
+            <section class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+              <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+                Skills
+              </h2>
+              
+              <div class="space-y-6">
+                {Object.entries(skills).map(([category, skillList]) => (
+                  <div>
+                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-3">
+                      {category}
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                      {skillList.map(skill => (
+                        <span class="px-3 py-1 text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <!-- Certifications -->
+            <section class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+              <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                </svg>
+                Certifications
+              </h2>
+              
+              <div class="space-y-4">
+                {certifications.map(cert => (
+                  <div class="border-l-4 border-yellow-400 pl-4">
+                    <h3 class="font-semibold text-slate-900 dark:text-white text-sm">
+                      {cert.name}
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm">
+                      {cert.issuer}
+                    </p>
+                    <div class="flex items-center justify-between mt-2">
+                      <span class="text-xs text-slate-500 dark:text-slate-400">
+                        {cert.date}
+                      </span>
+                      <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                        {cert.credentialId}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <!-- Contact CTA -->
+            <section class="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-6 text-white">
+              <h2 class="text-xl font-bold mb-3">
+                Let's Work Together
+              </h2>
+              <p class="text-purple-100 text-sm mb-4">
+                Interested in collaborating? I'm always open to discussing new opportunities.
+              </p>
+              <a 
+                href="/contact" 
+                class="inline-flex items-center gap-2 bg-white text-purple-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-purple-50 transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                Start a Conversation
+              </a>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

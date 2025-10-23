@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// Get all blog posts
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort((a, b) => 
+  new Date(b.data.publicationDate).getTime() - new Date(a.data.publicationDate).getTime()
+);
+
+// Get unique tags
+const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+---
+
+<BaseLayout title="Blog - Flat-File SSG Engine" description="Latest articles and tutorials about web development, static site generation, and modern web technologies">
+  <Header />
+  
+  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <div class="container mx-auto px-4 py-16">
+      <!-- Header -->
+      <div class="text-center mb-16 fade-in-on-scroll">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+          Blog
+        </h1>
+        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+          Insights, tutorials, and thoughts on modern web development
+        </p>
+      </div>
+
+      <!-- Tag Filter -->
+      <div class="mb-12 fade-in-on-scroll">
+        <div class="flex flex-wrap gap-2 justify-center">
+          <button 
+            class="tag-filter active px-4 py-2 bg-purple-600 text-white rounded-full text-sm font-medium hover:bg-purple-700 transition-all duration-300 hover-lift"
+            data-tag="all"
+          >
+            All Posts
+          </button>
+          {allTags.map(tag => (
+            <button 
+              class="tag-filter px-4 py-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300 hover-lift border border-slate-200 dark:border-slate-700"
+              data-tag={tag}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Posts Grid -->
+      <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 animate-stagger">
+        {posts.map(post => (
+          <article 
+            class="post-card bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden card-hover fade-in-on-scroll"
+            data-tags={JSON.stringify(post.data.tags || [])}
+          >
+            {post.data.featuredImage && (
+              <div class="overflow-hidden">
+                <img 
+                  src={post.data.featuredImage} 
+                  alt={post.data.title}
+                  class="w-full h-48 object-cover hover-scale transition-transform duration-300"
+                />
+              </div>
+            )}
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-3">
+                {post.data.tags?.slice(0, 2).map(tag => (
+                  <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              
+              <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                <a href={`/blog/${post.slug}`} class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                  {post.data.title}
+                </a>
+              </h2>
+              
+              <p class="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
+                {post.data.description}
+              </p>
+              
+              <div class="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+                <div class="flex items-center gap-4">
+                  <span>{new Date(post.data.publicationDate).toLocaleDateString()}</span>
+                  <span>{post.data.readingTime} min read</span>
+                </div>
+                <span class="text-slate-400 dark:text-slate-500">
+                  By {post.data.author}
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- No posts message -->
+      <div id="no-posts" class="text-center py-12 hidden fade-in-on-scroll">
+        <div class="text-slate-400 dark:text-slate-500">
+          <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <p class="text-lg font-medium">No posts found</p>
+          <p class="text-sm">Try selecting a different tag</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Tag filtering functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const tagFilters = document.querySelectorAll('.tag-filter');
+    const postCards = document.querySelectorAll('.post-card');
+    const noPostsMessage = document.getElementById('no-posts');
+
+    tagFilters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const selectedTag = filter.getAttribute('data-tag');
+        
+        // Update active state
+        tagFilters.forEach(f => f.classList.remove('active', 'bg-purple-600', 'text-white'));
+        tagFilters.forEach(f => f.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300'));
+        
+        filter.classList.add('active', 'bg-purple-600', 'text-white');
+        filter.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+
+        // Filter posts
+        let visiblePosts = 0;
+        postCards.forEach(card => {
+          const cardTags = JSON.parse(card.getAttribute('data-tags') || '[]');
+          const shouldShow = selectedTag === 'all' || cardTags.includes(selectedTag);
+          
+          if (shouldShow) {
+            (card as HTMLElement).style.display = 'block';
+            visiblePosts++;
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+
+        // Show/hide no posts message
+        if (visiblePosts === 0) {
+          noPostsMessage?.classList.remove('hidden');
+        } else {
+          noPostsMessage?.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

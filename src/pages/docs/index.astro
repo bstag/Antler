@@ -1,0 +1,262 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+
+const allDocs = await getCollection('docs');
+const sortedDocs = allDocs.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+
+// Group docs by category
+const groupedDocs = sortedDocs.reduce((acc, doc) => {
+  const group = doc.data.group || 'General';
+  if (!acc[group]) {
+    acc[group] = [];
+  }
+  acc[group].push(doc);
+  return acc;
+}, {} as Record<string, typeof allDocs>);
+
+const title = 'Documentation';
+const description = 'Complete guide to using and customizing the Flat-File SSG Engine.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <div class="container mx-auto px-4 py-16">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+          Documentation
+        </h1>
+        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+          Everything you need to know about building and customizing your static site
+        </p>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="max-w-2xl mx-auto mb-12">
+        <div class="relative">
+          <input
+            type="text"
+            id="doc-search"
+            placeholder="Search documentation..."
+            class="w-full px-6 py-4 pl-12 text-lg border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
+          />
+          <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Documentation Grid -->
+      <div class="max-w-6xl mx-auto">
+        <div id="docs-container">
+          {Object.entries(groupedDocs).map(([group, docs]) => (
+            <div class="doc-group mb-12">
+              <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                {group}
+              </h2>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {docs.map(doc => (
+                  <article class="doc-card bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                    <div class="p-6">
+                      <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                            <a href={`/docs/${doc.slug}`} class="hover:underline">
+                              {doc.data.title}
+                            </a>
+                          </h3>
+                          <p class="text-slate-600 dark:text-slate-300 text-sm line-clamp-3">
+                            {doc.data.description}
+                          </p>
+                        </div>
+                        
+                        {doc.data.order && (
+                          <span class="flex-shrink-0 w-8 h-8 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center text-sm font-bold ml-4">
+                            {doc.data.order}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">
+                          {group}
+                        </span>
+                        
+                        <a 
+                          href={`/docs/${doc.slug}`}
+                          class="inline-flex items-center gap-1 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium text-sm transition-colors"
+                        >
+                          Read More
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- No results message -->
+        <div id="no-results" class="hidden text-center py-12">
+          <div class="text-slate-400 dark:text-slate-500">
+            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p class="text-xl font-medium">No documentation found</p>
+            <p class="text-sm mt-2">Try adjusting your search terms</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="max-w-4xl mx-auto mt-16">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+          Quick Links
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <a 
+            href="/docs/installation" 
+            class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group"
+          >
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-slate-900 dark:text-white mb-2">Getting Started</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Installation and setup guide</p>
+          </a>
+
+          <a 
+            href="/api-reference" 
+            class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group"
+          >
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-slate-900 dark:text-white mb-2">API Reference</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Complete API documentation</p>
+          </a>
+
+          <a 
+            href="/projects" 
+            class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group"
+          >
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-slate-900 dark:text-white mb-2">Examples</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300">See projects in action</p>
+          </a>
+
+          <a 
+            href="/contact" 
+            class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group"
+          >
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-slate-900 dark:text-white mb-2">Support</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Get help and support</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  // Search functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('doc-search') as HTMLInputElement;
+    const docsContainer = document.getElementById('docs-container');
+    const noResults = document.getElementById('no-results');
+    const docCards = document.querySelectorAll('.doc-card');
+    const docGroups = document.querySelectorAll('.doc-group');
+
+    if (!searchInput || !docsContainer || !noResults) return;
+
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      
+      if (searchTerm === '') {
+        // Show all docs
+        docGroups.forEach(group => {
+          (group as HTMLElement).style.display = 'block';
+        });
+        docCards.forEach(card => {
+          (card as HTMLElement).style.display = 'block';
+        });
+        docsContainer.style.display = 'block';
+        noResults.classList.add('hidden');
+        return;
+      }
+
+      let hasVisibleResults = false;
+
+      docGroups.forEach(group => {
+        const groupElement = group as HTMLElement;
+        let hasVisibleCardsInGroup = false;
+
+        const cardsInGroup = groupElement.querySelectorAll('.doc-card');
+        cardsInGroup.forEach(card => {
+          const cardElement = card as HTMLElement;
+          const title = cardElement.querySelector('h3')?.textContent?.toLowerCase() || '';
+          const description = cardElement.querySelector('p')?.textContent?.toLowerCase() || '';
+          const group = cardElement.querySelector('.bg-slate-100')?.textContent?.toLowerCase() || '';
+
+          const matches = title.includes(searchTerm) || 
+                         description.includes(searchTerm) || 
+                         group.includes(searchTerm);
+
+          if (matches) {
+            cardElement.style.display = 'block';
+            hasVisibleCardsInGroup = true;
+            hasVisibleResults = true;
+          } else {
+            cardElement.style.display = 'none';
+          }
+        });
+
+        // Show/hide group based on whether it has visible cards
+        groupElement.style.display = hasVisibleCardsInGroup ? 'block' : 'none';
+      });
+
+      // Show/hide no results message
+      if (hasVisibleResults) {
+        docsContainer.style.display = 'block';
+        noResults.classList.add('hidden');
+      } else {
+        docsContainer.style.display = 'none';
+        noResults.classList.remove('hidden');
+      }
+    });
+  });
+</script>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
