@@ -1,4 +1,4 @@
-# Technical Architecture Document: Flat-File SSG Engine
+# Technical Architecture Document: Antler
 
 ## 1. Architecture Design
 
@@ -226,7 +226,7 @@ GRANT ALL PRIVILEGES ON contact_submissions TO authenticated;
 -- Insert sample data
 INSERT INTO contact_submissions (name, email, subject, message) VALUES
 ('John Doe', 'john@example.com', 'Project Inquiry', 'I would like to discuss a potential collaboration on a web development project.'),
-('Jane Smith', 'jane@example.com', 'Technical Question', 'I have a question about the implementation of your SSG engine.');
+('Jane Smith', 'jane@example.com', 'Technical Question', 'I have a question about the implementation of Antler.');
 ```
 
 Analytics Table (Optional)

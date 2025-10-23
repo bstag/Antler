@@ -53,7 +53,7 @@ MdCms/
 │   │   │   ├── getting-started.md
 │   │   │   └── installation.md
 │   │   ├── projects/          # Projects collection
-│   │   │   ├── flat-file-ssg.md
+│   │   │   ├── antler.md
 │   │   │   └── portfolio-website.md
 │   │   └── config.ts          # Content collection schemas
 │   ├── layouts/               # Page layout templates
@@ -112,7 +112,7 @@ MdCms/
 │   │   │   ├── getting-started.md
 │   │   │   └── installation.md
 │   │   ├── projects/          # Projects collection
-│   │   │   ├── flat-file-ssg.md
+│   │   │   ├── antler.md
 │   │   │   └── portfolio-website.md
 │   │   └── config.ts          # Content collection schemas
 │   ├── layouts/               # Page layout templates

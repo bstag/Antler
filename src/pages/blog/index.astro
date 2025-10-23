@@ -14,7 +14,7 @@ const posts = allPosts.sort((a, b) =>
 const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
 ---
 
-<BaseLayout title="Blog - Flat-File SSG Engine" description="Latest articles and tutorials about web development, static site generation, and modern web technologies">
+<BaseLayout title="Blog - Antler" description="Latest articles and tutorials about web development, static site generation, and modern web technologies">
   <Header />
   
   <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">

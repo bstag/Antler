@@ -1,4 +1,4 @@
-# Product Brief: The "Flat-File SSG" Engine
+# Product Brief: Antler
 ## 1. Product Concept
 A modern, high-performance static site generator (SSG) and "flat-file" content system. It transforms a simple directory of Markdown and YAML files into a complete, pre-rendered website, perfect for blogs, portfolios, resume sites, and documentation.
 The system is designed to be fast (static-first), secure, and developer-friendly, while still supporting dynamic, interactive elements like contact forms through a serverless architecture.

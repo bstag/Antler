@@ -1,15 +1,15 @@
 ---
-projectName: "Flat-File SSG Engine"
-projectImage: "/images/projects/ssg-engine.jpg"
+projectName: "Antler"
+projectImage: "/images/projects/antler.jpg"
 description: "A modern static site generator that transforms Markdown files into beautiful, performant websites with component-based architecture."
 technologies: ["Astro", "React", "TypeScript", "Tailwind CSS", "Supabase"]
-githubLink: "https://github.com/yourusername/flat-file-ssg"
-liveUrl: "https://your-ssg-demo.com"
+githubLink: "https://github.com/yourusername/antler"
+liveUrl: "https://your-antler-demo.com"
 featured: true
 createdAt: 2024-01-15
 ---
 
-# Flat-File SSG Engine
+# Antler
 
 A powerful static site generator built with modern web technologies. This project demonstrates how to create a content management system using flat files (Markdown + YAML frontmatter) while maintaining the flexibility and interactivity of modern web applications.
 
