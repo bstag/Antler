@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from "../../test-utils/test-helpers";
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ThemeToggle from '../../components/ThemeToggle';
 import { localStorageMock, matchMediaMock } from '../../test-utils/setup';
@@ -192,7 +192,7 @@ describe('ThemeToggle', () => {
 
   describe('System Theme Change Listener', () => {
     it('should listen for system theme changes', async () => {
-      const mockAddEventListener = vi.fn();
+      const mockAddEventListener = vi.fn((_event: string, _handler: (e: MediaQueryListEvent) => void) => {});
       matchMediaMock.mockReturnValue({
         matches: false,
         media: '(prefers-color-scheme: dark)',
@@ -212,8 +212,8 @@ describe('ThemeToggle', () => {
     });
 
     it('should update theme when system preference changes (no saved preference)', async () => {
-      let systemChangeHandler: ((e: MediaQueryListEvent) => void) | null = null;
-      const mockAddEventListener = vi.fn((event, handler) => {
+      let systemChangeHandler: ((e: MediaQueryListEvent) => void) | undefined;
+      const mockAddEventListener = vi.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
         if (event === 'change') {
           systemChangeHandler = handler;
         }
@@ -240,7 +240,7 @@ describe('ThemeToggle', () => {
       
       // Simulate system theme change to dark
       if (systemChangeHandler) {
-        systemChangeHandler({ matches: true } as MediaQueryListEvent);
+        (systemChangeHandler as (e: MediaQueryListEvent) => void)({ matches: true } as MediaQueryListEvent);
       }
       
       await waitFor(() => {
@@ -251,7 +251,7 @@ describe('ThemeToggle', () => {
 
     it('should not update theme when system preference changes (has saved preference)', async () => {
       let systemChangeHandler: ((e: MediaQueryListEvent) => void) | null = null;
-      const mockAddEventListener = vi.fn((event, handler) => {
+      const mockAddEventListener = vi.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
         if (event === 'change') {
           systemChangeHandler = handler;
         }
@@ -281,7 +281,7 @@ describe('ThemeToggle', () => {
       
       // Simulate system theme change to dark
       if (systemChangeHandler) {
-        systemChangeHandler({ matches: true } as MediaQueryListEvent);
+        (systemChangeHandler as (e: MediaQueryListEvent) => void)({ matches: true } as MediaQueryListEvent);
       }
       
       // Should not change theme because user has saved preference

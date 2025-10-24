@@ -1,20 +1,15 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import node from '@astrojs/node';
 
+// Static production build configuration
+// This excludes all admin functionality for pure static deployment
 export default defineConfig({
-  // Use hybrid mode to support both static and server-rendered routes
-  output: 'hybrid',
-
+  output: 'static',
   integrations: [
     tailwind(),
     react()
   ],
-
-  adapter: node({
-    mode: 'standalone',
-  }),
 
   site: 'https://your-domain.com',
   markdown: {
@@ -25,7 +20,14 @@ export default defineConfig({
   },
   vite: {
     optimizeDeps: {
-      exclude: ['supabase/supabase-js']
+      exclude: ['@supabase/supabase-js']
+    },
+    server: {
+      fs: {
+        // Exclude admin directories from static builds
+        allow: ['src'],
+        deny: ['src/pages/admin', 'src/components/admin', 'src/lib/admin']
+      }
     }
   }
 });

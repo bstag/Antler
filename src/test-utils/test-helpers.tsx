@@ -54,7 +54,7 @@ export const createMockResponse = (data: any, status = 200) => {
 };
 
 // Helper to wait for async operations
-export const waitFor = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export * from '@testing-library/react';
 export { customRender as render };

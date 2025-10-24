@@ -1,0 +1,27 @@
+---
+import { AdminApp } from '../../components/admin/AdminApp';
+
+// Enable server-side rendering for admin routes
+export const prerender = false;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antler Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="admin-root">
+    <AdminApp client:load />
+  </div>
+</body>
+</html>

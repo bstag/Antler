@@ -69,7 +69,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require title field', () => {
-      const invalidData = { ...mockBlogPost };
+      const invalidData = { ...mockBlogPost } as any;
       delete invalidData.title;
       
       const result = blogSchema.safeParse(invalidData);
@@ -80,7 +80,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require description field', () => {
-      const invalidData = { ...mockBlogPost };
+      const invalidData = { ...mockBlogPost } as any;
       delete invalidData.description;
       
       const result = blogSchema.safeParse(invalidData);
@@ -91,7 +91,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require publicationDate field', () => {
-      const invalidData = { ...mockBlogPost };
+      const invalidData = { ...mockBlogPost } as any;
       delete invalidData.publicationDate;
       
       const result = blogSchema.safeParse(invalidData);
@@ -102,7 +102,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require tags field', () => {
-      const invalidData = { ...mockBlogPost };
+      const invalidData = { ...mockBlogPost } as any;
       delete invalidData.tags;
       
       const result = blogSchema.safeParse(invalidData);
@@ -185,7 +185,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require projectName field', () => {
-      const invalidData = { ...mockProject };
+      const invalidData = { ...mockProject } as any;
       delete invalidData.projectName;
       
       const result = projectsSchema.safeParse(invalidData);
@@ -196,7 +196,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require projectImage field', () => {
-      const invalidData = { ...mockProject };
+      const invalidData = { ...mockProject } as any;
       delete invalidData.projectImage;
       
       const result = projectsSchema.safeParse(invalidData);
@@ -207,7 +207,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require description field', () => {
-      const invalidData = { ...mockProject };
+      const invalidData = { ...mockProject } as any;
       delete invalidData.description;
       
       const result = projectsSchema.safeParse(invalidData);
@@ -218,7 +218,7 @@ describe('Content Schema Validation', () => {
     });
 
     it('should require technologies field', () => {
-      const invalidData = { ...mockProject };
+      const invalidData = { ...mockProject } as any;
       delete invalidData.technologies;
       
       const result = projectsSchema.safeParse(invalidData);

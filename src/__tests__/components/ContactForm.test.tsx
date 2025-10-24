@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '../../test-utils/test-helpers';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ContactForm from '../../components/ContactForm';
 import { createMockResponse } from '../../test-utils/test-helpers';
