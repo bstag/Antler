@@ -1,81 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
+import { getCollection } from 'astro:content';
 
 const title = 'Resume';
 const description = 'Professional experience, skills, and achievements in web development and software engineering.';
 
-// Sample data - in a real application, this could come from a CMS or API
-const experience = [
-  {
-    title: 'Senior Full Stack Developer',
-    company: 'Tech Innovations Inc.',
-    location: 'San Francisco, CA',
-    period: '2022 - Present',
-    description: 'Lead development of modern web applications using React, TypeScript, and Node.js. Architected scalable solutions serving 100k+ users.',
-    achievements: [
-      'Reduced application load time by 40% through performance optimization',
-      'Led a team of 5 developers in building a real-time collaboration platform',
-      'Implemented CI/CD pipelines reducing deployment time by 60%'
-    ]
-  },
-  {
-    title: 'Frontend Developer',
-    company: 'Digital Solutions LLC',
-    location: 'Austin, TX',
-    period: '2020 - 2022',
-    description: 'Developed responsive web applications and collaborated with design teams to create exceptional user experiences.',
-    achievements: [
-      'Built 15+ responsive websites with 99% client satisfaction',
-      'Introduced modern development practices including TypeScript and testing',
-      'Mentored junior developers and conducted code reviews'
-    ]
-  },
-  {
-    title: 'Junior Web Developer',
-    company: 'StartupXYZ',
-    location: 'Remote',
-    period: '2019 - 2020',
-    description: 'Contributed to various web projects and gained experience in full-stack development.',
-    achievements: [
-      'Developed RESTful APIs using Node.js and Express',
-      'Created interactive dashboards with React and D3.js',
-      'Participated in agile development processes'
-    ]
-  }
-];
+// Get resume data from separate collections
+const personalInfoEntries = await getCollection('resumePersonal');
+const experienceEntries = await getCollection('resumeExperience');
+const educationEntries = await getCollection('resumeEducation');
+const skillsEntries = await getCollection('resumeSkills');
+const certificationsEntries = await getCollection('resumeCertifications');
 
-const education = [
-  {
-    degree: 'Bachelor of Science in Computer Science',
-    school: 'University of Technology',
-    location: 'California, USA',
-    period: '2015 - 2019',
-    details: 'Graduated Magna Cum Laude with focus on Software Engineering and Web Technologies'
-  }
-];
 
-const skills = {
-  'Frontend': ['React', 'TypeScript', 'Next.js', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'JavaScript'],
-  'Backend': ['Node.js', 'Express', 'Python', 'PostgreSQL', 'MongoDB', 'Redis', 'GraphQL'],
-  'Tools & Technologies': ['Git', 'Docker', 'AWS', 'Vercel', 'Supabase', 'Figma', 'Jest', 'Cypress'],
-  'Soft Skills': ['Team Leadership', 'Project Management', 'Problem Solving', 'Communication', 'Mentoring']
-};
+// Extract data from collections
+const personalInfo = personalInfoEntries[0]?.data || {};
+const experience = experienceEntries
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+  .map(entry => entry.data);
+const education = educationEntries
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+  .map(entry => entry.data);
+const skills = skillsEntries
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+  .reduce((acc: Record<string, string[]>, entry) => {
+    acc[entry.data.category] = entry.data.skills;
+    return acc;
+  }, {});
+const certifications = certificationsEntries
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+  .map(entry => entry.data);
 
-const certifications = [
-  {
-    name: 'AWS Certified Solutions Architect',
-    issuer: 'Amazon Web Services',
-    date: '2023',
-    credentialId: 'AWS-CSA-2023-001'
-  },
-  {
-    name: 'React Developer Certification',
-    issuer: 'Meta',
-    date: '2022',
-    credentialId: 'META-REACT-2022-456'
-  }
-];
 ---
 
 <BaseLayout title={title} description={description}>
@@ -85,11 +41,13 @@ const certifications = [
       <!-- Header -->
       <div class="text-center mb-16">
         <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-          Resume
+          {personalInfo.name}
         </h1>
+        <h2 class="text-2xl text-purple-600 dark:text-purple-400 font-semibold mb-4">
+          {personalInfo.title}
+        </h2>
         <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-8">
-          Passionate full-stack developer with expertise in modern web technologies 
-          and a track record of delivering high-quality solutions.
+          {personalInfo.summary}
         </p>
         
         <!-- Action Buttons -->
@@ -154,7 +112,7 @@ const certifications = [
                             </p>
                           </div>
                           <span class="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                            {job.period}
+                            {job.startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - {job.current ? 'Present' : job.endDate?.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) || 'Present'}
                           </span>
                         </div>
                         
@@ -162,19 +120,21 @@ const certifications = [
                           {job.description}
                         </p>
                         
-                        <div class="space-y-2">
-                          <h4 class="text-sm font-semibold text-slate-900 dark:text-white">Key Achievements:</h4>
-                          <ul class="space-y-1">
-                            {job.achievements.map(achievement => (
-                              <li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
-                                <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                {achievement}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        {job.achievements && job.achievements.length > 0 && (
+                          <div class="space-y-2">
+                            <h4 class="text-sm font-semibold text-slate-900 dark:text-white">Key Achievements:</h4>
+                            <ul class="space-y-1">
+                              {job.achievements.map(achievement => (
+                                <li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                  <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                  </svg>
+                                  {achievement}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -206,7 +166,7 @@ const certifications = [
                         </p>
                       </div>
                       <span class="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                        {edu.period}
+                        {edu.startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - {edu.endDate?.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) || 'Present'}
                       </span>
                     </div>
                     <p class="text-slate-600 dark:text-slate-300">

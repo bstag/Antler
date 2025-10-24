@@ -1,6 +1,6 @@
 export interface ContentItem {
   id: string;
-  collection: 'blog' | 'projects' | 'docs';
+  collection: 'blog' | 'projects' | 'docs' | 'resume';
   title: string;
   filePath: string;
   frontmatter: Record<string, any>;
@@ -45,6 +45,58 @@ export interface Documentation extends ContentItem {
     description?: string;
     group: string;
     order: number;
+  };
+}
+
+export interface Resume extends ContentItem {
+  collection: 'resume';
+  frontmatter: {
+    name: string;
+    title: string;
+    summary: string;
+    email: string;
+    phone: string;
+    location: string;
+    linkedin?: string;
+    github?: string;
+    website?: string;
+    experience: Array<{
+      company: string;
+      position: string;
+      startDate: string;
+      endDate?: string;
+      description: string;
+      achievements?: string[];
+    }>;
+    education: Array<{
+      institution: string;
+      degree: string;
+      field: string;
+      graduationDate: string;
+      gpa?: string;
+    }>;
+    skills: {
+      technical: string[];
+      soft: string[];
+      tools: string[];
+    };
+    certifications?: Array<{
+      name: string;
+      issuer: string;
+      date: string;
+      expiryDate?: string;
+      credentialId?: string;
+    }>;
+    languages?: Array<{
+      language: string;
+      proficiency: string;
+    }>;
+    projects?: Array<{
+      name: string;
+      description: string;
+      technologies: string[];
+      url?: string;
+    }>;
   };
 }
 

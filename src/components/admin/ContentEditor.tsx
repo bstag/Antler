@@ -25,6 +25,12 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
   const [isNew, setIsNew] = useState(id === 'new');
   const schema = collection ? schemas[collection] : null;
 
+  // Detect if we're in the resume manager context
+  const isResumeContext = window.location.pathname.startsWith('/admin/resume');
+  const getCollectionPath = (collection: string) => {
+    return isResumeContext ? `/resume/content/${collection}` : `/content/${collection}`;
+  };
+
   useEffect(() => {
     if (collection && schema) {
       if (isNew) {
@@ -124,7 +130,8 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
 
         // If this was a new item, update the URL to the edit page without full navigation
         if (wasNew && result.data?.id) {
-          window.history.replaceState(null, '', `/content/${collection}/${result.data.id}`);
+          const newPath = isResumeContext ? `/admin/resume/content/${collection}/${result.data.id}` : `/admin/content/${collection}/${result.data.id}`;
+          window.history.replaceState(null, '', newPath);
           // Reload the item to get the full data
           loadItem();
         } else {
@@ -172,7 +179,9 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     if (hasChanges && !confirm('You have unsaved changes. Are you sure you want to leave?')) {
       return;
     }
-    navigate(`/content/${collection}`);
+    if (collection) {
+      navigate(getCollectionPath(collection));
+    }
   };
 
   const getCollectionName = (collection: string) => {
@@ -225,7 +234,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       <div className="flex justify-between items-center">
         <div>
           <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-            <Link to={`/content/${collection}`} className="hover:text-gray-700 dark:hover:text-gray-300">
+            <Link to={getCollectionPath(collection)} className="hover:text-gray-700 dark:hover:text-gray-300">
               {getCollectionName(collection)}
             </Link>
             <span>/</span>
@@ -321,7 +330,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
               schema={schema}
               data={frontmatter}
               onChange={handleFrontmatterChange}
-              onSubmit={handleSaveDirect}
+              onSubmit={(data) => handleSaveDirect(data, content)}
               registerSubmitRef={(submitFn) => formSubmitRef.current = submitFn}
               loading={saving}
               submitLabel={isNew ? 'Create Post' : 'Update Post'}

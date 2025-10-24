@@ -74,6 +74,55 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         );
+      case 'resumePersonal':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        );
+      case 'resumeExperience':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+          </svg>
+        );
+      case 'resumeEducation':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+          </svg>
+        );
+      case 'resumeCertifications':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+          </svg>
+        );
+      case 'resumeSkills':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        );
+      case 'resumeLanguages':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+          </svg>
+        );
+      case 'resumeProjects':
+        return (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+        );
       default:
         return (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,6 +141,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
         return 'bg-green-500';
       case 'docs':
         return 'bg-purple-500';
+      case 'resumePersonal':
+        return 'bg-indigo-500';
+      case 'resumeExperience':
+        return 'bg-orange-500';
+      case 'resumeEducation':
+        return 'bg-teal-500';
+      case 'resumeCertifications':
+        return 'bg-yellow-500';
+      case 'resumeSkills':
+        return 'bg-pink-500';
+      case 'resumeLanguages':
+        return 'bg-cyan-500';
+      case 'resumeProjects':
+        return 'bg-red-500';
       default:
         return 'bg-gray-500';
     }
@@ -101,6 +164,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
     switch (collection) {
       case 'docs':
         return 'Documentation';
+      case 'resumePersonal':
+        return 'Personal Info';
+      case 'resumeExperience':
+        return 'Experience';
+      case 'resumeEducation':
+        return 'Education';
+      case 'resumeCertifications':
+        return 'Certifications';
+      case 'resumeSkills':
+        return 'Skills';
+      case 'resumeLanguages':
+        return 'Languages';
+      case 'resumeProjects':
+        return 'Resume Projects';
       default:
         return collection.charAt(0).toUpperCase() + collection.slice(1);
     }
@@ -127,6 +204,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
     );
   }
 
+  // Filter out resume collections from main admin
+  const mainCollections = Object.fromEntries(
+    Object.entries(schemas).filter(([collection]) => !collection.startsWith('resume'))
+  );
+
+  // Calculate resume stats
+  const resumeStats = Object.entries(stats)
+    .filter(([collection]) => collection.startsWith('resume'))
+    .reduce((total, [, stat]) => total + stat.total, 0);
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -136,7 +223,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
           Manage your static site content with ease. Create, edit, and organize your blog posts, projects, and documentation.
         </p>
         <div className="mt-6 flex flex-wrap gap-4">
-          {Object.keys(schemas).map((collection) => (
+          {Object.keys(mainCollections).map((collection) => (
             <Link
               key={collection}
               to={`/content/${collection}/new`}
@@ -154,8 +241,44 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
       {/* Content Overview */}
       <div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Content Overview</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(schemas).map(([collection, schema]) => {
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-4">
+          {/* Resume Manager Card */}
+          <Link
+            to="/resume"
+            className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-sm text-white p-6 hover:shadow-md transition-shadow group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">📄</span>
+              </div>
+              <span className="text-2xl font-bold">
+                {resumeStats}
+              </span>
+            </div>
+            
+            <h4 className="text-lg font-semibold mb-2 group-hover:text-purple-100 transition-colors">
+              Resume Manager
+            </h4>
+            
+            <p className="text-sm text-purple-100 mb-4">
+              Manage all resume sections
+            </p>
+            
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-purple-100">
+                {resumeStats === 0 ? 'No items yet' : 
+                 resumeStats === 1 ? '1 item' : 
+                 `${resumeStats} items`}
+              </span>
+              <svg className="w-4 h-4 text-purple-200 group-hover:text-white transition-colors" 
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
+
+          {/* Main Collections */}
+          {Object.entries(mainCollections).map(([collection, schema]) => {
             const collectionStats = stats[collection] || { total: 0, recent: 0, featured: 0 };
             
             return (

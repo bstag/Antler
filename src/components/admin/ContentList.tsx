@@ -22,6 +22,12 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
   const limit = 10;
   const schema = collection ? schemas[collection] : null;
 
+  // Detect if we're in the resume manager context
+  const isResumeContext = window.location.pathname.startsWith('/admin/resume');
+  const getCollectionPath = (collection: string) => {
+    return isResumeContext ? `/resume/content/${collection}` : `/content/${collection}`;
+  };
+
   useEffect(() => {
     if (collection && schema) {
       loadItems();
@@ -162,7 +168,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           </p>
         </div>
         <Link
-          to={`/content/${collection}/new`}
+          to={`${getCollectionPath(collection)}/new`}
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,13 +181,13 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
       {/* Search and Filters */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <input
               type="text"
               placeholder={`Search ${collection}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
           <div className="flex gap-2">
@@ -262,7 +268,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             {searchTerm ? `No ${collection} match your search criteria.` : `You haven't created any ${collection} yet.`}
           </p>
           <Link
-            to={`/content/${collection}/new`}
+            to={`${getCollectionPath(collection)}/new`}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -279,7 +285,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     <Link
-                      to={`/content/${collection}/${item.id}`}
+                      to={`${getCollectionPath(collection)}/${item.id}`}
                       className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       {item.title}
@@ -300,7 +306,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
                 </div>
                 <div className="flex items-center space-x-2 ml-4">
                   <Link
-                    to={`/content/${collection}/${item.id}`}
+                    to={`${getCollectionPath(collection)}/${item.id}`}
                     className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
                     Edit

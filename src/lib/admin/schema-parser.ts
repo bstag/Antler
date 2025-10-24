@@ -196,6 +196,110 @@ export class SchemaParser {
         ]
       };
 
+      // Resume Personal schema
+      schemas.resumePersonal = {
+        collection: 'resumePersonal',
+        type: 'content',
+        fields: [
+          { name: 'name', type: 'string', required: true, optional: false },
+          { name: 'title', type: 'string', required: true, optional: false },
+          { name: 'summary', type: 'string', required: true, optional: false },
+          { name: 'email', type: 'string', required: false, optional: true },
+          { name: 'phone', type: 'string', required: false, optional: true },
+          { name: 'location', type: 'string', required: false, optional: true },
+          { name: 'website', type: 'string', required: false, optional: true },
+          { name: 'linkedin', type: 'string', required: false, optional: true },
+          { name: 'github', type: 'string', required: false, optional: true },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
+      // Resume Experience schema
+      schemas.resumeExperience = {
+        collection: 'resumeExperience',
+        type: 'content',
+        fields: [
+          { name: 'title', type: 'string', required: true, optional: false },
+          { name: 'company', type: 'string', required: true, optional: false },
+          { name: 'location', type: 'string', required: true, optional: false },
+          { name: 'startDate', type: 'date', required: true, optional: false },
+          { name: 'endDate', type: 'date', required: false, optional: true },
+          { name: 'current', type: 'boolean', required: false, optional: true, defaultValue: false },
+          { name: 'description', type: 'string', required: true, optional: false },
+          { name: 'achievements', type: 'array', arrayType: 'string', required: false, optional: true },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
+      // Resume Education schema
+      schemas.resumeEducation = {
+        collection: 'resumeEducation',
+        type: 'content',
+        fields: [
+          { name: 'degree', type: 'string', required: true, optional: false },
+          { name: 'school', type: 'string', required: true, optional: false },
+          { name: 'location', type: 'string', required: true, optional: false },
+          { name: 'startDate', type: 'date', required: true, optional: false },
+          { name: 'endDate', type: 'date', required: false, optional: true },
+          { name: 'gpa', type: 'string', required: false, optional: true },
+          { name: 'details', type: 'string', required: false, optional: true },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
+      // Resume Certifications schema
+      schemas.resumeCertifications = {
+        collection: 'resumeCertifications',
+        type: 'content',
+        fields: [
+          { name: 'name', type: 'string', required: true, optional: false },
+          { name: 'issuer', type: 'string', required: true, optional: false },
+          { name: 'date', type: 'date', required: true, optional: false },
+          { name: 'expirationDate', type: 'date', required: false, optional: true },
+          { name: 'credentialId', type: 'string', required: false, optional: true },
+          { name: 'url', type: 'string', required: false, optional: true },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
+      // Resume Skills schema
+      schemas.resumeSkills = {
+        collection: 'resumeSkills',
+        type: 'content',
+        fields: [
+          { name: 'category', type: 'string', required: true, optional: false },
+          { name: 'skills', type: 'array', arrayType: 'string', required: true, optional: false },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
+      // Resume Languages schema
+      schemas.resumeLanguages = {
+        collection: 'resumeLanguages',
+        type: 'content',
+        fields: [
+          { name: 'name', type: 'string', required: true, optional: false },
+          { name: 'proficiency', type: 'string', required: true, optional: false },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
+      // Resume Projects schema
+      schemas.resumeProjects = {
+        collection: 'resumeProjects',
+        type: 'content',
+        fields: [
+          { name: 'name', type: 'string', required: true, optional: false },
+          { name: 'description', type: 'string', required: true, optional: false },
+          { name: 'technologies', type: 'array', arrayType: 'string', required: true, optional: false },
+          { name: 'url', type: 'string', required: false, optional: true },
+          { name: 'githubUrl', type: 'string', required: false, optional: true },
+          { name: 'startDate', type: 'date', required: false, optional: true },
+          { name: 'endDate', type: 'date', required: false, optional: true },
+          { name: 'order', type: 'number', required: false, optional: true, defaultValue: 1 }
+        ]
+      };
+
       return schemas;
     } catch (error) {
       console.error('Failed to load content collections:', error);

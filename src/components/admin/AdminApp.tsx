@@ -5,6 +5,8 @@ import { Dashboard } from './Dashboard';
 import { ContentList } from './ContentList';
 import { ContentEditor } from './ContentEditor';
 import { FileManager } from './FileManager';
+import { ResumeManager } from './ResumeManager';
+import { ResumeLayout } from './ResumeLayout';
 import type { SchemaDefinition } from '../../lib/admin/types';
 
 // Global styles for admin interface
@@ -85,7 +87,7 @@ const AdminApp: React.FC<AdminAppProps> = () => {
   const loadSchemas = async () => {
     try {
       setLoading(true);
-      const collections = ['blog', 'projects', 'docs'];
+      const collections = ['blog', 'projects', 'docs', 'resumePersonal', 'resumeExperience', 'resumeEducation', 'resumeSkills', 'resumeCertifications', 'resumeLanguages', 'resumeProjects'];
       const schemaPromises = collections.map(async (collection) => {
         const response = await fetch(`/admin/api/schema/${collection}`);
         if (response.ok) {
@@ -138,18 +140,45 @@ const AdminApp: React.FC<AdminAppProps> = () => {
     );
   }
 
+  // Filter out resume collections for main admin
+  const mainSchemas = Object.fromEntries(
+    Object.entries(schemas).filter(([key]) => !key.startsWith('resume'))
+  );
+
+  // Filter resume collections for resume manager
+  const resumeSchemas = Object.fromEntries(
+    Object.entries(schemas).filter(([key]) => key.startsWith('resume'))
+  );
+
   return (
     <Router basename="/admin">
-      <AdminLayout schemas={schemas}>
-        <Routes>
-          <Route path="/" element={<Dashboard schemas={schemas} />} />
-          <Route path="/content/:collection" element={<ContentList schemas={schemas} />} />
-          <Route path="/content/:collection/new" element={<ContentEditor schemas={schemas} />} />
-          <Route path="/content/:collection/:id" element={<ContentEditor schemas={schemas} />} />
-          <Route path="/files" element={<FileManager />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AdminLayout>
+      <Routes>
+        {/* Resume Manager Routes */}
+        <Route path="/resume/*" element={
+          <ResumeLayout schemas={resumeSchemas}>
+            <Routes>
+              <Route path="/" element={<ResumeManager schemas={resumeSchemas} />} />
+              <Route path="/content/:collection" element={<ContentList schemas={resumeSchemas} />} />
+              <Route path="/content/:collection/new" element={<ContentEditor schemas={resumeSchemas} />} />
+              <Route path="/content/:collection/:id" element={<ContentEditor schemas={resumeSchemas} />} />
+            </Routes>
+          </ResumeLayout>
+        } />
+        
+        {/* Main Admin Routes */}
+        <Route path="/*" element={
+          <AdminLayout schemas={mainSchemas}>
+            <Routes>
+              <Route path="/" element={<Dashboard schemas={mainSchemas} />} />
+              <Route path="/content/:collection" element={<ContentList schemas={mainSchemas} />} />
+              <Route path="/content/:collection/new" element={<ContentEditor schemas={mainSchemas} />} />
+              <Route path="/content/:collection/:id" element={<ContentEditor schemas={mainSchemas} />} />
+              <Route path="/files" element={<FileManager />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AdminLayout>
+        } />
+      </Routes>
     </Router>
   );
 };

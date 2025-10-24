@@ -1,5 +1,5 @@
-import React, { useMemo, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useMemo, useEffect, useState } from 'react';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { FieldDefinition, SchemaDefinition } from '../../lib/admin/types';
@@ -62,9 +62,16 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
             fieldSchema = z.array(z.string());
           } else if (field.arrayType === 'number') {
             fieldSchema = z.array(z.number());
+          } else if (field.arrayType === 'object') {
+            // For arrays of objects, use a more flexible schema
+            fieldSchema = z.array(z.record(z.any()));
           } else {
             fieldSchema = z.array(z.string());
           }
+          break;
+        case 'object':
+          // For nested objects, use a flexible record schema
+          fieldSchema = z.record(z.any());
           break;
         default:
           fieldSchema = z.string();
@@ -98,49 +105,308 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       if (field.type === 'date' && value) {
         if (typeof value === 'string') {
           processed[field.name] = new Date(value);
-        } else if (value instanceof Date) {
-          processed[field.name] = value;
         }
       }
 
-      // Handle default values
-      if (value === undefined && field.defaultValue !== undefined) {
-        processed[field.name] = field.defaultValue;
+      // Ensure arrays exist
+      if (field.type === 'array' && !value) {
+        processed[field.name] = [];
+      }
+
+      // Ensure objects exist
+      if (field.type === 'object' && !value) {
+        processed[field.name] = {};
       }
     });
 
     return processed;
   }, [defaultValues, data, schema.fields]);
 
-  
   const {
     control,
     handleSubmit,
-    formState: { errors },
     watch,
-    setValue
+    formState: { errors, isSubmitting },
+    setValue,
+    getValues
   } = useForm({
     resolver: zodResolver(zodSchema),
-    defaultValues: processedDefaultValues
+    defaultValues: processedDefaultValues,
+    mode: 'onChange'
   });
 
-  // Register the submit function with the parent component
+  // Watch all form values for onChange callback
+  const watchedValues = watch();
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(watchedValues);
+    }
+  }, [watchedValues, onChange]);
+
+  // Register submit function with parent
   useEffect(() => {
     if (registerSubmitRef) {
-      registerSubmitRef(() => handleSubmit(handleFormSubmit)());
+      registerSubmitRef(() => {
+        handleSubmit((data) => {
+          if (onSubmit) {
+            onSubmit(data);
+          }
+        })();
+      });
     }
-  }, [handleSubmit, registerSubmitRef]);
+  }, [registerSubmitRef, handleSubmit, onSubmit]);
+
+  const onFormSubmit = (data: Record<string, any>) => {
+    if (onSubmit) {
+      onSubmit(data);
+    }
+  };
+
+  // Component for rendering nested object fields
+  const NestedObjectField: React.FC<{ field: FieldDefinition; parentPath: string }> = ({ field, parentPath }) => {
+    const fieldPath = parentPath ? `${parentPath}.${field.name}` : field.name;
+    const value = getValues(fieldPath) || {};
+    
+    // Get object keys from current value or provide common resume object keys
+    const getObjectKeys = (fieldName: string, currentValue: any) => {
+      if (currentValue && typeof currentValue === 'object' && Object.keys(currentValue).length > 0) {
+        return Object.keys(currentValue);
+      }
+      
+      // Provide default keys for known resume objects
+      switch (fieldName) {
+        case 'personalInfo':
+          return ['name', 'title', 'email', 'phone', 'location', 'linkedin', 'github', 'website'];
+        case 'skills':
+          return ['technical', 'soft', 'tools'];
+        default:
+          return ['name', 'value'];
+      }
+    };
+
+    const objectKeys = getObjectKeys(field.name, value);
+
+    return (
+      <div className="space-y-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+        <h4 className="font-medium text-gray-900 dark:text-white capitalize">
+          {field.name.replace(/([A-Z])/g, ' $1').trim()}
+        </h4>
+        {objectKeys.map((key) => (
+          <div key={key}>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize">
+              {key.replace(/([A-Z])/g, ' $1').trim()}
+            </label>
+            <Controller
+              name={`${fieldPath}.${key}`}
+              control={control}
+              render={({ field: formField }) => (
+                <input
+                  {...formField}
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  placeholder={`Enter ${key}`}
+                />
+              )}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Component for rendering array of objects
+  const ArrayOfObjectsField: React.FC<{ field: FieldDefinition }> = ({ field }) => {
+    const { fields: arrayFields, append, remove } = useFieldArray({
+      control,
+      name: field.name
+    });
+
+    const getDefaultObjectForField = (fieldName: string) => {
+      switch (fieldName) {
+        case 'experience':
+          return { company: '', position: '', startDate: '', endDate: '', description: '', achievements: [] };
+        case 'education':
+          return { institution: '', degree: '', field: '', graduationDate: '', gpa: '' };
+        case 'certifications':
+          return { name: '', issuer: '', date: '', expiryDate: '', credentialId: '' };
+        case 'languages':
+          return { language: '', proficiency: '' };
+        case 'projects':
+          return { name: '', description: '', technologies: [], url: '' };
+        default:
+          return { name: '', value: '' };
+      }
+    };
+
+    const getFieldsForObject = (fieldName: string) => {
+      switch (fieldName) {
+        case 'experience':
+          return [
+            { key: 'company', label: 'Company', type: 'text' },
+            { key: 'position', label: 'Position', type: 'text' },
+            { key: 'startDate', label: 'Start Date', type: 'date' },
+            { key: 'endDate', label: 'End Date', type: 'date' },
+            { key: 'description', label: 'Description', type: 'textarea' },
+            { key: 'achievements', label: 'Achievements', type: 'array' }
+          ];
+        case 'education':
+          return [
+            { key: 'institution', label: 'Institution', type: 'text' },
+            { key: 'degree', label: 'Degree', type: 'text' },
+            { key: 'field', label: 'Field of Study', type: 'text' },
+            { key: 'graduationDate', label: 'Graduation Date', type: 'date' },
+            { key: 'gpa', label: 'GPA', type: 'text' }
+          ];
+        case 'certifications':
+          return [
+            { key: 'name', label: 'Certification Name', type: 'text' },
+            { key: 'issuer', label: 'Issuer', type: 'text' },
+            { key: 'date', label: 'Date Obtained', type: 'date' },
+            { key: 'expiryDate', label: 'Expiry Date', type: 'date' },
+            { key: 'credentialId', label: 'Credential ID', type: 'text' }
+          ];
+        case 'languages':
+          return [
+            { key: 'language', label: 'Language', type: 'text' },
+            { key: 'proficiency', label: 'Proficiency Level', type: 'text' }
+          ];
+        case 'projects':
+          return [
+            { key: 'name', label: 'Project Name', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea' },
+            { key: 'technologies', label: 'Technologies', type: 'array' },
+            { key: 'url', label: 'Project URL', type: 'text' }
+          ];
+        default:
+          return [
+            { key: 'name', label: 'Name', type: 'text' },
+            { key: 'value', label: 'Value', type: 'text' }
+          ];
+      }
+    };
+
+    const objectFields = getFieldsForObject(field.name);
+
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h4 className="font-medium text-gray-900 dark:text-white capitalize">
+            {field.name.replace(/([A-Z])/g, ' $1').trim()}
+          </h4>
+          <button
+            type="button"
+            onClick={() => append(getDefaultObjectForField(field.name))}
+            className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add {field.name.slice(0, -1)}
+          </button>
+        </div>
+        
+        {arrayFields.map((item, index) => (
+          <div key={item.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+            <div className="flex justify-between items-center">
+              <h5 className="font-medium text-gray-800 dark:text-gray-200">
+                {field.name.charAt(0).toUpperCase() + field.name.slice(1, -1)} {index + 1}
+              </h5>
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="px-2 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                Remove
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {objectFields.map((objField) => (
+                <div key={objField.key} className={objField.type === 'textarea' ? 'md:col-span-2' : ''}>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {objField.label}
+                  </label>
+                  <Controller
+                    name={`${field.name}.${index}.${objField.key}`}
+                    control={control}
+                    render={({ field: formField }) => {
+                      if (objField.type === 'textarea') {
+                        return (
+                          <textarea
+                            {...formField}
+                            rows={3}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            placeholder={`Enter ${objField.label.toLowerCase()}`}
+                          />
+                        );
+                      } else if (objField.type === 'date') {
+                        return (
+                          <input
+                            {...formField}
+                            type="date"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                          />
+                        );
+                      } else if (objField.type === 'array') {
+                        return (
+                          <TagInput
+                            value={formField.value || []}
+                            onChange={formField.onChange}
+                            placeholder={`Add ${objField.label.toLowerCase()}`}
+                          />
+                        );
+                      } else {
+                        return (
+                          <input
+                            {...formField}
+                            type="text"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            placeholder={`Enter ${objField.label.toLowerCase()}`}
+                          />
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        
+        {arrayFields.length === 0 && (
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            No {field.name} added yet. Click "Add {field.name.slice(0, -1)}" to get started.
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderField = (field: FieldDefinition) => {
-    const error = errors[field.name];
     const fieldId = `field-${field.name}`;
+    const baseClasses = "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white";
 
-    const baseClasses = `mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
-      error ? 'border-red-300 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''
-    }`;
-
-    
     switch (field.type) {
+      case 'object':
+        return <NestedObjectField field={field} parentPath="" />;
+
+      case 'array':
+        if (field.arrayType === 'object') {
+          return <ArrayOfObjectsField field={field} />;
+        }
+        // Fall through to existing array handling for simple arrays
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <TagInput
+                value={formField.value || []}
+                onChange={formField.onChange}
+                placeholder={`Add ${field.name}`}
+              />
+            )}
+          />
+        );
+
       case 'string':
         if (field.enumValues) {
           return (
@@ -154,45 +420,12 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                   className={baseClasses}
                 >
                   <option value="">Select {field.name}</option>
-                  {field.enumValues!.map(value => (
+                  {field.enumValues!.map((value) => (
                     <option key={value} value={value}>
                       {value}
                     </option>
                   ))}
                 </select>
-              )}
-            />
-          );
-        }
-        
-        if (field.name.toLowerCase().includes('image') || field.name.toLowerCase().includes('photo')) {
-          return (
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: formField }) => (
-                <div className="space-y-2">
-                  <input
-                    {...formField}
-                    type="text"
-                    id={fieldId}
-                    placeholder="Enter image URL or upload below"
-                    className={baseClasses}
-                  />
-                  <FileUploadButton
-                    onUpload={(url) => setValue(field.name, url)}
-                    accept="image/*"
-                  />
-                  {formField.value && (
-                    <div className="mt-2">
-                      <img
-                        src={formField.value}
-                        alt="Preview"
-                        className="h-20 w-20 object-cover rounded-md border border-gray-300"
-                      />
-                    </div>
-                  )}
-                </div>
               )}
             />
           );
@@ -269,21 +502,6 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 className={baseClasses}
                 value={formField.value ? new Date(formField.value).toISOString().split('T')[0] : ''}
                 onChange={(e) => formField.onChange(e.target.value ? new Date(e.target.value) : '')}
-              />
-            )}
-          />
-        );
-
-      case 'array':
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <TagInput
-                value={formField.value || []}
-                onChange={formField.onChange}
-                placeholder={`Add ${field.name}`}
               />
             )}
           />
