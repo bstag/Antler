@@ -7,7 +7,29 @@ order: 3
 
 # Deployment Guide
 
-MdCms generates static files that can be deployed to any static hosting platform. This guide covers deployment to popular platforms and best practices for production deployments.
+MdCms is a dual-architecture static site generator that operates differently in development and production environments. This guide covers the build process, deployment strategies, and platform-specific configurations.
+
+## Development vs Production Architecture
+
+### Development Mode
+In development, MdCms provides a **full-featured admin interface** alongside your static site:
+
+- **Admin Interface**: Available at `http://localhost:4321/admin`
+- **Content Management**: Visual editors, forms, and file management
+- **API Endpoints**: RESTful API for content and file operations
+- **Real-time Updates**: Hot reloading and live preview
+- **Schema Validation**: Dynamic form generation and validation
+
+### Production Mode
+In production, MdCms generates a **pure static site** with no admin functionality:
+
+- **Static Files Only**: Pre-rendered HTML, CSS, and JavaScript
+- **No Admin Interface**: Admin routes are excluded from the build
+- **No API Endpoints**: Server-side functionality is removed
+- **Optimized Performance**: Minimal JavaScript and fast loading
+- **Security**: No dynamic functionality or admin access
+
+This dual architecture ensures you get the best of both worlds: powerful content management during development and optimal performance in production.
 
 ## Build Process
 
@@ -24,7 +46,32 @@ npm run build
 npm run preview
 ```
 
-The build process creates a `dist/` directory containing all static files ready for deployment.
+### What Happens During Build
+
+The production build process:
+
+1. **Content Processing**: All Markdown files are processed and converted to HTML
+2. **Static Generation**: Pages are pre-rendered as static HTML files
+3. **Asset Optimization**: Images, CSS, and JavaScript are optimized and minified
+4. **Admin Exclusion**: All admin-related code and routes are excluded from the build
+5. **File Output**: Clean, optimized static files are generated in the `dist/` directory
+
+### Build Output Structure
+
+```
+dist/
+├── index.html              # Homepage
+├── blog/                   # Blog posts
+│   ├── index.html         # Blog listing
+│   └── [slug]/            # Individual posts
+├── projects/              # Project pages
+├── docs/                  # Documentation
+├── assets/                # Optimized CSS/JS
+├── images/                # Optimized images
+└── _astro/                # Astro runtime files
+```
+
+**Important**: The `dist/` directory contains **only static files** - no admin interface, no API endpoints, and no server-side functionality.
 
 ## Deployment Platforms
 
@@ -558,9 +605,43 @@ try {
 3. **Validate URLs**: Ensure all internal links work correctly
 4. **Check Assets**: Verify all images and fonts load properly
 
+## Admin Interface Considerations
+
+### Development Workflow
+When working with the admin interface during development:
+
+1. **Content Creation**: Use the admin interface at `http://localhost:4321/admin` to create and edit content
+2. **File Management**: Upload and organize media files through the admin file manager
+3. **Schema Validation**: Leverage real-time validation and form generation
+4. **Preview Changes**: Use the integrated preview functionality
+
+### Pre-Deployment Steps
+Before deploying to production:
+
+1. **Content Review**: Ensure all content is finalized using the admin interface
+2. **Media Optimization**: Verify all uploaded images are optimized
+3. **Schema Compliance**: Check that all content follows the defined schemas
+4. **Link Validation**: Test all internal and external links
+
+### Production Deployment
+Remember that in production:
+
+- **No Admin Access**: The admin interface is completely excluded from the build
+- **Static Content Only**: All content becomes static HTML files
+- **File System Changes**: Content updates require rebuilding and redeploying
+- **Version Control**: All content changes should be committed to version control
+
 ## Deployment Checklist
 
+### Pre-Build Checklist
+- [ ] All content created and reviewed via admin interface
+- [ ] Media files uploaded and optimized
+- [ ] Schema validation passes for all content
+- [ ] Internal links tested and working
+
+### Build and Deploy Checklist
 - [ ] Build passes locally (`npm run build`)
+- [ ] Admin interface excluded from build (verify no `/admin` routes in `dist/`)
 - [ ] All environment variables configured
 - [ ] Custom domain configured (if applicable)
 - [ ] HTTPS enabled and enforced
@@ -570,6 +651,14 @@ try {
 - [ ] SEO meta tags configured
 - [ ] Security headers implemented
 - [ ] Backup and recovery plan in place
+
+### Post-Deploy Verification
+- [ ] Site loads correctly at production URL
+- [ ] All pages render properly
+- [ ] Images and assets load correctly
+- [ ] No admin routes accessible (should return 404)
+- [ ] Contact forms work (if applicable)
+- [ ] Performance metrics meet targets
 
 ## Continuous Integration
 

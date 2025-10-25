@@ -11,7 +11,7 @@ export default defineConfig({
     react()
   ],
 
-  site: 'https://your-domain.com',
+  site: 'https://antler.stagware.com',
   markdown: {
     shikiConfig: {
       theme: 'github-dark-dimmed',
@@ -26,7 +26,7 @@ export default defineConfig({
       fs: {
         // Exclude admin directories from static builds
         allow: ['src'],
-        deny: ['src/pages/admin', 'src/components/admin', 'src/lib/admin']
+        deny: ['src/pages/admin', 'src/components/admin', 'src/lib/admin','src/pages/admin/api']
       }
     }
   }

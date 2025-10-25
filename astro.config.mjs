@@ -4,8 +4,8 @@ import react from '@astrojs/react';
 import node from '@astrojs/node';
 
 export default defineConfig({
-  // Use hybrid mode to support both static and server-rendered routes
-  output: 'hybrid',
+  // we Have moved to astro 5 and are using static output
+  output: 'static',
 
   integrations: [
     tailwind(),

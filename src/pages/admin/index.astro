@@ -1,8 +1,15 @@
 ---
 import { AdminApp } from '../../components/admin/AdminApp';
 
-// Enable server-side rendering for admin routes
+// 1. Tell Astro this page is dynamic and should not be pre-rendered
 export const prerender = false;
+
+// 2. Tell the static builder to generate NO pages for this route
+// This is still important!
+export async function getStaticPaths() {
+  // Always return an empty array for production builds
+  return [];
+}
 ---
 
 <!DOCTYPE html>

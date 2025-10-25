@@ -153,13 +153,16 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
   };
 
   const handleSave = async () => {
-    // If we're on the frontmatter tab, trigger form submission to get latest form data
+    // Always save with current state - both frontmatter and content
+    // If we're on the frontmatter tab, we need to get the latest form data first
     if (activeTab === 'frontmatter' && formSubmitRef.current) {
+      // The form submission will handle saving with the latest frontmatter data
+      // and the current content state
       formSubmitRef.current();
       return;
     }
 
-    // Otherwise, save directly with current state
+    // If we're on the content tab, save directly with current state
     await handleSaveDirect(frontmatter, content);
   };
 
@@ -330,7 +333,10 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
               schema={schema}
               data={frontmatter}
               onChange={handleFrontmatterChange}
-              onSubmit={(data) => handleSaveDirect(data, content)}
+              onSubmit={(data) => {
+                // Always use the current content state when saving from frontmatter tab
+                handleSaveDirect(data, content);
+              }}
               registerSubmitRef={(submitFn) => formSubmitRef.current = submitFn}
               loading={saving}
               submitLabel={isNew ? 'Create Post' : 'Update Post'}

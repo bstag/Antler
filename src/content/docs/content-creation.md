@@ -7,7 +7,38 @@ order: 1
 
 # Content Creation Guide
 
-This guide will walk you through creating different types of content in MdCms. All content is written in Markdown and stored in the `src/content/` directory.
+This guide will walk you through creating different types of content in MdCms. You can create content in two ways:
+
+1. **Admin Interface** (Recommended): Use the web-based editor at `/admin` for guided content creation
+2. **Manual Creation**: Create Markdown files directly in the `src/content/` directory
+
+## Content Creation Methods
+
+### Using the Admin Interface
+
+The admin interface provides a user-friendly way to create and manage content:
+
+1. **Navigate to Admin**: Visit http://localhost:4321/admin during development
+2. **Select Content Type**: Choose from Blog, Projects, Docs, or Resume sections
+3. **Create New Content**: Click the "New" button to open the content editor
+4. **Fill the Form**: Use the schema-aware form with validation and help text
+5. **Preview Content**: See live preview of your Markdown as you type
+6. **Save**: Content is automatically saved as Markdown files
+
+**Benefits of Admin Interface:**
+- ✅ Schema validation prevents errors
+- ✅ Rich markdown editor with preview
+- ✅ File upload integration
+- ✅ Form-based editing for metadata
+- ✅ No need to remember field names or formats
+
+### Manual File Creation
+
+You can also create content manually by adding Markdown files directly to the content directories. This method is useful for:
+- Bulk content import
+- Version control workflows
+- Advanced users who prefer file-based editing
+- Automated content generation
 
 ## Directory Structure
 
