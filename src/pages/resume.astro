@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
+import ConditionalRoute from '../components/ConditionalRoute.astro';
 import { getCollection } from 'astro:content';
 
 const title = 'Resume';
@@ -34,9 +35,10 @@ const certifications = certificationsEntries
 
 ---
 
-<BaseLayout title={title} description={description}>
-  <Header />
-  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+<ConditionalRoute contentTypeId="resume">
+  <BaseLayout title={title} description={description}>
+    <Header />
+    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-16">
@@ -260,5 +262,6 @@ const certifications = certificationsEntries
         </div>
       </div>
     </div>
-  </main>
-</BaseLayout>
+    </main>
+  </BaseLayout>
+</ConditionalRoute>

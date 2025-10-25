@@ -30,5 +30,12 @@ export async function getStaticPaths() {
   <div id="admin-root">
     <AdminApp client:load />
   </div>
+  <script>
+    // Inject base URL for API calls
+    (window as any).__ADMIN_CONFIG__ = {
+      baseUrl: window.location.origin,
+      apiUrl: window.location.origin + '/admin/api'
+    };
+  </script>
 </body>
 </html>

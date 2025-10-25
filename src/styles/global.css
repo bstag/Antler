@@ -96,6 +96,40 @@
   .prose-custom pre {
     @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto;
   }
+
+  /* Navigation styles for React components */
+  .nav-link {
+    @apply text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+  }
+  
+  .nav-link.active {
+    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+  
+  .mobile-nav-link {
+    @apply text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200;
+  }
+  
+  .mobile-nav-link.active {
+    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+
+  /* Admin interface styles */
+  .tab-button {
+    @apply flex items-center px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200;
+  }
+  
+  .tab-button.active {
+    @apply text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400;
+  }
+  
+  .quick-action-btn {
+    @apply flex items-center justify-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200;
+  }
+  
+  .template-card:hover {
+    @apply transform scale-105;
+  }
 }
 
 /* Animation utilities */

@@ -1,0 +1,43 @@
+---
+import { configManager } from '../lib/config/manager';
+
+interface Props {
+  contentTypeId: string;
+  fallbackComponent?: any;
+}
+
+const { contentTypeId, fallbackComponent } = Astro.props;
+
+let isEnabled = true;
+let config = null;
+
+try {
+  config = await configManager.getConfig();
+  const contentType = config.contentTypes.find(ct => ct.id === contentTypeId);
+  isEnabled = contentType ? contentType.enabled : false;
+} catch (error) {
+  console.error('Failed to load configuration for conditional route:', error);
+  // Default to enabled on error to avoid breaking existing functionality
+  isEnabled = true;
+}
+
+// If content type is disabled, return 404 or fallback
+if (!isEnabled) {
+  if (fallbackComponent) {
+    // Render fallback component
+  } else {
+    // Return 404
+    return Astro.redirect('/404', 404);
+  }
+}
+---
+
+<!-- Content type is enabled, render the slot -->
+<slot />
+
+<!-- Optional: Add debug info in development -->
+{import.meta.env.DEV && (
+  <div class="fixed bottom-4 right-4 bg-black/80 text-white text-xs p-2 rounded z-50">
+    Content Type: {contentTypeId} - {isEnabled ? 'Enabled' : 'Disabled'}
+  </div>
+)}

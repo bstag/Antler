@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
+import ConditionalRoute from '../../components/ConditionalRoute.astro';
 
 const allDocs = await getCollection('docs');
 const sortedDocs = allDocs.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
@@ -20,9 +21,10 @@ const title = 'Documentation';
 const description = 'Complete guide to using and customizing Antler.';
 ---
 
-<BaseLayout title={title} description={description}>
-  <Header />
-  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+<ConditionalRoute contentTypeId="docs">
+  <BaseLayout title={title} description={description}>
+    <Header />
+    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-16">
@@ -181,7 +183,8 @@ const description = 'Complete guide to using and customizing Antler.';
       </div>
     </div>
   </main>
-</BaseLayout>
+  </BaseLayout>
+</ConditionalRoute>
 
 <script>
   // Search functionality

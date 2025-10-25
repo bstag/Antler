@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
+import ConditionalRoute from '../../components/ConditionalRoute.astro';
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
@@ -37,9 +38,10 @@ const title = doc.data.title;
 const description = doc.data.description;
 ---
 
-<BaseLayout title={title} description={description}>
-  <Header />
-  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+<ConditionalRoute contentTypeId="docs">
+  <BaseLayout title={title} description={description}>
+    <Header />
+    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
     <div class="container mx-auto px-4 py-8">
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -214,7 +216,8 @@ const description = doc.data.description;
       </div>
     </div>
   </main>
-</BaseLayout>
+  </BaseLayout>
+</ConditionalRoute>
 
 <script>
   // Smooth scrolling for anchor links

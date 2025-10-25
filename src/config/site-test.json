@@ -1,0 +1,80 @@
+{
+  "contentTypes": {
+    "blog": {
+      "enabled": false,
+      "label": "Blog",
+      "description": "Articles and blog posts"
+    },
+    "projects": {
+      "enabled": true,
+      "label": "Projects",
+      "description": "Portfolio projects and work"
+    },
+    "resume": {
+      "enabled": true,
+      "label": "Resume",
+      "description": "Professional resume and CV"
+    },
+    "docs": {
+      "enabled": false,
+      "label": "Documentation",
+      "description": "Technical documentation"
+    },
+    "contact": {
+      "enabled": true,
+      "label": "Contact",
+      "description": "Contact information and form"
+    }
+  },
+  "navigation": {
+    "items": [
+      {
+        "id": "home",
+        "label": "Home",
+        "path": "/",
+        "enabled": true,
+        "order": 1
+      },
+      {
+        "id": "projects",
+        "label": "Projects",
+        "path": "/projects",
+        "enabled": true,
+        "order": 2
+      },
+      {
+        "id": "resume",
+        "label": "Resume",
+        "path": "/resume",
+        "enabled": true,
+        "order": 3
+      },
+      {
+        "id": "blog",
+        "label": "Blog",
+        "path": "/blog",
+        "enabled": false,
+        "order": 4
+      },
+      {
+        "id": "docs",
+        "label": "Documentation",
+        "path": "/docs",
+        "enabled": false,
+        "order": 5
+      },
+      {
+        "id": "contact",
+        "label": "Contact",
+        "path": "/contact",
+        "enabled": true,
+        "order": 6
+      }
+    ]
+  },
+  "siteMode": "portfolio",
+  "metadata": {
+    "lastModified": "2024-01-15T10:30:00Z",
+    "version": "1.0.0"
+  }
+}

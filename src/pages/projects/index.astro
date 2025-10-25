@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
+import ConditionalRoute from '../../components/ConditionalRoute.astro';
 
 const allProjects: CollectionEntry<'projects'>[] = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => 
@@ -15,9 +16,10 @@ const title = 'Projects';
 const description = 'Explore my portfolio of web development projects and technical achievements.';
 ---
 
-<BaseLayout title={title} description={description}>
-  <Header />
-  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+<ConditionalRoute contentTypeId="projects">
+  <BaseLayout title={title} description={description}>
+    <Header />
+    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-12">
@@ -161,8 +163,9 @@ const description = 'Explore my portfolio of web development projects and techni
         </div>
       </div>
     </div>
-  </main>
-</BaseLayout>
+    </main>
+  </BaseLayout>
+</ConditionalRoute>
 
 <script>
   // Technology filtering functionality
