@@ -7,7 +7,7 @@ order: 3
 
 # Configuration Guide
 
-MdCms uses Astro's Content Collections API for content management. This guide explains how to configure and customize your content types, schemas, and validation rules.
+Antler uses Astro's Content Collections API for content management. This guide explains how to configure and customize your content types, schemas, and validation rules.
 
 ## Content Configuration File
 
@@ -41,7 +41,7 @@ export const collections = {
 
 ## Schema Definition with Zod
 
-MdCms uses [Zod](https://zod.dev/) for schema validation, providing powerful type checking and validation.
+Antler uses [Zod](https://zod.dev/) for schema validation, providing powerful type checking and validation.
 
 ### Basic Field Types
 

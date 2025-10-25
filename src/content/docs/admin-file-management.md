@@ -1,13 +1,13 @@
 ---
 title: "Admin File Management"
-description: "Complete guide to file upload, image management, and asset organization in the MdCms admin interface"
+description: "Complete guide to file upload, image management, and asset organization in the Antler admin interface"
 group: "Admin Interface"
 order: 3
 ---
 
 # Admin File Management
 
-The MdCms admin interface includes a comprehensive file management system that handles image uploads, asset organization, and media integration. This guide covers all aspects of managing files through the admin interface.
+The Antler admin interface includes a comprehensive file management system that handles image uploads, asset organization, and media integration. This guide covers all aspects of managing files through the admin interface.
 
 ## File Manager Overview
 

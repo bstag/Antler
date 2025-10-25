@@ -1,13 +1,13 @@
 ---
 title: "Admin Interface Guide"
-description: "Complete guide to using the MdCms admin interface for content management"
+description: "Complete guide to using the Antler admin interface for content management"
 group: "Content Management"
 order: 1
 ---
 
 # Admin Interface Guide
 
-The MdCms admin interface provides a powerful, user-friendly way to manage all your content without directly editing Markdown files. This guide covers all aspects of using the admin interface effectively.
+The Antler admin interface provides a powerful, user-friendly way to manage all your content without directly editing Markdown files. This guide covers all aspects of using the admin interface effectively.
 
 ## Accessing the Admin Interface
 

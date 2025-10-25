@@ -7,7 +7,7 @@ order: 2
 
 # Content Types & Schemas
 
-MdCms uses Astro's Content Collections feature to provide type-safe content management. Each content type has a defined schema that validates your content and provides TypeScript support.
+Antler uses Astro's Content Collections feature to provide type-safe content management. Each content type has a defined schema that validates your content and provides TypeScript support.
 
 ## Content Collections Overview
 

@@ -1,17 +1,17 @@
 ---
 title: "Customization Guide"
-description: "How to customize themes, layouts, and styling in MdCms"
+description: "How to customize themes, layouts, and styling in Antler"
 group: "Advanced"
 order: 2
 ---
 
 # Customization Guide
 
-MdCms is built with customization in mind. This guide covers how to modify themes, layouts, styling, and components to match your brand and requirements.
+Antler is built with customization in mind. This guide covers how to modify themes, layouts, styling, and components to match your brand and requirements.
 
 ## Theme System
 
-MdCms uses a dual-theme system with CSS custom properties and Tailwind CSS classes, supporting both light and dark modes with automatic system detection.
+Antler uses a dual-theme system with CSS custom properties and Tailwind CSS classes, supporting both light and dark modes with automatic system detection.
 
 ### Theme Architecture
 

@@ -1,4 +1,4 @@
-# Product Requirements Document: MdCms - Markdown Content Management System
+# Product Requirements Document: Antler - Markdown Content Management System
 
 ## 1. Product Overview
 A modern, high-performance static site generator built with Astro that transforms Markdown files with YAML frontmatter into complete, pre-rendered websites. The system is designed for developers who want fast, secure, and maintainable websites without database complexity.
@@ -17,7 +17,7 @@ This system leverages Astro's content collections feature for type-safe content 
 | Site Visitor | No registration | Can browse published content, submit forms, interact with dynamic elements |
 
 ### 2.2 Feature Module
-Our MdCms system consists of the following main pages, built with Astro's file-based routing in src/pages/:
+Our Antler system consists of the following main pages, built with Astro's file-based routing in src/pages/:
 
 1. **Landing Page**: hero section, featured posts component, featured projects component, contact form
 2. **Blog List Page**: article grid/list, pagination, tag filtering, search functionality

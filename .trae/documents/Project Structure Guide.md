@@ -1,12 +1,11 @@
-# MdCms Project Structure Guide
+# Antler Project Structure Guide
 
-## Overview
-This document provides a comprehensive guide to the MdCms project structure, emphasizing the proper organization of content collections following Astro's best practices.
+This document provides a comprehensive guide to the Antler project structure, emphasizing the proper organization of content collections following Astro's best practices.
 
 ## Directory Structure
 
 ```text
-MdCms/
+Antler/
 ├── .gitignore
 ├── .trae/                      # Trae AI documentation
 │   └── documents/

@@ -1,19 +1,19 @@
 ---
 title: Getting Started
 description: >-
-  Introduction to MdCms - A modern flat-file content management system built
+  Introduction to Antler - A modern flat-file content management system built
   with Astro
 group: Getting Started
 order: 1
 ---
 
-# Getting Started with MdCms
+# Getting Started with Antler
 
-MdCms is a modern, dual-purpose content management system that combines the power of static site generation with a dynamic admin interface for content management.
+Antler is a modern, dual-purpose content management system that combines the power of static site generation with a dynamic admin interface for content management.
 
-## What is MdCms?
+## What is Antler?
 
-MdCms provides two distinct but integrated experiences:
+Antler provides two distinct but integrated experiences:
 
 1. **Static Site Generator**: Builds fast, secure static websites from Markdown content
 2. **Admin Interface**: A dynamic web-based content management system for creating and editing content
@@ -70,7 +70,7 @@ graph TD
 1. **Clone the repository**:
    ```bash
    git clone <your-repo-url>
-   cd MdCms
+   cd Antler
    ```
 
 2. **Install dependencies**:

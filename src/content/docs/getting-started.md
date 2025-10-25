@@ -1,20 +1,20 @@
 ---
 title: Getting Started
 description: >-
-  Introduction to MdCms - A modern flat-file content management system built
+  Introduction to Antler - A modern flat-file content management system built
   with Astro, featuring both static site generation and an admin interface
 group: Getting Started
 order: 1
 ---
 
-# Getting Started with MdCms
+# Getting Started with Antler
 
-MdCms is a modern, dual-purpose content management system that combines the best of both worlds:
+Antler is a modern, dual-purpose content management system that combines the best of both worlds:
 
 1. **Static Site Generator**: Creates fast, secure, deployable static websites
 2. **Admin Interface**: Provides a user-friendly content management interface during development
 
-## What Makes MdCms Unique
+## What Makes Antler Unique
 
 ### Dual Architecture
 - **Development Mode**: Full-featured admin interface at `/admin` for content management
@@ -93,7 +93,7 @@ npm run preview
 
 ## Content Types
 
-MdCms comes with several pre-configured content types:
+Antler comes with several pre-configured content types:
 
 - **Blog Posts**: Articles with tags, featured images, and publication dates
 - **Projects**: Portfolio items with technologies, links, and descriptions

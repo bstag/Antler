@@ -1,17 +1,17 @@
 ---
 title: Installation Guide
-description: Step-by-step instructions for setting up MdCms
+description: Step-by-step instructions for setting up Antler
 group: Getting Started
 order: 0
 ---
 
 # Installation Guide
 
-Welcome to MdCms! This guide will walk you through setting up your development environment and getting your static site generator running with its powerful admin interface.
+Welcome to Antler! This guide will walk you through setting up your development environment and getting your static site generator running with its powerful admin interface.
 
 ## System Requirements
 
-Before installing MdCms, ensure your system meets these requirements:
+Before installing Antler, ensure your system meets these requirements:
 
 ### Required Software
 - **Node.js**: Version 18.0.0 or higher (LTS recommended)
@@ -36,10 +36,10 @@ This is the recommended method for developers who want the latest features and p
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/mdcms.git
+git clone https://github.com/your-username/antler.git
 
 # Navigate to the project directory
-cd mdcms
+cd antler
 
 # Install dependencies
 npm install
@@ -49,7 +49,7 @@ npm install
 
 If you prefer not to use Git or want a specific release:
 
-1. Visit the [GitHub repository](https://github.com/your-username/mdcms)
+1. Visit the [GitHub repository](https://github.com/your-username/antler)
 2. Click the green "Code" button
 3. Select "Download ZIP"
 4. Extract the archive to your desired location
@@ -58,9 +58,9 @@ If you prefer not to use Git or want a specific release:
 
 ### Method 3: Use as Template
 
-Create a new repository based on MdCms:
+Create a new repository based on Antler:
 
-1. Visit the [GitHub repository](https://github.com/your-username/mdcms)
+1. Visit the [GitHub repository](https://github.com/your-username/antler)
 2. Click "Use this template"
 3. Create your new repository
 4. Clone your new repository locally
@@ -113,7 +113,7 @@ SITE_URL=http://localhost:4321
 
 ### 2. Content Directory Setup
 
-MdCms comes with example content. You can start with these or replace them:
+Antler comes with example content. You can start with these or replace them:
 
 ```bash
 # Content is already organized in src/content/
@@ -126,7 +126,7 @@ src/content/
 
 ## Development Server Startup
 
-MdCms provides a dual-interface development experience:
+Antler provides a dual-interface development experience:
 
 ### Start the Development Server
 
@@ -148,7 +148,7 @@ You should see output similar to:
 
 ### Accessing Your Site
 
-MdCms provides two interfaces during development:
+Antler provides two interfaces during development:
 
 #### 1. Public Site Interface
 - **URL**: http://localhost:4321/
@@ -313,7 +313,7 @@ npm install --save-dev @types/node
 
 ## Next Steps
 
-Now that MdCms is installed and running, here's what to do next:
+Now that Antler is installed and running, here's what to do next:
 
 ### 1. Explore the Admin Interface
 - Visit http://localhost:4321/admin
@@ -389,7 +389,7 @@ Changes are reflected immediately in both the public site and admin interface.
 
 ---
 
-**Congratulations!** 🎉 You now have MdCms installed and running. The powerful combination of static site generation and an intuitive admin interface gives you the best of both worlds: developer-friendly workflows and content creator-friendly tools.
+**Congratulations!** 🎉 You now have Antler installed and running. The powerful combination of static site generation and an intuitive admin interface gives you the best of both worlds: developer-friendly workflows and content creator-friendly tools.
 
 Ready to start creating? Head over to http://localhost:4321/admin and build something amazing!
 

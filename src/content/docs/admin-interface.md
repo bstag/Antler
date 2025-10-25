@@ -1,13 +1,13 @@
 ---
 title: "Admin Interface Overview"
-description: "Complete guide to the MdCms admin interface - navigation, features, and workflow"
+description: "Complete guide to the Antler admin interface - navigation, features, and workflow"
 group: "Admin Interface"
 order: 1
 ---
 
 # Admin Interface Overview
 
-The MdCms admin interface is a powerful, user-friendly content management system that runs alongside your static site during development. It provides a complete solution for creating, editing, and managing all your content without needing to work directly with Markdown files.
+The Antler admin interface is a powerful, user-friendly content management system that runs alongside your static site during development. It provides a complete solution for creating, editing, and managing all your content without needing to work directly with Markdown files.
 
 ## Accessing the Admin Interface
 

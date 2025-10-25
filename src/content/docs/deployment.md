@@ -1,18 +1,18 @@
 ---
 title: "Deployment Guide"
-description: "How to deploy your MdCms site to various hosting platforms"
+description: "How to deploy your Antler site to various hosting platforms"
 group: "Advanced"
 order: 3
 ---
 
 # Deployment Guide
 
-MdCms is a dual-architecture static site generator that operates differently in development and production environments. This guide covers the build process, deployment strategies, and platform-specific configurations.
+Antler is a dual-architecture static site generator that operates differently in development and production environments. This guide covers the build process, deployment strategies, and platform-specific configurations.
 
 ## Development vs Production Architecture
 
 ### Development Mode
-In development, MdCms provides a **full-featured admin interface** alongside your static site:
+In development, Antler provides a **full-featured admin interface** alongside your static site:
 
 - **Admin Interface**: Available at `http://localhost:4321/admin`
 - **Content Management**: Visual editors, forms, and file management
@@ -21,7 +21,7 @@ In development, MdCms provides a **full-featured admin interface** alongside you
 - **Schema Validation**: Dynamic form generation and validation
 
 ### Production Mode
-In production, MdCms generates a **pure static site** with no admin functionality:
+In production, Antler generates a **pure static site** with no admin functionality:
 
 - **Static Files Only**: Pre-rendered HTML, CSS, and JavaScript
 - **No Admin Interface**: Admin routes are excluded from the build

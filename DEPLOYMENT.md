@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying your MdCms site to GitHub Pages and Cloudflare Pages with serverless contact form functionality.
+This guide covers deploying your Antler site to GitHub Pages and Cloudflare Pages with serverless contact form functionality.
 
 ## Overview
 

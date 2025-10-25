@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MdCms is a modern static site generator (SSG) built with Astro, designed to transform Markdown files with YAML frontmatter into complete, pre-rendered websites. The project uses a flat-file architecture with no database dependencies, making it fast, secure, and maintainable.
+Antler is a modern static site generator (SSG) built with Astro, designed to transform Markdown files with YAML frontmatter into complete, pre-rendered websites. The project uses a flat-file architecture with no database dependencies, making it fast, secure, and maintainable.
 
 ## Development Commands
 

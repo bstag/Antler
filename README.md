@@ -1,4 +1,4 @@
-# MdCms - Markdown Content Management System
+# Antler - Markdown Content Management System
 
 A modern, high-performance static site generator built with Astro that transforms Markdown files with YAML frontmatter into complete, pre-rendered websites. Perfect for developers who want fast, secure, and maintainable websites without database complexity.
 
@@ -14,7 +14,7 @@ A modern, high-performance static site generator built with Astro that transform
 
 ## 🚀 Project Structure
 
-Inside of your MdCms project, you'll see the following folders and files:
+Inside of your Antler project, you'll see the following folders and files:
 
 ```text
 /
@@ -79,7 +79,7 @@ tags: ["astro", "markdown"]
 1. **Clone and Install**
    ```bash
    git clone <repository-url>
-   cd MdCms
+   cd Antler
    npm install
    ```
 

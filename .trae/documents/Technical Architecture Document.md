@@ -275,7 +275,7 @@ GRANT ALL PRIVILEGES ON content_metadata TO authenticated;
 ## 7. File Structure
 
 ```
-MdCms/
+Antler/
 ├── src/
 │   ├── components/
 │   │   ├── layout/

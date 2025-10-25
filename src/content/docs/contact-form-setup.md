@@ -7,11 +7,11 @@ order: 5
 
 # Contact Form Setup
 
-Learn how to configure and deploy the serverless contact form functionality in MdCms. The contact form supports both serverless deployments (Cloudflare Pages) and static deployments (GitHub Pages) with third-party form services.
+description: "Learn how to configure and deploy the serverless contact form functionality in Antler. The contact form supports both serverless deployments (Cloudflare Pages) and static deployments (GitHub Pages) with third-party form services."
 
 ## How It Works
 
-The MdCms contact form system is designed to work across different deployment platforms:
+The Antler contact form system is designed to work across different deployment platforms:
 
 ### Serverless Deployment (Cloudflare Pages - Recommended)
 - Uses a Cloudflare Pages Function (`functions/contact.js`) to handle form submissions

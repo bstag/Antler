@@ -6,7 +6,7 @@ A development-only visual content management interface that automatically genera
 
 The Schema-Aware Content Editor solves the biggest pain point of flat-file static site generators: remembering exact YAML frontmatter keys and formats. It provides content creators with a safe, intuitive interface while maintaining the full power and flexibility of the file-based system.
 
-This feature positions MdCms as the most developer-friendly static site generator with enterprise-level content management capabilities, bridging the gap between technical flexibility and user experience.
+This feature positions Antler as the most developer-friendly static site generator with enterprise-level content management capabilities, bridging the gap between technical flexibility and user experience.
 
 ## 2. Core Features
 
