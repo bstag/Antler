@@ -16,7 +16,8 @@ export default defineConfig({
     mode: 'standalone',
   }),
 
-  site: 'https://bstag.github.io/Antler',
+  site: 'https://bstag.github.io',
+  base: '/Antler',
   markdown: {
     shikiConfig: {
       theme: 'github-dark-dimmed',

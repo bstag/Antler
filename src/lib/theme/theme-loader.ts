@@ -9,6 +9,14 @@ const THEME_STORAGE_KEY = 'antler-selected-theme';
 const DARK_MODE_KEY = 'theme'; // Existing dark mode key
 
 /**
+ * Get the base URL from meta tag
+ */
+function getBaseUrl(): string {
+  const meta = document.querySelector('meta[name="base-url"]');
+  return meta?.getAttribute('content') || '/';
+}
+
+/**
  * Load a theme by swapping the CSS file
  */
 export function loadTheme(themeName: string): void {
@@ -17,9 +25,10 @@ export function loadTheme(themeName: string): void {
     themeName = 'blue';
   }
 
+  const baseUrl = getBaseUrl();
   const themeLink = document.getElementById('theme-stylesheet') as HTMLLinkElement;
   if (themeLink) {
-    themeLink.href = `/styles/themes/theme-${themeName}.css`;
+    themeLink.href = `${baseUrl}/styles/themes/theme-${themeName}.css`;
   } else {
     console.error('Theme stylesheet link not found in DOM');
   }
