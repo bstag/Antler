@@ -11,111 +11,56 @@ Antler is built with customization in mind. This guide covers how to modify them
 
 ## Theme System
 
-Antler uses a dual-theme system with CSS custom properties and Tailwind CSS classes, supporting both light and dark modes with automatic system detection.
+Antler features a comprehensive theme system with 16 built-in color themes, supporting both light and dark modes. The system works seamlessly across both the static production site and the admin interface.
 
-### Theme Architecture
+> **📖 Complete Theme Documentation**: For detailed information about the theme system, including all 16 available themes, user customization, admin integration, and developer guides, see the [Theme System Documentation](./theme-system).
 
-The theme system consists of:
+### Quick Overview
 
-1. **CSS Custom Properties** (`src/styles/global.css`)
-2. **Tailwind Configuration** (`tailwind.config.mjs`)
-3. **Theme Toggle Component** (`src/components/ThemeToggle.tsx`)
-4. **Theme Detection Logic**
+- **16 Color Themes**: Amber, Blue, Cyan, Emerald, Gray, Green, Indigo, Lime, Orange, Pink, Purple, Red, Rose, Sky, Teal, and Yellow
+- **Universal Coverage**: Consistent theming across static site and admin interface
+- **User Customization**: Theme selection available at `/settings`
+- **CSS Variables**: Theme-aware custom properties for consistent styling
+- **FOUC Prevention**: Flash of Unstyled Content prevention built-in
 
-### CSS Custom Properties
+### Basic Theme Usage
 
-The base theme is defined using CSS custom properties in `src/styles/global.css`:
+Themes use CSS custom properties that automatically adapt to the selected color theme:
 
 ```css
-:root {
-  /* Light theme colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #1d4ed8;
-  --color-secondary: #64748b;
-  --color-accent: #f59e0b;
-  
-  /* Background colors */
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8fafc;
-  --color-bg-tertiary: #f1f5f9;
-  
-  /* Text colors */
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #64748b;
-  
-  /* Border colors */
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
+/* Theme-aware styling */
+.my-component {
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
 }
 
-[data-theme="dark"] {
-  /* Dark theme colors */
-  --color-primary: #60a5fa;
-  --color-primary-dark: #3b82f6;
-  --color-secondary: #94a3b8;
-  --color-accent: #fbbf24;
-  
-  /* Background colors */
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  
-  /* Text colors */
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
-  
-  /* Border colors */
-  --color-border: #334155;
-  --color-border-light: #475569;
+.my-component:hover {
+  background-color: var(--theme-surface-hover);
 }
 ```
 
-### Customizing Colors
+### Quick Theme Customization
 
-To customize your theme colors:
-
-1. **Update CSS Custom Properties**:
-   ```css
-   :root {
-     --color-primary: #your-brand-color;
-     --color-accent: #your-accent-color;
-     /* Add more custom properties */
-   }
-   ```
-
-2. **Update Tailwind Configuration**:
-   ```javascript
-   // tailwind.config.mjs
-   export default {
-     theme: {
-       extend: {
-         colors: {
-           primary: {
-             50: '#eff6ff',
-             500: '#3b82f6',
-             900: '#1e3a8a',
-           },
-           brand: {
-             light: '#your-light-color',
-             DEFAULT: '#your-brand-color',
-             dark: '#your-dark-color',
-           }
-         }
+1. **Set Default Theme** in `site.config.json`:
+   ```json
+   {
+     "customization": {
+       "theme": {
+         "default": "blue"
        }
      }
    }
    ```
 
-3. **Use in Components**:
+2. **Use Theme Variables** in components:
    ```astro
-   <!-- Using CSS custom properties -->
-   <div style="background-color: var(--color-primary)">
-   
-   <!-- Using Tailwind classes -->
-   <div class="bg-primary-500 text-brand">
+   <div style="background-color: var(--theme-primary)">
+     Themed content
+   </div>
    ```
+
+3. **Create Custom Themes** by adding new theme stylesheets to `src/styles/themes/`
 
 ## Layout Customization
 

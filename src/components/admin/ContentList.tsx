@@ -169,7 +169,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         </div>
         <Link
           to={`${getCollectionPath(collection)}/new`}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="btn-primary inline-flex items-center"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -187,14 +187,14 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
               placeholder={`Search ${collection}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+              className="form-input"
             />
           </div>
           <div className="flex gap-2">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="form-input"
             >
               <option value="updatedAt">Last Modified</option>
               <option value="createdAt">Created Date</option>
@@ -204,14 +204,14 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-              className="rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="form-input"
             >
               <option value="desc">Newest First</option>
               <option value="asc">Oldest First</option>
             </select>
             <button
               type="submit"
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="btn-secondary"
             >
               Search
             </button>
@@ -239,7 +239,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           ))}
         </div>
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+        <div className="alert-error">
           <div className="flex">
             <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
@@ -269,7 +269,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           </p>
           <Link
             to={`${getCollectionPath(collection)}/new`}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+            className="btn-primary inline-flex items-center"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -286,7 +286,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     <Link
                       to={`${getCollectionPath(collection)}/${item.id}`}
-                      className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      className="text-primary hover:opacity-80 transition-opacity"
                     >
                       {item.title}
                     </Link>
@@ -327,7 +327,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
                   {getItemTags(item).slice(0, 5).map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                      className="badge badge-primary"
                     >
                       {tag}
                     </span>

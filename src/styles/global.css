@@ -419,17 +419,188 @@
   .tab-button {
     @apply flex items-center px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200;
   }
-  
+
   .tab-button.active {
-    @apply text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
   }
-  
+
   .quick-action-btn {
     @apply flex items-center justify-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200;
   }
-  
+
   .template-card:hover {
     @apply transform scale-105;
+  }
+
+  /* Admin dashboard styles */
+  .admin-welcome-banner {
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-dark));
+  }
+
+  .admin-welcome-text {
+    color: var(--color-primary-lighter);
+  }
+
+  .admin-resume-card {
+    background: linear-gradient(to bottom right, var(--color-primary), var(--color-primary-dark));
+  }
+
+  .admin-card-text {
+    color: var(--color-primary-lighter);
+  }
+
+  .admin-card-icon {
+    color: var(--color-primary-light);
+  }
+
+  .admin-link-hover {
+    @apply group-hover:text-primary;
+  }
+
+  .admin-link-icon-hover {
+    @apply group-hover:text-primary;
+  }
+
+  .admin-icon-box {
+    background-color: var(--color-primary-lighter);
+  }
+
+  :global(.dark) .admin-icon-box {
+    background-color: var(--color-primary-darker);
+    opacity: 0.3;
+  }
+
+  .admin-icon-svg {
+    color: var(--color-primary-dark);
+  }
+
+  :global(.dark) .admin-icon-svg {
+    color: var(--color-primary-light);
+  }
+
+  .admin-nav-active {
+    background-color: var(--color-primary-lighter);
+    color: var(--color-primary-dark);
+    border-right: 2px solid var(--color-primary);
+  }
+
+  .dark .admin-nav-active {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light) !important;
+    border-right-color: var(--color-primary);
+    opacity: 0.8;
+  }
+
+  /* Form Components - Additional Styles */
+  .form-checkbox {
+    @apply h-4 w-4 border-gray-300 rounded;
+    color: var(--color-primary);
+  }
+
+  .form-checkbox:focus {
+    --tw-ring-color: var(--color-primary);
+  }
+
+  /* Tag Input Component */
+  .tag-input-wrapper {
+    background-color: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    @apply rounded-md p-2 min-h-[42px];
+  }
+
+  .tag-input-wrapper:focus-within {
+    border-color: var(--color-border-focus);
+    --tw-ring-color: var(--color-border-focus);
+    @apply ring-1;
+  }
+
+  .tag-input-tag {
+    background-color: var(--color-primary-lighter);
+    color: var(--color-primary-dark);
+    @apply inline-flex items-center px-2 py-1 rounded-md text-xs font-medium;
+  }
+
+  :global(.dark) .tag-input-tag {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light);
+    opacity: 0.8;
+  }
+
+  .tag-input-remove {
+    color: var(--color-primary);
+    @apply ml-1 transition-colors;
+  }
+
+  .tag-input-remove:hover {
+    color: var(--color-primary-dark);
+  }
+
+  :global(.dark) .tag-input-remove:hover {
+    color: var(--color-primary-light);
+  }
+
+  /* Keyboard Shortcuts Help */
+  .keyboard-shortcuts-box {
+    background-color: var(--color-primary-lighter);
+    color: var(--color-primary-dark);
+    @apply rounded-lg p-4;
+  }
+
+  :global(.dark) .keyboard-shortcuts-box {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light);
+    opacity: 0.8;
+  }
+
+  .keyboard-shortcut-key {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-darker);
+    @apply px-1 py-0.5 rounded text-xs;
+  }
+
+  :global(.dark) .keyboard-shortcut-key {
+    background-color: var(--color-primary-dark);
+    color: var(--color-primary-lighter);
+  }
+
+  /* Toggle Switch Components */
+  .toggle-switch {
+    @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none;
+    background-color: var(--color-surface-hover);
+  }
+
+  .toggle-switch:focus {
+    --tw-ring-color: var(--color-border-focus);
+    @apply ring-2 ring-offset-2;
+  }
+
+  .toggle-switch.active {
+    background-color: var(--color-primary);
+  }
+
+  .toggle-switch-sm {
+    @apply h-5 w-9;
+  }
+
+  /* Theme Card Components */
+  .theme-card {
+    border-color: var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .theme-card:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-card-active {
+    border-color: var(--color-primary) !important;
+    background-color: var(--color-primary-lighter);
+  }
+
+  .dark .theme-card-active {
+    background-color: var(--color-primary-darker);
+    opacity: 0.9;
   }
 }
 

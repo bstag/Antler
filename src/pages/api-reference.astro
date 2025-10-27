@@ -5,132 +5,575 @@ import Header from '../components/Header.astro';
 const title = 'API Reference';
 const description = 'Complete API documentation for Antler with interactive examples.';
 
-// Sample API endpoints - in a real application, this could come from OpenAPI spec
+// Real API endpoints from our Antler CMS implementation
 const apiSections = [
   {
-    title: 'Content Collections',
-    description: 'APIs for managing and retrieving content collections',
+    title: 'Site Configuration',
+    description: 'APIs for managing site configuration and templates',
     endpoints: [
       {
         method: 'GET',
-        path: '/api/collections',
-        description: 'Get all available content collections',
+        path: '/api/config/site',
+        description: 'Get current site configuration',
         parameters: [],
         response: {
           type: 'object',
           properties: {
-            collections: {
-              type: 'array',
-              items: {
-                type: 'string'
-              }
-            }
+            site: { type: 'object' },
+            navigation: { type: 'object' },
+            customization: { type: 'object' },
+            lastModified: { type: 'string' }
           }
         },
         example: {
-          collections: ['blog', 'projects', 'docs']
+          site: {
+            title: 'My Antler Site',
+            description: 'A modern static site',
+            url: 'https://example.com'
+          },
+          navigation: {
+            main: [
+              { label: 'Home', href: '/' },
+              { label: 'Blog', href: '/blog' }
+            ]
+          },
+          customization: {
+            theme: {
+              default: 'blue',
+              allowUserOverride: true
+            }
+          }
         }
       },
       {
-        method: 'GET',
-        path: '/api/collections/{collection}',
-        description: 'Get all entries from a specific collection',
-        parameters: [
-          { name: 'collection', type: 'string', required: true, description: 'Collection name' },
-          { name: 'limit', type: 'number', required: false, description: 'Number of entries to return' },
-          { name: 'offset', type: 'number', required: false, description: 'Number of entries to skip' }
-        ],
-        response: {
-          type: 'object',
-          properties: {
-            data: { type: 'array' },
-            total: { type: 'number' },
-            limit: { type: 'number' },
-            offset: { type: 'number' }
-          }
-        },
-        example: {
-          data: [
-            {
-              slug: 'getting-started-with-ssg',
-              title: 'Getting Started with SSG',
-              publishedAt: '2024-01-15'
-            }
-          ],
-          total: 1,
-          limit: 10,
-          offset: 0
-        }
-      }
-    ]
-  },
-  {
-    title: 'Search',
-    description: 'Search functionality across all content',
-    endpoints: [
-      {
-        method: 'GET',
-        path: '/api/search',
-        description: 'Search across all content collections',
-        parameters: [
-          { name: 'q', type: 'string', required: true, description: 'Search query' },
-          { name: 'collections', type: 'string', required: false, description: 'Comma-separated list of collections to search' },
-          { name: 'limit', type: 'number', required: false, description: 'Number of results to return' }
-        ],
-        response: {
-          type: 'object',
-          properties: {
-            results: { type: 'array' },
-            total: { type: 'number' },
-            query: { type: 'string' }
-          }
-        },
-        example: {
-          results: [
-            {
-              collection: 'blog',
-              slug: 'getting-started-with-ssg',
-              title: 'Getting Started with SSG',
-              excerpt: 'Learn how to build fast static sites...',
-              score: 0.95
-            }
-          ],
-          total: 1,
-          query: 'static site generator'
-        }
-      }
-    ]
-  },
-  {
-    title: 'Contact',
-    description: 'Contact form submission endpoints',
-    endpoints: [
-      {
         method: 'POST',
-        path: '/api/contact',
-        description: 'Submit a contact form',
+        path: '/api/config/site',
+        description: 'Update complete site configuration',
         parameters: [],
         requestBody: {
           type: 'object',
           properties: {
-            name: { type: 'string', required: true },
-            email: { type: 'string', required: true },
-            subject: { type: 'string', required: false },
-            message: { type: 'string', required: true }
+            site: { type: 'object', required: true },
+            navigation: { type: 'object', required: false },
+            customization: { type: 'object', required: false }
           }
         },
         response: {
           type: 'object',
           properties: {
             success: { type: 'boolean' },
-            message: { type: 'string' },
-            id: { type: 'string' }
+            config: { type: 'object' }
           }
         },
         example: {
           success: true,
-          message: 'Message sent successfully',
-          id: 'msg_123456789'
+          config: {
+            site: { title: 'Updated Site Title' }
+          }
+        }
+      },
+      {
+        method: 'PATCH',
+        path: '/api/config/site',
+        description: 'Partially update site configuration',
+        parameters: [],
+        requestBody: {
+          type: 'object',
+          properties: {
+            site: { type: 'object', required: false },
+            navigation: { type: 'object', required: false },
+            customization: { type: 'object', required: false }
+          }
+        },
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            config: { type: 'object' }
+          }
+        },
+        example: {
+          success: true,
+          config: {
+            site: { title: 'Partially Updated Title' }
+          }
+        }
+      },
+      {
+        method: 'GET',
+        path: '/api/config/templates',
+        description: 'Get available site templates',
+        parameters: [],
+        response: {
+          type: 'object',
+          properties: {
+            templates: { type: 'object' }
+          }
+        },
+        example: {
+          templates: {
+            blog: {
+              name: 'Blog Template',
+              description: 'A template for blogging sites'
+            },
+            portfolio: {
+              name: 'Portfolio Template',
+              description: 'A template for portfolio sites'
+            }
+          }
+        }
+      },
+      {
+        method: 'POST',
+        path: '/api/config/templates',
+        description: 'Apply a site template',
+        parameters: [],
+        requestBody: {
+          type: 'object',
+          properties: {
+            templateId: { type: 'string', required: true }
+          }
+        },
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            config: { type: 'object' }
+          }
+        },
+        example: {
+          success: true,
+          config: {
+            site: { title: 'Blog Site' }
+          }
+        }
+      }
+    ]
+  },
+  {
+    title: 'Theme Management',
+    description: 'APIs for managing site themes and user preferences',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/api/theme/current',
+        description: 'Get current theme configuration and user preferences',
+        parameters: [],
+        response: {
+          type: 'object',
+          properties: {
+            siteDefault: { type: 'string' },
+            userPreference: { type: 'string' },
+            active: { type: 'string' },
+            allowUserOverride: { type: 'boolean' },
+            availableThemes: { type: 'array' }
+          }
+        },
+        example: {
+          siteDefault: 'blue',
+          userPreference: null,
+          active: 'blue',
+          allowUserOverride: true,
+          availableThemes: ['blue', 'indigo', 'purple', 'pink']
+        }
+      },
+      {
+        method: 'GET',
+        path: '/api/theme/metadata',
+        description: 'Get metadata for all available themes',
+        parameters: [],
+        response: {
+          type: 'object',
+          properties: {
+            themes: { type: 'array' },
+            count: { type: 'number' }
+          }
+        },
+        example: {
+          themes: [
+            {
+              id: 'blue',
+              name: 'Ocean Blue',
+              description: 'A calming blue theme',
+              colors: {
+                primary: '#3b82f6',
+                secondary: '#1e40af'
+              }
+            }
+          ],
+          count: 16
+        }
+      },
+      {
+        method: 'POST',
+        path: '/api/theme/set-default',
+        description: 'Set the site default theme (Admin only)',
+        parameters: [],
+        requestBody: {
+          type: 'object',
+          properties: {
+            theme: { type: 'string', required: true }
+          }
+        },
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            theme: { type: 'string' },
+            message: { type: 'string' }
+          }
+        },
+        example: {
+          success: true,
+          theme: 'purple',
+          message: 'Site default theme updated to purple'
+        }
+      }
+    ]
+  },
+  {
+    title: 'Content Management (Admin)',
+    description: 'Admin APIs for managing content collections',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/admin/api/content/{collection}',
+        description: 'Get content from a collection with pagination and search',
+        parameters: [
+          { name: 'collection', type: 'string', required: true, description: 'Collection name (blog, projects, docs, etc.)' },
+          { name: 'page', type: 'number', required: false, description: 'Page number (default: 1)' },
+          { name: 'limit', type: 'number', required: false, description: 'Items per page (default: 20)' },
+          { name: 'search', type: 'string', required: false, description: 'Search term for title/description' }
+        ],
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                items: { type: 'array' },
+                total: { type: 'number' },
+                page: { type: 'number' },
+                limit: { type: 'number' },
+                hasMore: { type: 'boolean' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            items: [
+              {
+                id: 'getting-started',
+                collection: 'blog',
+                title: 'Getting Started with Antler',
+                filePath: 'src/content/blog/getting-started.md',
+                frontmatter: {
+                  title: 'Getting Started with Antler',
+                  description: 'Learn how to use Antler CMS',
+                  publicationDate: '2024-01-15'
+                },
+                createdAt: '2024-01-15T00:00:00.000Z'
+              }
+            ],
+            total: 1,
+            page: 1,
+            limit: 20,
+            hasMore: false
+          }
+        }
+      },
+      {
+        method: 'GET',
+        path: '/admin/api/content/{collection}/{id}',
+        description: 'Get a specific content item with full content',
+        parameters: [
+          { name: 'collection', type: 'string', required: true, description: 'Collection name' },
+          { name: 'id', type: 'string', required: true, description: 'Content item ID/slug' }
+        ],
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' },
+                collection: { type: 'string' },
+                title: { type: 'string' },
+                filePath: { type: 'string' },
+                frontmatter: { type: 'object' },
+                content: { type: 'string' },
+                createdAt: { type: 'string' },
+                updatedAt: { type: 'string' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            id: 'getting-started',
+            collection: 'blog',
+            title: 'Getting Started with Antler',
+            filePath: 'src/content/blog/getting-started.md',
+            frontmatter: {
+              title: 'Getting Started with Antler',
+              description: 'Learn how to use Antler CMS'
+            },
+            content: '# Getting Started\n\nWelcome to Antler CMS...',
+            createdAt: '2024-01-15T00:00:00.000Z',
+            updatedAt: '2024-01-15T00:00:00.000Z'
+          }
+        }
+      },
+      {
+        method: 'POST',
+        path: '/admin/api/content/{collection}',
+        description: 'Create new content in a collection',
+        parameters: [
+          { name: 'collection', type: 'string', required: true, description: 'Collection name' }
+        ],
+        requestBody: {
+          type: 'object',
+          properties: {
+            frontmatter: { type: 'object', required: true },
+            content: { type: 'string', required: false },
+            filename: { type: 'string', required: false }
+          }
+        },
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' },
+                filePath: { type: 'string' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            id: 'new-blog-post',
+            filePath: 'src/content/blog/new-blog-post.md'
+          }
+        }
+      },
+      {
+        method: 'PUT',
+        path: '/admin/api/content/{collection}?id={id}',
+        description: 'Update existing content',
+        parameters: [
+          { name: 'collection', type: 'string', required: true, description: 'Collection name' },
+          { name: 'id', type: 'string', required: true, description: 'Content item ID (query parameter)' }
+        ],
+        requestBody: {
+          type: 'object',
+          properties: {
+            frontmatter: { type: 'object', required: true },
+            content: { type: 'string', required: false }
+          }
+        },
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' },
+                filePath: { type: 'string' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            id: 'updated-post',
+            filePath: 'src/content/blog/updated-post.md'
+          }
+        }
+      },
+      {
+        method: 'DELETE',
+        path: '/admin/api/content/{collection}?id={id}',
+        description: 'Delete content from a collection',
+        parameters: [
+          { name: 'collection', type: 'string', required: true, description: 'Collection name' },
+          { name: 'id', type: 'string', required: true, description: 'Content item ID (query parameter)' }
+        ],
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            id: 'deleted-post'
+          }
+        }
+      }
+    ]
+  },
+  {
+    title: 'File Management (Admin)',
+    description: 'Admin APIs for file upload and management',
+    endpoints: [
+      {
+        method: 'POST',
+        path: '/admin/api/files/upload',
+        description: 'Upload files (images) to the public directory',
+        parameters: [],
+        requestBody: {
+          type: 'multipart/form-data',
+          properties: {
+            file: { type: 'file', required: true },
+            directory: { type: 'string', required: false }
+          }
+        },
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                path: { type: 'string' },
+                url: { type: 'string' },
+                filename: { type: 'string' },
+                size: { type: 'number' },
+                type: { type: 'string' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            path: '/images/hero-image-1642345678901.jpg',
+            url: '/images/hero-image-1642345678901.jpg',
+            filename: 'hero-image-1642345678901.jpg',
+            size: 245760,
+            type: 'image/jpeg'
+          }
+        }
+      },
+      {
+        method: 'GET',
+        path: '/admin/api/files/list',
+        description: 'List uploaded files in a directory',
+        parameters: [
+          { name: 'directory', type: 'string', required: false, description: 'Directory to list (default: images)' }
+        ],
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                files: { type: 'array' },
+                directory: { type: 'string' },
+                total: { type: 'number' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            files: [
+              {
+                name: 'hero-image-1642345678901.jpg',
+                path: '/images/hero-image-1642345678901.jpg',
+                url: '/images/hero-image-1642345678901.jpg',
+                size: 245760,
+                type: 'image',
+                uploadedAt: '2024-01-15T10:30:00.000Z',
+                modifiedAt: '2024-01-15T10:30:00.000Z'
+              }
+            ],
+            directory: 'images',
+            total: 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    title: 'Schema Management (Admin)',
+    description: 'Admin APIs for content collection schemas',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/admin/api/schema/{collection}',
+        description: 'Get schema definition for a content collection',
+        parameters: [
+          { name: 'collection', type: 'string', required: true, description: 'Collection name' }
+        ],
+        response: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                collection: { type: 'string' },
+                type: { type: 'string' },
+                fields: { type: 'array' },
+                schema: { type: 'object' }
+              }
+            }
+          }
+        },
+        example: {
+          success: true,
+          data: {
+            collection: 'blog',
+            type: 'content',
+            fields: [
+              {
+                name: 'title',
+                type: 'string',
+                required: true,
+                optional: false
+              },
+              {
+                name: 'description',
+                type: 'string',
+                required: true,
+                optional: false
+              },
+              {
+                name: 'publicationDate',
+                type: 'date',
+                required: true,
+                optional: false
+              },
+              {
+                name: 'tags',
+                type: 'array',
+                required: true,
+                optional: false,
+                arrayType: 'string'
+              }
+            ]
+          }
         }
       }
     ]

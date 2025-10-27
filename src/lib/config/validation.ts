@@ -11,7 +11,7 @@ const ContentTypeConfigSchema = z.object({
   settings: z.record(z.any()).optional()
 });
 
-const NavigationItemSchema = z.object({
+const NavigationItemSchema: z.ZodType<any> = z.object({
   id: z.string().min(1, 'Navigation item ID is required'),
   label: z.string().min(1, 'Navigation item label is required'),
   href: z.string().min(1, 'Navigation item href is required'),

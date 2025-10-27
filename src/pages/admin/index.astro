@@ -1,5 +1,6 @@
 ---
 import { AdminApp } from '../../components/admin/AdminApp';
+import '../../styles/global.css';
 
 // 1. Tell Astro this page is dynamic and should not be pre-rendered
 export const prerender = false;
@@ -19,6 +20,40 @@ export async function getStaticPaths() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Antler Admin</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Theme stylesheet placeholder - will be updated by script -->
+  <link id="theme-stylesheet" rel="stylesheet" href="/styles/themes/theme-blue.css" />
+
+  <!-- Prevent theme flash (FOUC) and initialize themes -->
+  <script is:inline>
+    (function() {
+      // Initialize dark/light mode
+      const savedDarkMode = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const darkMode = savedDarkMode || (prefersDark ? 'dark' : 'light');
+
+      // Apply dark mode immediately
+      if (darkMode === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.classList.add('dark');
+      }
+
+      // Initialize color theme
+      const THEME_STORAGE_KEY = 'antler-selected-theme';
+      const userPreference = localStorage.getItem(THEME_STORAGE_KEY);
+      const colorTheme = userPreference || 'blue';
+
+      // Update the theme stylesheet href if user has a preference
+      const themeLink = document.getElementById('theme-stylesheet');
+      if (themeLink && userPreference) {
+        themeLink.href = `/styles/themes/theme-${colorTheme}.css`;
+      }
+
+      // Debug: Log to console
+      console.log('Admin theme initialized:', colorTheme, darkMode);
+    })();
+  </script>
+
   <style>
     body {
       margin: 0;

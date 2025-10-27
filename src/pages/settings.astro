@@ -189,7 +189,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     function updateResetButton() {
-      const resetBtn = document.getElementById('reset-theme-btn');
+      const resetBtn = document.getElementById('reset-theme-btn') as HTMLButtonElement | null;
       if (resetBtn) {
         resetBtn.disabled = !hasUserPreference();
       }

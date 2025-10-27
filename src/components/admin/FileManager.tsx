@@ -206,7 +206,7 @@ export const FileManager: React.FC = () => {
           <select
             value={currentDirectory}
             onChange={(e) => setCurrentDirectory(e.target.value)}
-            className="rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            className="form-input"
           >
             <option value="images">Images</option>
             <option value="documents">Documents</option>
@@ -214,14 +214,14 @@ export const FileManager: React.FC = () => {
           </select>
           <button
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            className="p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            className="btn-secondary p-2"
           >
             {viewMode === 'grid' ? '📋' : '⊞'}
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="btn-primary inline-flex items-center"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -259,7 +259,7 @@ export const FileManager: React.FC = () => {
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+        <div className="alert-error">
           <div className="flex">
             <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
@@ -332,9 +332,10 @@ export const FileManager: React.FC = () => {
           {files.map((file) => (
             <div
               key={file.name}
-              className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow ${
-                selectedFiles.has(file.name) ? 'ring-2 ring-blue-500' : ''
+              className={`card-hover overflow-hidden ${
+                selectedFiles.has(file.name) ? 'ring-2' : ''
               }`}
+              style={selectedFiles.has(file.name) ? { borderColor: 'var(--color-primary)' } : undefined}
             >
               {viewMode === 'grid' ? (
                 <div className="p-4">

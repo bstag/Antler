@@ -253,14 +253,14 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
           )}
           <button
             onClick={handleCancel}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="btn-secondary"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="btn-primary"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -269,7 +269,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
 
       {/* Success Display */}
       {success && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md p-4">
+        <div className="alert-success">
           <div className="flex">
             <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -285,7 +285,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+        <div className="alert-error">
           <div className="flex">
             <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -304,21 +304,13 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('frontmatter')}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'frontmatter'
-                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-            }`}
+            className={`tab-button ${activeTab === 'frontmatter' ? 'active' : ''}`}
           >
             Metadata
           </button>
           <button
             onClick={() => setActiveTab('content')}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'content'
-                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-            }`}
+            className={`tab-button ${activeTab === 'content' ? 'active' : ''}`}
           >
             Content
           </button>
@@ -399,13 +391,13 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       )}
 
       {/* Keyboard Shortcuts Help */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-        <h3 className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-2">Keyboard Shortcuts</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-blue-800 dark:text-blue-300">
-          <div><kbd className="px-1 py-0.5 bg-blue-200 dark:bg-blue-800 rounded text-xs">Ctrl+S</kbd> Save</div>
-          <div><kbd className="px-1 py-0.5 bg-blue-200 dark:bg-blue-800 rounded text-xs">Ctrl+1</kbd> Metadata Tab</div>
-          <div><kbd className="px-1 py-0.5 bg-blue-200 dark:bg-blue-800 rounded text-xs">Ctrl+2</kbd> Content Tab</div>
-          <div><kbd className="px-1 py-0.5 bg-blue-200 dark:bg-blue-800 rounded text-xs">Esc</kbd> Cancel</div>
+      <div className="keyboard-shortcuts-box">
+        <h3 className="text-sm font-medium mb-2">Keyboard Shortcuts</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+          <div><kbd className="keyboard-shortcut-key">Ctrl+S</kbd> Save</div>
+          <div><kbd className="keyboard-shortcut-key">Ctrl+1</kbd> Metadata Tab</div>
+          <div><kbd className="keyboard-shortcut-key">Ctrl+2</kbd> Content Tab</div>
+          <div><kbd className="keyboard-shortcut-key">Esc</kbd> Cancel</div>
         </div>
       </div>
     </div>

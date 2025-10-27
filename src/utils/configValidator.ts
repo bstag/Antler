@@ -242,7 +242,7 @@ export function sanitizeConfig(config: any): SiteConfig {
         enabled: Boolean(item.enabled),
         order: Number(item.order) || index
       }))
-      .sort((a, b) => a.order - b.order);
+      .sort((a: any, b: any) => a.order - b.order);
   }
 
   // Sanitize siteMode

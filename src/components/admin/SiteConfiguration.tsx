@@ -58,12 +58,8 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
   const applyTemplate = async (templateId: string) => {
     try {
       setSaving(true);
-      const result = await configClient.applyTemplate(templateId);
-      if (result.success) {
-        await loadConfigData(); // Reload to get updated config
-      } else {
-        throw new Error(result.error || 'Failed to apply template');
-      }
+      await configClient.applySiteTemplate(templateId);
+      await loadConfigData(); // Reload to get updated config
     } catch (err) {
       console.error('Template apply error:', err);
       alert('Failed to apply template: ' + (err as Error).message);
@@ -106,7 +102,7 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
           <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
           <button
             onClick={loadConfigData}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="btn-primary"
           >
             Retry
           </button>
@@ -140,11 +136,7 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-1 py-4 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === tab.id
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
+              className={`tab-button flex items-center ${activeTab === tab.id ? 'active' : ''}`}
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
@@ -360,11 +352,7 @@ const ContentTypesTab: React.FC<{
                 <button
                   onClick={() => contentType?.id && onToggleContentType(contentType.id)}
                   disabled={saving || !contentType?.id}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                    contentType?.enabled
-                      ? 'bg-blue-600'
-                      : 'bg-gray-200 dark:bg-gray-700'
-                  } ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`toggle-switch ${contentType?.enabled ? 'active' : ''} ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -501,14 +489,14 @@ const NavigationTab: React.FC<{
           <button
             onClick={addNewItem}
             disabled={saving}
-            className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            className="btn-success btn-sm"
           >
             Add Item
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-primary"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
@@ -525,7 +513,7 @@ const NavigationTab: React.FC<{
             <p className="text-gray-500 dark:text-gray-400">No navigation items configured</p>
             <button
               onClick={addNewItem}
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="mt-2 btn-primary"
             >
               Add First Item
             </button>
@@ -586,11 +574,7 @@ const NavigationTab: React.FC<{
                   <button
                     onClick={() => toggleItemEnabled(index)}
                     disabled={saving}
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                      item?.enabled
-                        ? 'bg-blue-600'
-                        : 'bg-gray-200 dark:bg-gray-700'
-                    } ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`toggle-switch toggle-switch-sm ${item?.enabled ? 'active' : ''} ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={item?.enabled ? 'Hide from navigation' : 'Show in navigation'}
                   >
                     <span
@@ -720,7 +704,7 @@ const TemplatesTab: React.FC<{
                 <button
                   onClick={() => onApplyTemplate(id)}
                   disabled={saving}
-                  className="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+                  className="w-full btn-primary btn-sm"
                 >
                   {saving ? 'Applying...' : 'Apply Template'}
                 </button>

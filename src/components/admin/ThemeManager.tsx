@@ -149,10 +149,10 @@ export const ThemeManager: React.FC = () => {
 
       {/* Status Message */}
       {message && (
-        <div className={`mb-6 p-4 rounded-lg border ${
-          message.type === 'success' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200' :
-          message.type === 'error' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200' :
-          'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200'
+        <div className={`mb-6 ${
+          message.type === 'success' ? 'alert-success' :
+          message.type === 'error' ? 'alert-error' :
+          'alert-info'
         }`}>
           {message.text}
         </div>
@@ -199,13 +199,13 @@ export const ThemeManager: React.FC = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleCancelPreview}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleApply}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                className="btn-primary"
               >
                 Apply Theme
               </button>
@@ -226,10 +226,8 @@ export const ThemeManager: React.FC = () => {
               <button
                 key={theme.id}
                 onClick={() => handlePreview(theme.id)}
-                className={`relative p-4 rounded-lg border-2 transition-all text-left ${
-                  isActive
-                    ? 'border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-gray-50 dark:bg-gray-700/50'
+                className={`relative p-4 rounded-lg border-2 transition-all text-left theme-card ${
+                  isActive ? 'theme-card-active' : ''
                 }`}
               >
                 {/* Color Swatch */}
@@ -262,14 +260,14 @@ export const ThemeManager: React.FC = () => {
 
                 {/* Active Badge */}
                 {isActive && (
-                  <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded">
+                  <div className="absolute top-2 right-2 badge badge-primary">
                     Active
                   </div>
                 )}
 
                 {/* Default Badge */}
                 {isSiteDefault && !isActive && (
-                  <div className="absolute top-2 right-2 bg-gray-600 text-white text-xs font-medium px-2 py-1 rounded">
+                  <div className="absolute top-2 right-2 badge badge-secondary">
                     Default
                   </div>
                 )}
@@ -286,7 +284,7 @@ export const ThemeManager: React.FC = () => {
           <button
             onClick={handleResetToDefault}
             disabled={!hasUserPref}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-secondary"
           >
             Reset to Site Default
           </button>
@@ -294,7 +292,7 @@ export const ThemeManager: React.FC = () => {
           <button
             onClick={handleSaveAsDefault}
             disabled={saving}
-            className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-primary"
           >
             {saving ? 'Saving...' : 'Save as Site Default'}
           </button>

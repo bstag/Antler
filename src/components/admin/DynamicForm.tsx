@@ -142,7 +142,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   const prevValuesRef = useRef<Record<string, any>>();
   
   // Memoize the onChange callback to prevent it from changing on every render
-  const memoizedOnChange = useCallback(onChange, []);
+  const memoizedOnChange = useCallback(onChange || (() => {}), []);
 
   useEffect(() => {
     // Only call onChange if values have actually changed
@@ -212,7 +212,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 <input
                   {...formField}
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  className="form-input"
                   placeholder={`Enter ${key}`}
                 />
               )}
@@ -305,7 +305,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           <button
             type="button"
             onClick={() => append(getDefaultObjectForField(field.name))}
-            className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="btn-primary btn-sm"
           >
             Add {field.name.slice(0, -1)}
           </button>
@@ -320,7 +320,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
               <button
                 type="button"
                 onClick={() => remove(index)}
-                className="px-2 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="btn-danger btn-sm"
               >
                 Remove
               </button>
@@ -341,7 +341,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                           <textarea
                             {...formField}
                             rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            className="form-input"
                             placeholder={`Enter ${objField.label.toLowerCase()}`}
                           />
                         );
@@ -350,7 +350,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                           <input
                             {...formField}
                             type="date"
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            className="form-input"
                           />
                         );
                       } else if (objField.type === 'array') {
@@ -366,7 +366,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                           <input
                             {...formField}
                             type="text"
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            className="form-input"
                             placeholder={`Enter ${objField.label.toLowerCase()}`}
                           />
                         );
@@ -390,7 +390,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const renderField = (field: FieldDefinition) => {
     const fieldId = `field-${field.name}`;
-    const baseClasses = "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white";
+    const baseClasses = "form-input";
 
     switch (field.type) {
       case 'object':
@@ -487,7 +487,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                   type="checkbox"
                   id={fieldId}
                   checked={formField.value || false}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="form-checkbox"
                 />
                 <label htmlFor={fieldId} className="ml-2 block text-sm text-gray-900 dark:text-white">
                   {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
@@ -567,7 +567,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="btn-secondary"
           >
             Cancel
           </button>
@@ -575,7 +575,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-primary"
         >
           {loading ? 'Saving...' : submitLabel}
         </button>
@@ -616,18 +616,18 @@ const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder }) => 
   };
 
   return (
-    <div className="border border-gray-300 dark:border-gray-600 rounded-md p-2 min-h-[42px] focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-white dark:bg-gray-800">
+    <div className="tag-input-wrapper">
       <div className="flex flex-wrap gap-1">
         {value.map(tag => (
           <span
             key={tag}
-            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+            className="tag-input-tag"
           >
             {tag}
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              className="ml-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
+              className="tag-input-remove"
             >
               ×
             </button>
@@ -700,7 +700,7 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({ onUpload, accept = 
       />
       <label
         htmlFor="file-upload"
-        className="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className="btn-secondary cursor-pointer inline-flex items-center"
       >
         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
