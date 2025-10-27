@@ -1,4 +1,10 @@
 ---
+// Import global styles
+import '../styles/global.css';
+
+// Import the site config directly (works at build time)
+import siteConfig from '../../site.config.json';
+
 export interface Props {
   title: string;
   description?: string;
@@ -6,14 +12,18 @@ export interface Props {
   type?: string;
 }
 
-const { 
-  title, 
+const {
+  title,
   description = 'A modern static site generator built with Astro',
   image = '/og-image.jpg',
   type = 'website'
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Get default theme from config (available at build time)
+const defaultTheme = siteConfig.customization?.theme?.default || 'blue';
+const availableThemes = siteConfig.customization?.theme?.availableThemes || ['blue'];
 ---
 
 <!DOCTYPE html>
@@ -53,20 +63,45 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     
     <!-- Theme color -->
     <meta name="theme-color" content="#8b5cf6" />
-    
+
+    <!-- Theme Configuration -->
+    <meta name="theme-default" content={defaultTheme} />
+    <script id="theme-config" type="application/json">
+      {JSON.stringify({
+        default: defaultTheme,
+        available: availableThemes
+      })}
+    </script>
+
+    <!-- Load Color Theme CSS -->
+    <link id="theme-stylesheet" rel="stylesheet" href={`/styles/themes/theme-${defaultTheme}.css`} />
+
     <title>{title}</title>
-    
-    <!-- Prevent theme flash (FOUC) -->
-    <script is:inline>
+
+    <!-- Prevent theme flash (FOUC) and initialize color theme -->
+    <script is:inline define:vars={{ defaultTheme }}>
       (function() {
-        // Get saved theme or system preference
-        const savedTheme = localStorage.getItem('theme');
+        // Initialize dark/light mode
+        const savedDarkMode = localStorage.getItem('theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-        
-        // Apply theme immediately
-        document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.classList.toggle('dark', theme === 'dark');
+        const darkMode = savedDarkMode || (prefersDark ? 'dark' : 'light');
+
+        // Apply dark mode immediately
+        if (darkMode === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.classList.add('dark');
+        }
+
+        // Initialize color theme
+        const THEME_STORAGE_KEY = 'antler-selected-theme';
+        const userPreference = localStorage.getItem(THEME_STORAGE_KEY);
+        const colorTheme = userPreference || defaultTheme;
+
+        // Load color theme CSS
+        const themeLink = document.getElementById('theme-stylesheet');
+        if (themeLink && userPreference) {
+          themeLink.href = `/styles/themes/theme-${colorTheme}.css`;
+        }
       })();
     </script>
     

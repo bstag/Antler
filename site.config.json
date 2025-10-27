@@ -116,7 +116,29 @@
   "customLinks": [],
   "customization": {
     "siteName": "Antler",
-    "description": "A modern static site generator"
+    "description": "A modern static site generator",
+    "theme": {
+      "default": "blue",
+      "allowUserOverride": true,
+      "availableThemes": [
+        "blue",
+        "indigo",
+        "purple",
+        "pink",
+        "rose",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "slate"
+      ]
+    }
   },
   "lastModified": "2025-10-25T02:48:57.177Z"
 }

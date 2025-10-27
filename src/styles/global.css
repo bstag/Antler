@@ -2,31 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Light theme colors */
-  --color-primary: #1e40af;
-  --color-primary-light: #3b82f6;
-  --color-secondary: #64748b;
-  --color-background: #ffffff;
-  --color-surface: #f8fafc;
-  --color-text: #1e293b;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-accent: #0ea5e9;
-}
-
-[data-theme="dark"] {
-  /* Dark theme colors */
-  --color-primary: #3b82f6;
-  --color-primary-light: #60a5fa;
-  --color-secondary: #94a3b8;
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-text: #f1f5f9;
-  --color-text-muted: #94a3b8;
-  --color-border: #334155;
-  --color-accent: #38bdf8;
-}
+/* Theme colors are loaded from separate theme CSS files in src/styles/themes/ */
+/* This allows for swappable color schemes without changing this file */
 
 @layer base {
   html {
@@ -57,16 +34,137 @@
 }
 
 @layer components {
+  /* Enhanced Component Class Library */
+
+  /* Button Components */
+  .btn {
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-primary:active {
+    background-color: var(--color-primary-active);
+  }
+
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
+
+  .btn-secondary:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-strong);
+  }
+
+  .btn-secondary:active {
+    background-color: var(--color-surface-active);
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    @apply hover:shadow-sm focus:ring-blue-500;
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--color-text);
+    @apply hover:shadow-sm focus:ring-gray-500;
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  .btn-danger {
+    background-color: var(--color-error);
+    color: var(--color-text-on-primary);
+    @apply hover:shadow-md focus:ring-red-500;
+  }
+
+  .btn-danger:hover {
+    background-color: var(--color-error-dark);
+  }
+
+  .btn-success {
+    background-color: var(--color-success);
+    color: var(--color-text-on-primary);
+    @apply hover:shadow-md focus:ring-green-500;
+  }
+
+  .btn-success:hover {
+    background-color: var(--color-success-dark);
+  }
+
+  /* Button Sizes */
+  .btn-sm {
+    @apply text-sm py-1.5 px-3;
+  }
+
+  .btn-lg {
+    @apply text-lg py-3 px-6;
+  }
+
+  .btn-xl {
+    @apply text-xl py-4 px-8;
+  }
+
+  /* Card Components */
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6;
+    background-color: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    @apply rounded-lg shadow-sm p-6;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-200 hover:shadow-md;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 10px 15px -3px var(--color-shadow), 0 4px 6px -2px var(--color-shadow-light);
+    transform: translateY(-1px);
+  }
+
+  .card-interactive {
+    @apply card-hover cursor-pointer;
+  }
+
+  .card-interactive:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px -1px var(--color-shadow), 0 2px 4px -1px var(--color-shadow-light);
+  }
+
+  .card-header {
+    border-bottom: 1px solid var(--color-border);
+    @apply p-4 rounded-t-lg;
+  }
+
+  .card-body {
+    @apply p-4;
+  }
+
+  .card-footer {
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    @apply p-4 rounded-b-lg;
   }
   
   .prose-custom {
@@ -97,10 +195,213 @@
     @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto;
   }
 
-  /* Navigation styles for React components */
+  /* Navigation Components */
   .nav-link {
-    @apply text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+    color: var(--color-text-secondary);
+    @apply px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:no-underline;
   }
+
+  .nav-link:hover {
+    color: var(--color-primary);
+  }
+
+  .nav-link-active {
+    color: var(--color-primary);
+    @apply font-medium;
+  }
+
+  .nav-link-mobile {
+    @apply nav-link block py-2 px-4 rounded-md;
+  }
+
+  .nav-link-mobile:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  /* Form Components */
+  .form-input {
+    background-color: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    @apply w-full px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+
+  .form-input:focus {
+    border-color: var(--color-border-focus);
+  }
+
+  .form-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .form-label {
+    color: var(--color-text);
+    @apply block text-sm font-medium mb-1;
+  }
+
+  .form-error {
+    color: var(--color-error);
+    @apply text-sm mt-1;
+  }
+
+  .form-help {
+    color: var(--color-text-muted);
+    @apply text-sm mt-1;
+  }
+
+  /* Badge Components */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    background-color: var(--color-primary-light);
+    color: var(--color-text-on-primary);
+  }
+
+  .badge-secondary {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+  }
+
+  .badge-success {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+  }
+
+  .badge-error {
+    background-color: var(--color-error-light);
+    color: var(--color-error-dark);
+  }
+
+  .badge-warning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+  }
+
+  .badge-info {
+    background-color: var(--color-info-light);
+    color: var(--color-info-dark);
+  }
+
+  /* Alert Components */
+  .alert {
+    @apply p-4 rounded-md border;
+  }
+
+  .alert-success {
+    background-color: var(--color-success-light);
+    border-color: var(--color-border-success);
+    color: var(--color-success-dark);
+  }
+
+  .alert-error {
+    background-color: var(--color-error-light);
+    border-color: var(--color-border-error);
+    color: var(--color-error-dark);
+  }
+
+  .alert-warning {
+    background-color: var(--color-warning-light);
+    border-color: var(--color-border-warning);
+    color: var(--color-warning-dark);
+  }
+
+  .alert-info {
+    background-color: var(--color-info-light);
+    border-color: var(--color-info);
+    color: var(--color-info-dark);
+  }
+
+  /* Typography Components */
+  .text-primary {
+    color: var(--color-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+
+  .text-disabled {
+    color: var(--color-text-disabled);
+  }
+
+  .text-success {
+    color: var(--color-success);
+  }
+
+  .text-error {
+    color: var(--color-error);
+  }
+
+  .text-warning {
+    color: var(--color-warning);
+  }
+
+  .text-info {
+    color: var(--color-info);
+  }
+
+  /* Background Components */
+  .bg-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+  }
+
+  .bg-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text-on-secondary);
+  }
+
+  .bg-surface {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .bg-surface-elevated {
+    background-color: var(--color-surface-elevated);
+    color: var(--color-text);
+  }
+
+  /* Border Components */
+  .border-primary {
+    border-color: var(--color-primary);
+  }
+
+  .border-secondary {
+    border-color: var(--color-border);
+  }
+
+  .border-strong {
+    border-color: var(--color-border-strong);
+  }
+
+  .border-light {
+    border-color: var(--color-border-light);
+  }
+
+  /* Focus Components */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    --tw-ring-color: var(--color-border-focus);
+  }
+
+  .focus-ring-error {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    --tw-ring-color: var(--color-error);
+  }
+
+  .focus-ring-success {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    --tw-ring-color: var(--color-success);
+  }
+
+  /* Navigation styles for React components */
   
   .nav-link.active {
     @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;

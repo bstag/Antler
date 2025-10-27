@@ -19,7 +19,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
   <BaseLayout title="Blog - Antler" description="Latest articles and tutorials about web development, static site generation, and modern web technologies">
     <Header />
     
-    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <main class="min-h-screen bg-surface">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-16 fade-in-on-scroll">
@@ -34,8 +34,8 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
       <!-- Tag Filter -->
       <div class="mb-12 fade-in-on-scroll">
         <div class="flex flex-wrap gap-2 justify-center">
-          <button 
-            class="tag-filter active px-4 py-2 bg-purple-600 text-white rounded-full text-sm font-medium hover:bg-purple-700 transition-all duration-300 hover-lift"
+          <button
+            class="tag-filter active btn-primary px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover-lift"
             data-tag="all"
           >
             All Posts
@@ -70,14 +70,14 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
             <div class="p-6">
               <div class="flex items-center gap-2 mb-3">
                 {post.data.tags?.slice(0, 2).map(tag => (
-                  <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">
+                  <span class="badge badge-primary text-xs">
                     {tag}
                   </span>
                 ))}
               </div>
               
               <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                <a href={`/blog/${post.slug}`} class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                <a href={`/blog/${post.slug}`} class="hover:text-primary transition-colors">
                   {post.data.title}
                 </a>
               </h2>
@@ -129,10 +129,12 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
         const selectedTag = filter.getAttribute('data-tag');
         
         // Update active state
-        tagFilters.forEach(f => f.classList.remove('active', 'bg-purple-600', 'text-white'));
-        tagFilters.forEach(f => f.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300'));
-        
-        filter.classList.add('active', 'bg-purple-600', 'text-white');
+        tagFilters.forEach(f => {
+          f.classList.remove('active', 'btn-primary');
+          f.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+        });
+
+        filter.classList.add('active', 'btn-primary');
         filter.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
 
         // Filter posts

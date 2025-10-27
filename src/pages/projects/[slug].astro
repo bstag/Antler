@@ -29,16 +29,16 @@ const description = project.data.description;
 <ConditionalRoute contentTypeId="projects">
   <BaseLayout title={title} description={description}>
     <Header />
-    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <main class="min-h-screen bg-surface">
     <!-- Hero Section -->
     <section class="relative py-16 overflow-hidden">
       <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto">
           <!-- Back Navigation -->
           <div class="mb-8">
-            <a 
-              href="/projects" 
-              class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+            <a
+              href="/projects"
+              class="inline-flex items-center gap-2 text-primary hover:opacity-80 transition-all"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -51,7 +51,7 @@ const description = project.data.description;
           <div class="text-center mb-12">
             <div class="flex flex-wrap justify-center gap-2 mb-4">
               {project.data.technologies.map(tech => (
-                <span class="px-3 py-1 text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                <span class="badge badge-primary text-sm">
                   {tech}
                 </span>
               ))}
@@ -68,11 +68,11 @@ const description = project.data.description;
             <!-- Action Buttons -->
             <div class="flex flex-wrap justify-center gap-4">
               {project.data.liveUrl && (
-                <a 
+                <a
                   href={project.data.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                  class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -142,14 +142,14 @@ const description = project.data.description;
             <!-- Technologies -->
             <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
               <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                 </svg>
                 Technologies Used
               </h3>
               <div class="flex flex-wrap gap-2">
                 {project.data.technologies.map(tech => (
-                  <span class="px-3 py-1 text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                  <span class="badge badge-primary text-sm">
                     {tech}
                   </span>
                 ))}
@@ -213,7 +213,7 @@ const description = project.data.description;
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {relatedProjects.map(relatedProject => (
                 <article class="bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                  <div class="aspect-video bg-gradient-to-br from-purple-400 to-blue-500 relative overflow-hidden">
+                  <div class="aspect-video project-placeholder relative overflow-hidden">
                     {relatedProject.data.projectImage ? (
                       <img 
                         src={relatedProject.data.projectImage} 
@@ -232,13 +232,13 @@ const description = project.data.description;
                   <div class="p-6">
                     <div class="flex flex-wrap gap-2 mb-3">
                       {relatedProject.data.technologies.slice(0, 2).map(tech => (
-                        <span class="px-2 py-1 text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                        <span class="badge badge-primary text-xs">
                           {tech}
                         </span>
                       ))}
                     </div>
                     
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                       <a href={`/projects/${relatedProject.slug}`} class="hover:underline">
                         {relatedProject.data.projectName}
                       </a>
@@ -248,9 +248,9 @@ const description = project.data.description;
                       {relatedProject.data.description}
                     </p>
                     
-                    <a 
+                    <a
                       href={`/projects/${relatedProject.slug}`}
-                      class="inline-flex items-center gap-1 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium text-sm transition-colors"
+                      class="inline-flex items-center gap-1 text-primary hover:opacity-80 font-medium text-sm transition-all"
                     >
                       View Project
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,5 +275,13 @@ const description = project.data.description;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .project-placeholder {
+    background: linear-gradient(to bottom right, var(--color-primary-light), var(--color-primary));
+  }
+
+  :global(.dark) .project-placeholder {
+    background: linear-gradient(to bottom right, var(--color-primary-darker), var(--color-primary-dark));
   }
 </style>

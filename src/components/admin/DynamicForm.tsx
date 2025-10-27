@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -137,12 +137,20 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
   // Watch all form values for onChange callback
   const watchedValues = watch();
+  
+  // Use a ref to track the previous values to prevent unnecessary calls
+  const prevValuesRef = useRef<Record<string, any>>();
+  
+  // Memoize the onChange callback to prevent it from changing on every render
+  const memoizedOnChange = useCallback(onChange, []);
 
   useEffect(() => {
-    if (onChange) {
-      onChange(watchedValues);
+    // Only call onChange if values have actually changed
+    if (memoizedOnChange && JSON.stringify(watchedValues) !== JSON.stringify(prevValuesRef.current)) {
+      prevValuesRef.current = watchedValues;
+      memoizedOnChange(watchedValues);
     }
-  }, [watchedValues, onChange]);
+  }, [watchedValues, memoizedOnChange]);
 
   // Register submit function with parent
   useEffect(() => {

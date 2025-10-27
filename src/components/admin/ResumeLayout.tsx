@@ -45,7 +45,7 @@ const getCollectionIcon = (collection: string): string => {
 };
 
 export const ResumeLayout: React.FC<ResumeLayoutProps> = ({ children, schemas }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
 
   const isActiveRoute = (path: string): boolean => {
@@ -54,131 +54,150 @@ export const ResumeLayout: React.FC<ResumeLayoutProps> = ({ children, schemas })
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
-      {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
       {/* Sidebar */}
-      <div className={`
-        bg-white dark:bg-gray-800 shadow-sm border-r border-gray-200 dark:border-gray-700 transition-all duration-300 w-64
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        fixed inset-y-0 left-0 z-50 lg:static lg:inset-0
-      `}>
+      <div className={`bg-white dark:bg-gray-800 shadow-sm border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${
+        sidebarOpen ? 'w-64' : 'w-16'
+      }`}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">📄</span>
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Resume Manager
-                </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Manage your resume
-                </p>
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <Link to="/" className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">A</span>
+                </div>
+                {sidebarOpen && (
+                  <div>
+                    <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Antler</h1>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Admin Panel</p>
+                  </div>
+                )}
+              </Link>
+              <div className="flex items-center space-x-2">
+                <ThemeToggle />
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d={sidebarOpen ? "M11 19l-7-7 7-7m8 14l-7-7 7-7" : "M13 5l7 7-7 7M5 5l7 7-7 7"} />
+                  </svg>
+                </button>
               </div>
             </div>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2 admin-scrollbar overflow-y-auto">
-            {/* Dashboard Link */}
-            <Link
-              to="/resume"
-              className={`
-                flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors
-                ${isActiveRoute('/resume') && location.pathname === '/resume'
-                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }
-              `}
-            >
-              <span className="text-lg">🏠</span>
-              Dashboard
-            </Link>
+          <nav className="mt-8">
+            <div className="px-4">
+              {sidebarOpen && (
+                <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+                  Navigation
+                </h2>
+              )}
 
-            {/* Divider */}
-            <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
-
-            {/* Resume Sections */}
-            <div className="space-y-1">
-              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Resume Sections
-              </h3>
-              {resumeCollections.map((collection) => {
-                const schema = schemas[collection];
-                if (!schema) return null;
-
-                return (
+              <ul className="space-y-1">
+                <li>
                   <Link
-                    key={collection}
-                    to={`/resume/content/${collection}`}
-                    className={`
-                      flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors
-                      ${isActiveRoute(`/resume/content/${collection}`)
-                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }
-                    `}
+                    to="/"
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      location.pathname === '/'
+                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-r-2 border-blue-700 dark:border-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
                   >
-                    <span className="text-lg">{getCollectionIcon(collection)}</span>
-                    {getCollectionDisplayName(collection)}
+                    <span className="text-lg mr-3">🏠</span>
+                    {sidebarOpen && 'Main Panel'}
                   </Link>
-                );
-              })}
+                </li>
+                <li>
+                  <Link
+                    to="/resume"
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActiveRoute('/resume')
+                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-r-2 border-blue-700 dark:border-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="text-lg mr-3">📄</span>
+                    {sidebarOpen && 'Resume Panel'}
+                  </Link>
+                </li>
+              </ul>
             </div>
 
-            {/* Divider */}
-            <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
+            <div className="mt-8 px-4">
+              {sidebarOpen && (
+                <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+                  Resume Sections
+                </h2>
+              )}
 
-            {/* Quick Actions */}
-            <div className="space-y-1">
-              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Quick Actions
-              </h3>
-              
-              <Link
-                to="/resume"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <span className="text-lg">👁️</span>
-                Preview Resume
-              </Link>
-              
-              <Link
-                to="/files"
-                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <span className="text-lg">📁</span>
-                File Manager
-              </Link>
+              <ul className="space-y-1">
+                {resumeCollections.map((collection) => {
+                  const schema = schemas[collection];
+                  if (!schema) return null;
+
+                  return (
+                    <li key={collection}>
+                      <Link
+                        to={`/resume/content/${collection}`}
+                        className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                          isActiveRoute(`/resume/content/${collection}`)
+                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-r-2 border-blue-700 dark:border-blue-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        <span className="text-lg mr-3">{getCollectionIcon(collection)}</span>
+                        {sidebarOpen && getCollectionDisplayName(collection)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className="mt-8 px-4">
+              {sidebarOpen && (
+                <h2 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+                  Quick Actions
+                </h2>
+              )}
+
+              <ul className="space-y-1">
+                <li>
+                  <Link
+                    to="/resume"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <span className="text-lg mr-3">👁️</span>
+                    {sidebarOpen && 'Preview Resume'}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/files"
+                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <span className="text-lg mr-3">📁</span>
+                    {sidebarOpen && 'File Manager'}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/theme-settings"
+                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <span className="text-lg mr-3">🎨</span>
+                    {sidebarOpen && 'Theme Settings'}
+                  </Link>
+                </li>
+              </ul>
             </div>
           </nav>
-
-          {/* Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <Link
-              to="/admin"
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              <span className="text-lg">←</span>
-              Back to Main Admin
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -201,7 +220,7 @@ export const ResumeLayout: React.FC<ResumeLayoutProps> = ({ children, schemas })
                 <div>
                   <div className="flex items-center space-x-3">
                     <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                      Resume Manager
+                      Resume Panel
                     </h1>
                     <span className="px-2 py-1 text-xs font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 rounded-full">
                       Development Only

@@ -34,7 +34,7 @@ function formatDate(date: Date): string {
       {featuredPosts.map((post) => (
         <article class="card group hover:shadow-lg transition-all duration-300 animate-fade-in">
           <!-- Featured Image -->
-          <div class="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/20 dark:to-primary-800/20 rounded-t-lg mb-4 overflow-hidden">
+          <div class="aspect-video featured-image-bg rounded-t-lg mb-4 overflow-hidden">
             <img 
               src={post.data.featuredImage || `https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(`Blog post about ${post.data.title}, modern web development, clean minimal design`)}&image_size=landscape_16_9`}
               alt={post.data.title}
@@ -58,7 +58,7 @@ function formatDate(date: Date): string {
             </div>
 
             <!-- Title -->
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors">
               <a href={`/blog/${post.slug}`} class="hover:underline">
                 {post.data.title}
               </a>
@@ -72,16 +72,16 @@ function formatDate(date: Date): string {
             <!-- Tags -->
             <div class="flex flex-wrap gap-2 mb-4">
               {post.data.tags.slice(0, 3).map((tag: string) => (
-                <span class="px-2 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full">
+                <span class="badge badge-primary text-xs">
                   {tag}
                 </span>
               ))}
             </div>
 
             <!-- Read More Link -->
-            <a 
+            <a
               href={`/blog/${post.slug}`}
-              class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium group/link"
+              class="inline-flex items-center text-primary hover:opacity-80 font-medium group/link"
             >
               Read More
               <ArrowRight className="ml-1 w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
@@ -105,6 +105,15 @@ function formatDate(date: Date): string {
 </section>
 
 <style>
+  .featured-image-bg {
+    background: linear-gradient(to bottom right, var(--color-primary-100), var(--color-primary-200));
+  }
+
+  :global(.dark) .featured-image-bg {
+    background: linear-gradient(to bottom right, var(--color-primary-darker), var(--color-primary-darker));
+    opacity: 0.2;
+  }
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;

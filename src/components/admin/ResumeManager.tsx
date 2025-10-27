@@ -122,7 +122,7 @@ export const ResumeManager: React.FC<ResumeManagerProps> = ({ schemas }) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Resume Manager
+              Resume Panel
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
               Manage all sections of your resume in one organized place

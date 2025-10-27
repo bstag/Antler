@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { DynamicForm } from './DynamicForm';
 import { MarkdownEditor } from './MarkdownEditor';
@@ -166,11 +166,11 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     await handleSaveDirect(frontmatter, content);
   };
 
-  const handleFrontmatterChange = (data: Record<string, any>) => {
+  const handleFrontmatterChange = useCallback((data: Record<string, any>) => {
     setFrontmatter(data);
     setHasChanges(true);
     setSuccess(null); // Clear success message when making changes
-  };
+  }, []);
 
   const handleContentChange = (newContent: string) => {
     setContent(newContent);

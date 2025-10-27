@@ -242,7 +242,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
       <div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Content Overview</h3>
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-4">
-          {/* Resume Manager Card */}
+          {/* Resume Panel Card */}
           <Link
             to="/resume"
             className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-sm text-white p-6 hover:shadow-md transition-shadow group"
@@ -255,9 +255,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
                 {resumeStats}
               </span>
             </div>
-            
+
             <h4 className="text-lg font-semibold mb-2 group-hover:text-purple-100 transition-colors">
-              Resume Manager
+              Resume Panel
             </h4>
             
             <p className="text-sm text-purple-100 mb-4">

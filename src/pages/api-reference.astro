@@ -182,12 +182,12 @@ const apiSections = [
                   </h4>
                   <ul class="space-y-2 text-sm">
                     <li>
-                      <a href="/docs" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
+                      <a href="/docs" class="text-primary hover:opacity-80 transition-all">
                         Documentation
                       </a>
                     </li>
                     <li>
-                      <a href="/contact" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
+                      <a href="/contact" class="text-primary hover:opacity-80 transition-all">
                         Support
                       </a>
                     </li>
@@ -251,7 +251,7 @@ const apiSections = [
                                   {endpoint.parameters.map(param => (
                                     <div class="bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
                                       <div class="flex items-center gap-2 mb-2">
-                                        <code class="text-sm font-mono text-purple-600 dark:text-purple-400">
+                                        <code class="text-sm font-mono text-primary">
                                           {param.name}
                                         </code>
                                         <span class="text-xs text-slate-500 dark:text-slate-400">
@@ -314,8 +314,8 @@ const apiSections = [
 
                         <!-- Try It Out Button -->
                         <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
-                          <button 
-                            class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                          <button
+                            class="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
                             onclick={`tryEndpoint('${endpoint.method}', '${endpoint.path}')`}
                           >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

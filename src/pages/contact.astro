@@ -11,7 +11,7 @@ const description = 'Get in touch with me for collaborations, questions, or just
 <ConditionalRoute contentTypeId="contact">
   <BaseLayout title={title} description={description}>
     <Header />
-    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <main class="min-h-screen bg-surface">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-16">
@@ -42,8 +42,8 @@ const description = 'Get in touch with me for collaborations, questions, or just
             <!-- Contact Methods -->
             <div class="space-y-6">
               <div class="flex items-start gap-4">
-                <div class="flex-shrink-0 w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                  <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex-shrink-0 w-12 h-12 contact-icon-box rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 contact-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                   </svg>
                 </div>
@@ -168,3 +168,21 @@ const description = 'Get in touch with me for collaborations, questions, or just
     </main>
   </BaseLayout>
 </ConditionalRoute>
+
+<style>
+  .contact-icon-box {
+    background-color: var(--color-primary-lighter);
+  }
+
+  :global(.dark) .contact-icon-box {
+    background-color: var(--color-primary-darker);
+  }
+
+  .contact-icon-svg {
+    color: var(--color-primary-dark);
+  }
+
+  :global(.dark) .contact-icon-svg {
+    color: var(--color-primary-light);
+  }
+</style>

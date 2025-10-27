@@ -30,7 +30,7 @@ const featuredProjects = projects
   <Hero />
   
   <!-- Featured Projects Section -->
-  <section class="py-20 bg-slate-50 dark:bg-slate-800">
+  <section class="py-20 bg-surface">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16 fade-in-on-scroll">
         <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
@@ -46,9 +46,9 @@ const featuredProjects = projects
       </div>
       
       <div class="text-center mt-12 fade-in-on-scroll">
-        <a 
-          href="/projects" 
-          class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover-lift btn-animate"
+        <a
+          href="/projects"
+          class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover-lift btn-animate"
         >
           View All Projects
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@ const featuredProjects = projects
   </section>
 
   <!-- Featured Blog Posts Section -->
-  <section class="py-20">
+  <section class="py-20 bg-surface-elevated">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16 fade-in-on-scroll">
         <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
@@ -86,14 +86,14 @@ const featuredProjects = projects
             <div class="p-6">
               <div class="flex items-center gap-2 mb-3">
                 {post.data.tags?.slice(0, 2).map(tag => (
-                  <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">
+                  <span class="badge badge-primary text-xs">
                     {tag}
                   </span>
                 ))}
               </div>
-              
+
               <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                <a href={`/blog/${post.slug}`} class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                <a href={`/blog/${post.slug}`} class="hover:text-primary transition-colors">
                   {post.data.title}
                 </a>
               </h3>

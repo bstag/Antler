@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Settings" description="Customize your site preferences">
+  <div class="min-h-screen bg-white dark:bg-slate-900 py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+          Settings
+        </h1>
+        <p class="text-slate-600 dark:text-slate-400">
+          Customize your site appearance and preferences
+        </p>
+      </div>
+
+      <!-- Theme Section -->
+      <div class="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6 mb-6">
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-4">
+          Color Theme
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">
+          Choose a color scheme that suits your style. Your preference is saved locally.
+        </p>
+
+        <!-- Current Theme Display -->
+        <div class="bg-white dark:bg-slate-900 rounded-md p-4 mb-6 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Current Theme</p>
+              <p id="current-theme-name" class="text-lg font-medium text-slate-900 dark:text-white">
+                Loading...
+              </p>
+            </div>
+            <div id="current-theme-swatch" class="w-16 h-16 rounded-md shadow-sm border border-slate-200 dark:border-slate-700"></div>
+          </div>
+        </div>
+
+        <!-- Theme Grid -->
+        <div id="theme-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-6">
+          <!-- Themes will be rendered by JavaScript -->
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-wrap gap-3">
+          <button
+            id="reset-theme-btn"
+            class="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Reset to Default
+          </button>
+        </div>
+      </div>
+
+      <!-- Dark Mode Section -->
+      <div class="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-4">
+          Dark Mode
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 mb-6">
+          Toggle between light and dark mode. This works independently of your color theme.
+        </p>
+
+        <div class="flex items-center justify-between bg-white dark:bg-slate-900 rounded-md p-4 border border-slate-200 dark:border-slate-700">
+          <div>
+            <p class="font-medium text-slate-900 dark:text-white">Dark Mode</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Switch to dark color scheme</p>
+          </div>
+          <button
+            id="dark-mode-toggle"
+            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus-ring focus:ring-offset-2 dark:focus:ring-offset-slate-800"
+          >
+            <span class="sr-only">Toggle dark mode</span>
+            <span class="toggle-dot inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Panel -->
+      <div class="mt-6 alert alert-info">
+        <h3 class="font-medium mb-2">About Preferences</h3>
+        <ul class="text-sm space-y-1">
+          <li>• Your preferences are saved in your browser</li>
+          <li>• Color theme and dark mode work independently</li>
+          <li>• Clearing browser data will reset your preferences</li>
+          <li>• These settings only affect your view of the site</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import {
+      getAllThemeMetadata,
+      getThemeMetadata,
+      type ThemeMetadata
+    } from '../lib/theme/theme-registry';
+    import {
+      getCurrentTheme,
+      getSiteDefaultTheme,
+      switchTheme,
+      clearUserPreference,
+      hasUserPreference,
+      isDarkMode,
+      toggleDarkMode as toggleDarkModeUtil
+    } from '../lib/theme/theme-loader';
+
+    // Initialize the page
+    let currentThemeId = getCurrentTheme();
+    let themes: ThemeMetadata[] = [];
+
+    function renderCurrentTheme() {
+      const themeMeta = getThemeMetadata(currentThemeId);
+      const nameEl = document.getElementById('current-theme-name');
+      const swatchEl = document.getElementById('current-theme-swatch');
+
+      if (nameEl && themeMeta) {
+        nameEl.textContent = themeMeta.name;
+      }
+
+      if (swatchEl && themeMeta) {
+        swatchEl.style.backgroundColor = themeMeta.primaryColor;
+      }
+    }
+
+    function renderThemeGrid() {
+      const gridEl = document.getElementById('theme-grid');
+      if (!gridEl) return;
+
+      themes = getAllThemeMetadata();
+
+      gridEl.innerHTML = themes.map(theme => {
+        const isActive = theme.id === currentThemeId;
+        const borderClass = isActive
+          ? 'border-2 border-primary'
+          : 'border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600';
+
+        return `
+          <button
+            data-theme-id="${theme.id}"
+            class="theme-selector relative p-3 rounded-lg ${borderClass} bg-white dark:bg-slate-700/50 transition-all text-left group"
+          >
+            <div
+              class="w-full h-12 rounded-md mb-2 shadow-sm"
+              style="background-color: ${theme.primaryColor}"
+            ></div>
+            <p class="text-sm font-medium text-slate-900 dark:text-white mb-1 truncate">
+              ${theme.name}
+            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+              ${theme.description}
+            </p>
+            ${isActive ? `
+              <div class="absolute top-1 right-1 bg-primary text-white text-xs font-medium px-2 py-0.5 rounded">
+                Active
+              </div>
+            ` : ''}
+          </button>
+        `;
+      }).join('');
+
+      // Add click handlers
+      document.querySelectorAll('.theme-selector').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const themeId = (e.currentTarget as HTMLElement).dataset.themeId;
+          if (themeId) {
+            handleThemeSelect(themeId);
+          }
+        });
+      });
+    }
+
+    function handleThemeSelect(themeId: string) {
+      switchTheme(themeId, true); // Save preference
+      currentThemeId = themeId;
+      renderCurrentTheme();
+      renderThemeGrid();
+      updateResetButton();
+    }
+
+    function handleReset() {
+      clearUserPreference();
+      currentThemeId = getSiteDefaultTheme();
+      switchTheme(currentThemeId, false);
+      renderCurrentTheme();
+      renderThemeGrid();
+      updateResetButton();
+    }
+
+    function updateResetButton() {
+      const resetBtn = document.getElementById('reset-theme-btn');
+      if (resetBtn) {
+        resetBtn.disabled = !hasUserPreference();
+      }
+    }
+
+    function initDarkModeToggle() {
+      const toggleBtn = document.getElementById('dark-mode-toggle');
+      if (!toggleBtn) return;
+
+      const updateToggleUI = () => {
+        const dark = isDarkMode();
+        if (dark) {
+          toggleBtn.classList.add('bg-primary');
+          toggleBtn.classList.remove('bg-slate-300');
+          toggleBtn.querySelector('.toggle-dot')?.classList.add('translate-x-5');
+        } else {
+          toggleBtn.classList.add('bg-slate-300');
+          toggleBtn.classList.remove('bg-primary');
+          toggleBtn.querySelector('.toggle-dot')?.classList.remove('translate-x-5');
+        }
+      };
+
+      updateToggleUI();
+
+      toggleBtn.addEventListener('click', () => {
+        toggleDarkModeUtil();
+        updateToggleUI();
+      });
+
+      // Listen for dark mode changes from other sources
+      window.addEventListener('darkmode-changed', () => {
+        updateToggleUI();
+      });
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCurrentTheme();
+      renderThemeGrid();
+      updateResetButton();
+      initDarkModeToggle();
+
+      // Add reset button handler
+      const resetBtn = document.getElementById('reset-theme-btn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', handleReset);
+      }
+    });
+
+    // Listen for theme changes from other sources
+    window.addEventListener('theme-changed', () => {
+      currentThemeId = getCurrentTheme();
+      renderCurrentTheme();
+      renderThemeGrid();
+      updateResetButton();
+    });
+  </script>
+</BaseLayout>

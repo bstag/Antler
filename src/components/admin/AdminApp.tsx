@@ -8,6 +8,7 @@ import { FileManager } from './FileManager';
 import { ResumeManager } from './ResumeManager';
 import { ResumeLayout } from './ResumeLayout';
 import { SiteConfiguration } from './SiteConfiguration';
+import { ThemeManager } from './ThemeManager';
 import type { SchemaDefinition } from '../../lib/admin/types';
 
 // Global styles for admin interface
@@ -175,6 +176,7 @@ const AdminApp: React.FC<AdminAppProps> = () => {
               <Route path="/content/:collection/new" element={<ContentEditor schemas={mainSchemas} />} />
               <Route path="/content/:collection/:id" element={<ContentEditor schemas={mainSchemas} />} />
               <Route path="/files" element={<FileManager />} />
+              <Route path="/theme-settings" element={<ThemeManager />} />
               <Route path="/site-config" element={<SiteConfiguration />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

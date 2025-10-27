@@ -32,13 +32,13 @@ const description = post.data.description;
 <ConditionalRoute contentTypeId="blog">
   <BaseLayout title={title} description={description}>
     <Header />
-    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <main class="min-h-screen bg-surface">
     <article class="container mx-auto px-4 py-16 max-w-4xl">
       <!-- Back to Blog -->
       <div class="mb-8">
-        <a 
-          href="/blog" 
-          class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 text-primary hover:opacity-80 transition-all"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -61,7 +61,7 @@ const description = post.data.description;
 
         <div class="flex flex-wrap gap-2 mb-4">
           {post.data.tags.map(tag => (
-            <span class="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+            <span class="badge badge-primary text-sm">
               {tag}
             </span>
           ))}
@@ -120,7 +120,7 @@ const description = post.data.description;
                 href={`/blog/${prevPost.slug}`}
                 class="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-slate-200 dark:border-slate-700"
               >
-                <h3 class="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <h3 class="font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                   {prevPost.data.title}
                 </h3>
                 <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">
@@ -137,7 +137,7 @@ const description = post.data.description;
                 href={`/blog/${nextPost.slug}`}
                 class="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-slate-200 dark:border-slate-700"
               >
-                <h3 class="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <h3 class="font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                   {nextPost.data.title}
                 </h3>
                 <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">
@@ -151,9 +151,9 @@ const description = post.data.description;
 
       <!-- Back to Top -->
       <div class="text-center mt-12">
-        <button 
+        <button
           onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          class="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
@@ -204,7 +204,14 @@ const description = post.data.description;
   }
 
   .prose blockquote {
-    @apply border-l-4 border-blue-500 pl-4 italic text-slate-600 dark:text-slate-400 bg-blue-50 dark:bg-blue-900/20 py-2 rounded-r;
+    border-left: 4px solid var(--color-primary);
+    background-color: var(--color-primary-lighter);
+    @apply pl-4 italic text-slate-600 dark:text-slate-400 py-2 rounded-r;
+  }
+
+  :global(.dark) .prose blockquote {
+    background-color: var(--color-primary-darker);
+    opacity: 0.3;
   }
 
   .prose code {
@@ -220,7 +227,8 @@ const description = post.data.description;
   }
 
   .prose a {
-    @apply text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline;
+    color: var(--color-primary);
+    @apply hover:opacity-80 underline transition-opacity;
   }
 
   .prose img {

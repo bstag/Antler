@@ -24,7 +24,7 @@ const description = 'Complete guide to using and customizing Antler.';
 <ConditionalRoute contentTypeId="docs">
   <BaseLayout title={title} description={description}>
     <Header />
-    <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <main class="min-h-screen bg-surface">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-16">
@@ -43,7 +43,7 @@ const description = 'Complete guide to using and customizing Antler.';
             type="text"
             id="doc-search"
             placeholder="Search documentation..."
-            class="w-full px-6 py-4 pl-12 text-lg border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
+            class="w-full px-6 py-4 pl-12 text-lg border border-slate-300 dark:border-slate-600 rounded-xl focus-ring bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
           />
           <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -57,7 +57,7 @@ const description = 'Complete guide to using and customizing Antler.';
           {Object.entries(groupedDocs).map(([group, docs]) => (
             <div class="doc-group mb-12">
               <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
-                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
                 {group}
@@ -69,7 +69,7 @@ const description = 'Complete guide to using and customizing Antler.';
                     <div class="p-6">
                       <div class="flex items-start justify-between mb-4">
                         <div class="flex-1">
-                          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
                             <a href={`/docs/${doc.slug}`} class="hover:underline">
                               {doc.data.title}
                             </a>
@@ -80,7 +80,7 @@ const description = 'Complete guide to using and customizing Antler.';
                         </div>
                         
                         {doc.data.order && (
-                          <span class="flex-shrink-0 w-8 h-8 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center text-sm font-bold ml-4">
+                          <span class="flex-shrink-0 w-8 h-8 badge badge-primary rounded-full flex items-center justify-center text-sm font-bold ml-4">
                             {doc.data.order}
                           </span>
                         )}
@@ -91,9 +91,9 @@ const description = 'Complete guide to using and customizing Antler.';
                           {group}
                         </span>
                         
-                        <a 
+                        <a
                           href={`/docs/${doc.slug}`}
-                          class="inline-flex items-center gap-1 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium text-sm transition-colors"
+                          class="inline-flex items-center gap-1 text-primary hover:opacity-80 font-medium text-sm transition-all"
                         >
                           Read More
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,12 +154,12 @@ const description = 'Complete guide to using and customizing Antler.';
             <p class="text-sm text-slate-600 dark:text-slate-300">Complete API documentation</p>
           </a>
 
-          <a 
-            href="/projects" 
+          <a
+            href="/projects"
             class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group"
           >
-            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 quick-link-icon rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6 quick-link-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
             </div>
@@ -261,5 +261,21 @@ const description = 'Complete guide to using and customizing Antler.';
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .quick-link-icon {
+    background-color: var(--color-primary-lighter);
+  }
+
+  :global(.dark) .quick-link-icon {
+    background-color: var(--color-primary-darker);
+  }
+
+  .quick-link-icon-svg {
+    color: var(--color-primary-dark);
+  }
+
+  :global(.dark) .quick-link-icon-svg {
+    color: var(--color-primary-light);
   }
 </style>
