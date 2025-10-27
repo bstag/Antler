@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { NavigationItem, SiteConfig } from '../types/config';
 import { configClient } from '../lib/config/client';
+import { withBase, isActivePath } from '../lib/utils/base-url';
 
 interface DynamicNavigationProps {
   currentPath?: string;
@@ -39,9 +40,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
   };
 
   const isActiveLink = (href: string): boolean => {
-    if (href === '/' && currentPath === '/') return true;
-    if (href !== '/' && currentPath.startsWith(href)) return true;
-    return false;
+    return isActivePath(href, currentPath);
   };
 
   const toggleMobileMenu = () => {
@@ -83,7 +82,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
             {fallbackNav.map((item) => (
               <a
                 key={item.id}
-                href={item.href}
+                href={withBase(item.href)}
                 className={`nav-link ${isActiveLink(item.href) ? 'active' : ''}`}
                 aria-current={isActiveLink(item.href) ? 'page' : undefined}
               >
@@ -118,7 +117,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
               {fallbackNav.map((item) => (
                 <a
                   key={item.id}
-                  href={item.href}
+                  href={withBase(item.href)}
                   onClick={closeMobileMenu}
                   className={`mobile-nav-link ${isActiveLink(item.href) ? 'active' : ''}`}
                   aria-current={isActiveLink(item.href) ? 'page' : undefined}
@@ -143,7 +142,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
           {enabledNavigation.map((item) => (
             <a
               key={item.id}
-              href={item.href}
+              href={withBase(item.href)}
               className={`nav-link ${isActiveLink(item.href) ? 'active' : ''}`}
               aria-current={isActiveLink(item.href) ? 'page' : undefined}
             >
@@ -178,7 +177,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
             {enabledNavigation.map((item) => (
               <a
                 key={item.id}
-                href={item.href}
+                href={withBase(item.href)}
                 onClick={closeMobileMenu}
                 className={`mobile-nav-link ${isActiveLink(item.href) ? 'active' : ''}`}
                 aria-current={isActiveLink(item.href) ? 'page' : undefined}
