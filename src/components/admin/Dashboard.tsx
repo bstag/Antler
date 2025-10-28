@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { SchemaDefinition } from '../../lib/admin/types';
+import { adminFetch } from '../../lib/admin/api-client';
 
 interface DashboardProps {
   schemas: Record<string, SchemaDefinition>;
@@ -26,7 +27,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
       const collections = Object.keys(schemas);
       const statsPromises = collections.map(async (collection) => {
         try {
-          const response = await fetch(`/admin/api/content/${collection}?limit=1`);
+          const response = await adminFetch(`admin/api/content/${collection}?limit=1`);
           if (response.ok) {
             const data = await response.json();
             return [collection, {

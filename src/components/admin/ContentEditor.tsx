@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { DynamicForm } from './DynamicForm';
 import { MarkdownEditor } from './MarkdownEditor';
 import type { ContentItem, SchemaDefinition } from '../../lib/admin/types';
+import { adminFetch } from '../../lib/admin/api-client';
 
 interface ContentEditorProps {
   schemas: Record<string, SchemaDefinition>;
@@ -62,7 +63,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/admin/api/content/${collection}/${id}`);
+      const response = await adminFetch(`admin/api/content/${collection}/${id}`);
       
       if (!response.ok) {
         throw new Error('Failed to load content');
@@ -101,12 +102,12 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       };
 
       const url = isNew
-        ? `/admin/api/content/${collection}`
-        : `/admin/api/content/${collection}/${id}`;
+        ? `admin/api/content/${collection}`
+        : `admin/api/content/${collection}/${id}`;
 
       const method = isNew ? 'POST' : 'PUT';
 
-      const response = await fetch(url, {
+      const response = await adminFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json'

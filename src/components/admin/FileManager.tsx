@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { FileReference, UploadResult } from '../../lib/admin/types';
+import { adminFetch } from '../../lib/admin/api-client';
 
 export const FileManager: React.FC = () => {
   const [files, setFiles] = useState<FileReference[]>([]);
@@ -24,7 +25,7 @@ export const FileManager: React.FC = () => {
         directory: currentDirectory
       });
 
-      const response = await fetch(`/admin/api/files/list?${params}`);
+      const response = await adminFetch(`admin/api/files/list?${params}`);
       
       if (!response.ok) {
         throw new Error('Failed to load files');
@@ -58,7 +59,7 @@ export const FileManager: React.FC = () => {
       });
       formData.append('directory', currentDirectory);
 
-      const response = await fetch('/admin/api/files/upload', {
+      const response = await adminFetch('admin/api/files/upload', {
         method: 'POST',
         body: formData
       });

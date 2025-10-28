@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { ContentItem, SchemaDefinition, ContentListResponse } from '../../lib/admin/types';
+import { adminFetch } from '../../lib/admin/api-client';
 
 interface ContentListProps {
   schemas: Record<string, SchemaDefinition>;
@@ -49,7 +50,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         ...(searchTerm && { search: searchTerm })
       });
 
-      const response = await fetch(`/admin/api/content/${collection}?${params}`);
+      const response = await adminFetch(`admin/api/content/${collection}?${params}`);
       
       if (!response.ok) {
         throw new Error('Failed to load content');
@@ -78,7 +79,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
 
     try {
       setDeleting(id);
-      const response = await fetch(`/admin/api/content/${collection}/${id}`, {
+      const response = await adminFetch(`admin/api/content/${collection}/${id}`, {
         method: 'DELETE'
       });
 

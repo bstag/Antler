@@ -17,14 +17,15 @@ export async function getStaticPaths() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="base-url" content={import.meta.env.BASE_URL || ''}>
   <title>Antler Admin</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
   <!-- Theme stylesheet placeholder - will be updated by script -->
-  <link id="theme-stylesheet" rel="stylesheet" href="/styles/themes/theme-blue.css" />
+  <link id="theme-stylesheet" rel="stylesheet" href={`${import.meta.env.BASE_URL}/styles/themes/theme-blue.css`} />
 
   <!-- Prevent theme flash (FOUC) and initialize themes -->
-  <script is:inline>
+  <script is:inline define:vars={{ baseUrl: import.meta.env.BASE_URL }}>
     (function() {
       // Initialize dark/light mode
       const savedDarkMode = localStorage.getItem('theme');
@@ -45,7 +46,7 @@ export async function getStaticPaths() {
       // Update the theme stylesheet href if user has a preference
       const themeLink = document.getElementById('theme-stylesheet');
       if (themeLink && userPreference) {
-        themeLink.href = `/styles/themes/theme-${colorTheme}.css`;
+        themeLink.href = `${baseUrl}/styles/themes/theme-${colorTheme}.css`;
       }
 
       // Debug: Log to console

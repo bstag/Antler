@@ -118,7 +118,78 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   customLinks: [],
   customization: {
     siteName: 'Antler',
-    description: 'A modern static site generator'
+    description: 'A modern static site generator built with Astro, React, and TypeScript',
+    tagline: 'Transform your Markdown content into beautiful, performant websites',
+    logo: {
+      type: 'svg',
+      svgContent: '<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+      width: 'w-8 h-8'
+    },
+    author: {
+      name: 'Your Name',
+      email: 'your.email@example.com',
+      bio: 'Software developer and content creator'
+    },
+    social: {
+      github: 'https://github.com/yourusername',
+      twitter: 'https://twitter.com/yourusername',
+      linkedin: 'https://linkedin.com/in/yourusername',
+      custom: []
+    },
+    seo: {
+      keywords: ['static site generator', 'astro', 'markdown', 'blog'],
+      defaultImage: '/images/og-default.png'
+    },
+    footer: {
+      copyrightText: `© ${new Date().getFullYear()} Antler. Built with ❤️ using Astro and React.`,
+      showBuiltWith: true,
+      showSocialLinks: true,
+      legalLinks: [
+        { label: 'Privacy Policy', href: '/privacy', external: false },
+        { label: 'Terms of Service', href: '/terms', external: false }
+      ],
+      customSections: [
+        {
+          title: 'Quick Links',
+          links: [
+            { label: 'Home', href: '/', external: false },
+            { label: 'Blog', href: '/blog', external: false },
+            { label: 'Projects', href: '/projects', external: false },
+            { label: 'Resume', href: '/resume', external: false }
+          ]
+        },
+        {
+          title: 'Resources',
+          links: [
+            { label: 'Documentation', href: '/docs', external: false },
+            { label: 'Installation', href: '/docs/installation', external: false },
+            { label: 'Contact', href: '/contact', external: false },
+            { label: 'GitHub', href: 'https://github.com/yourusername/antler', external: true }
+          ]
+        }
+      ]
+    },
+    urls: {
+      baseUrl: 'https://bstag.github.io',
+      basePath: '/Antler'
+    },
+    theme: {
+      default: 'blue',
+      allowUserOverride: true,
+      availableThemes: ['blue', 'indigo', 'purple', 'pink', 'green', 'orange', 'red']
+    },
+    features: {
+      analytics: {
+        enabled: false
+      },
+      rss: {
+        enabled: true,
+        feedPath: '/feed.xml'
+      },
+      sitemap: {
+        enabled: true
+      }
+    }
   },
   lastModified: new Date().toISOString()
 };

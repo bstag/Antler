@@ -10,6 +10,7 @@ import { ResumeLayout } from './ResumeLayout';
 import { SiteConfiguration } from './SiteConfiguration';
 import { ThemeManager } from './ThemeManager';
 import type { SchemaDefinition } from '../../lib/admin/types';
+import { adminFetch, getAdminBaseUrl } from '../../lib/admin/api-client';
 
 // Global styles for admin interface
 const adminStyles = `
@@ -91,7 +92,7 @@ const AdminApp: React.FC<AdminAppProps> = () => {
       setLoading(true);
       const collections = ['blog', 'projects', 'docs', 'resumePersonal', 'resumeExperience', 'resumeEducation', 'resumeSkills', 'resumeCertifications', 'resumeLanguages', 'resumeProjects'];
       const schemaPromises = collections.map(async (collection) => {
-        const response = await fetch(`/admin/api/schema/${collection}`);
+        const response = await adminFetch(`admin/api/schema/${collection}`);
         if (response.ok) {
           const data = await response.json();
           return [collection, data.data];
@@ -152,8 +153,12 @@ const AdminApp: React.FC<AdminAppProps> = () => {
     Object.entries(schemas).filter(([key]) => key.startsWith('resume'))
   );
 
+  // Get base URL and construct full admin basename
+  const baseUrl = getAdminBaseUrl();
+  const adminBasename = baseUrl ? `${baseUrl}/admin` : '/admin';
+
   return (
-    <Router basename="/admin">
+    <Router basename={adminBasename}>
       <Routes>
         {/* Resume Manager Routes */}
         <Route path="/resume/*" element={

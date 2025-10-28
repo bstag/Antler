@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { SchemaDefinition } from '../../lib/admin/types';
+import { adminFetch } from '../../lib/admin/api-client';
 
 interface ResumeManagerProps {
   schemas: Record<string, SchemaDefinition>;
@@ -73,7 +74,7 @@ export const ResumeManager: React.FC<ResumeManagerProps> = ({ schemas }) => {
       setLoading(true);
       const statsPromises = resumeCollections.map(async (collection) => {
         try {
-          const response = await fetch(`/admin/api/content/${collection}`);
+          const response = await adminFetch(`admin/api/content/${collection}`);
           if (response.ok) {
             const data = await response.json();
             const items = data.data?.items || []; // Fix: Access items from data.data.items

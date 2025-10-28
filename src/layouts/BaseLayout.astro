@@ -3,8 +3,8 @@
 import '../styles/global.css';
 import '../styles/animations.css';
 
-// Import the site config directly (works at build time)
-import siteConfig from '../../site.config.json';
+// Import static config helper
+import { getSiteConfig } from '../lib/config/static';
 
 export interface Props {
   title: string;
@@ -13,18 +13,22 @@ export interface Props {
   type?: string;
 }
 
+// Load site configuration
+const config = await getSiteConfig();
+const { description: defaultDescription, author, seo, theme, urls } = config.customization;
+
 const {
   title,
-  description = 'A modern static site generator built with Astro',
-  image = '/og-image.jpg',
+  description = defaultDescription,
+  image = seo.defaultImage || '/og-image.jpg',
   type = 'website'
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-// Get default theme from config (available at build time)
-const defaultTheme = siteConfig.customization?.theme?.default || 'blue';
-const availableThemes = siteConfig.customization?.theme?.availableThemes || ['blue'];
+// Get theme configuration
+const defaultTheme = theme.default;
+const availableThemes = theme.availableThemes;
 ---
 
 <!DOCTYPE html>
@@ -55,7 +59,19 @@ const availableThemes = siteConfig.customization?.theme?.availableThemes || ['bl
     
     <!-- Additional SEO -->
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="Your Name" />
+    <meta name="author" content={author.name} />
+    {seo.keywords && seo.keywords.length > 0 && (
+      <meta name="keywords" content={seo.keywords.join(', ')} />
+    )}
+    {seo.googleSiteVerification && (
+      <meta name="google-site-verification" content={seo.googleSiteVerification} />
+    )}
+    {seo.twitterHandle && (
+      <meta name="twitter:creator" content={seo.twitterHandle} />
+    )}
+    {seo.facebookAppId && (
+      <meta property="fb:app_id" content={seo.facebookAppId} />
+    )}
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

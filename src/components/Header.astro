@@ -1,10 +1,11 @@
 ---
 import ThemeToggle from './ThemeToggle.tsx';
 import DynamicNavigation from './DynamicNavigation.tsx';
-import { configManager } from '../lib/config/manager';
+import { getSiteConfig, resolvePath } from '../lib/config/static';
 
 // Load site configuration
-const config = await configManager.getConfig();
+const config = await getSiteConfig();
+const { siteName, logo } = config.customization;
 
 // Get current path for active link highlighting
 const currentPath = Astro.url.pathname;
@@ -15,13 +16,18 @@ const currentPath = Astro.url.pathname;
     <div class="flex justify-between items-center h-16 relative">
       <!-- Logo -->
       <div class="flex-shrink-0">
-        <a href={import.meta.env.BASE_URL + '/'} class="flex items-center space-x-2 text-xl font-bold text-primary hover:opacity-80 transition-opacity">
-          <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          </svg>
-          <span>Antler</span>
+        <a href={resolvePath(config, '/')} class="flex items-center space-x-2 text-xl font-bold text-primary hover:opacity-80 transition-opacity">
+          {logo && logo.type === 'svg' && logo.svgContent && (
+            <Fragment set:html={logo.svgContent} />
+          )}
+          {logo && logo.type === 'image' && logo.imagePath && (
+            <img
+              src={logo.imagePath}
+              alt={logo.imageAlt || siteName}
+              class={logo.width || 'w-8 h-8'}
+            />
+          )}
+          <span>{siteName}</span>
         </a>
       </div>
 

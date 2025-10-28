@@ -31,10 +31,104 @@ const CustomLinkSchema = z.object({
   icon: z.string().optional()
 });
 
+const LogoConfigSchema = z.object({
+  type: z.enum(['svg', 'image', 'text']),
+  svgContent: z.string().optional(),
+  imagePath: z.string().optional(),
+  imageAlt: z.string().optional(),
+  width: z.string().optional(),
+  height: z.string().optional()
+});
+
+const AuthorInfoSchema = z.object({
+  name: z.string().min(1, 'Author name is required'),
+  email: z.string().email().optional(),
+  bio: z.string().optional(),
+  avatar: z.string().optional()
+});
+
+const SocialLinksSchema = z.object({
+  github: z.string().url().optional(),
+  twitter: z.string().url().optional(),
+  linkedin: z.string().url().optional(),
+  facebook: z.string().url().optional(),
+  instagram: z.string().url().optional(),
+  youtube: z.string().url().optional(),
+  custom: z.array(z.object({
+    name: z.string(),
+    url: z.string().url(),
+    icon: z.string().optional()
+  })).optional()
+});
+
+const SEOSettingsSchema = z.object({
+  defaultImage: z.string().optional(),
+  twitterHandle: z.string().optional(),
+  facebookAppId: z.string().optional(),
+  googleSiteVerification: z.string().optional(),
+  keywords: z.array(z.string()).optional()
+});
+
+const FooterLinkSchema = z.object({
+  label: z.string(),
+  href: z.string(),
+  external: z.boolean().optional()
+});
+
+const FooterSectionSchema = z.object({
+  title: z.string(),
+  links: z.array(FooterLinkSchema)
+});
+
+const FooterConfigSchema = z.object({
+  copyrightText: z.string(),
+  showBuiltWith: z.boolean(),
+  showSocialLinks: z.boolean(),
+  legalLinks: z.array(FooterLinkSchema).optional(),
+  customSections: z.array(FooterSectionSchema).optional()
+});
+
+const SiteURLsSchema = z.object({
+  baseUrl: z.string(),
+  basePath: z.string(),
+  primaryDomain: z.string().optional()
+});
+
+const AnalyticsConfigSchema = z.object({
+  enabled: z.boolean(),
+  googleAnalyticsId: z.string().optional(),
+  plausibleDomain: z.string().optional()
+});
+
+const FeaturesConfigSchema = z.object({
+  analytics: AnalyticsConfigSchema.optional(),
+  rss: z.object({
+    enabled: z.boolean(),
+    feedPath: z.string().optional()
+  }).optional(),
+  sitemap: z.object({
+    enabled: z.boolean()
+  }).optional()
+});
+
+const ThemeConfigSchema = z.object({
+  default: z.string(),
+  allowUserOverride: z.boolean(),
+  availableThemes: z.array(z.string())
+});
+
 const SiteCustomizationSchema = z.object({
   siteName: z.string().min(1, 'Site name is required'),
   description: z.string().min(1, 'Site description is required'),
-  logo: z.string().optional()
+  tagline: z.string().optional(),
+  logo: LogoConfigSchema.optional(),
+  author: AuthorInfoSchema,
+  social: SocialLinksSchema,
+  seo: SEOSettingsSchema,
+  footer: FooterConfigSchema,
+  urls: SiteURLsSchema,
+  theme: ThemeConfigSchema,
+  features: FeaturesConfigSchema
 });
 
 const SiteConfigSchema = z.object({

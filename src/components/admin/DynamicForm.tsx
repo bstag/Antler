@@ -3,6 +3,7 @@ import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { FieldDefinition, SchemaDefinition } from '../../lib/admin/types';
+import { adminFetch } from '../../lib/admin/api-client';
 
 interface DynamicFormProps {
   schema: SchemaDefinition;
@@ -666,7 +667,7 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({ onUpload, accept = 
       formData.append('file', file);
       formData.append('directory', 'images');
 
-      const response = await fetch('/admin/api/files/upload', {
+      const response = await adminFetch('admin/api/files/upload', {
         method: 'POST',
         body: formData
       });

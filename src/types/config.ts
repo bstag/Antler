@@ -28,10 +28,104 @@ export interface CustomLink {
   icon?: string;
 }
 
+export interface LogoConfig {
+  type: 'svg' | 'image' | 'text';
+  svgContent?: string;
+  imagePath?: string;
+  imageAlt?: string;
+  width?: string;
+  height?: string;
+}
+
+export interface AuthorInfo {
+  name: string;
+  email?: string;
+  bio?: string;
+  avatar?: string;
+}
+
+export interface SocialLinks {
+  github?: string;
+  twitter?: string;
+  linkedin?: string;
+  facebook?: string;
+  instagram?: string;
+  youtube?: string;
+  custom?: Array<{
+    name: string;
+    url: string;
+    icon?: string;
+  }>;
+}
+
+export interface SEOSettings {
+  defaultImage?: string;
+  twitterHandle?: string;
+  facebookAppId?: string;
+  googleSiteVerification?: string;
+  keywords?: string[];
+}
+
+export interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+export interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
+export interface FooterConfig {
+  copyrightText: string;
+  showBuiltWith: boolean;
+  showSocialLinks: boolean;
+  legalLinks?: FooterLink[];
+  customSections?: FooterSection[];
+}
+
+export interface SiteURLs {
+  baseUrl: string;
+  basePath: string;
+  primaryDomain?: string;
+}
+
+export interface AnalyticsConfig {
+  enabled: boolean;
+  googleAnalyticsId?: string;
+  plausibleDomain?: string;
+}
+
+export interface FeaturesConfig {
+  analytics?: AnalyticsConfig;
+  rss?: {
+    enabled: boolean;
+    feedPath?: string;
+  };
+  sitemap?: {
+    enabled: boolean;
+  };
+}
+
+export interface ThemeConfig {
+  default: string;
+  allowUserOverride: boolean;
+  availableThemes: string[];
+}
+
 export interface SiteCustomization {
   siteName: string;
   description: string;
-  logo?: string;
+  tagline?: string;
+  logo?: LogoConfig;
+  author: AuthorInfo;
+  social: SocialLinks;
+  seo: SEOSettings;
+  footer: FooterConfig;
+  urls: SiteURLs;
+  theme: ThemeConfig;
+  features: FeaturesConfig;
 }
 
 export interface SiteConfig {
