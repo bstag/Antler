@@ -8,9 +8,6 @@ liveUrl: "https://your-portfolio.com"
 featured: true
 createdAt: 2024-01-10
 ---
-
-# Personal Portfolio Website
-
 A comprehensive portfolio website that serves as a digital resume and project showcase. Built with performance and user experience in mind, featuring smooth animations and responsive design.
 
 ## Design Philosophy

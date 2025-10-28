@@ -14,8 +14,6 @@ author: Alex Johnson
 readingTime: 6
 featured: true
 ---
-# Building Lightning-Fast Sites with Astro
-
 Astro has emerged as a game-changer in the static site generation landscape. With its unique "island architecture" and zero-JavaScript-by-default approach, it's helping developers build faster, more efficient websites.
 
 ## What Makes Astro Special?

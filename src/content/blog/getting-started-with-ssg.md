@@ -8,9 +8,6 @@ author: "John Doe"
 readingTime: 5
 featured: false
 ---
-
-# Getting Started with Static Site Generation
-
 Static Site Generation (SSG) has revolutionized how we build and deploy websites. By pre-rendering pages at build time, SSG delivers unmatched performance, security, and developer experience.
 
 ## Why Choose SSG?

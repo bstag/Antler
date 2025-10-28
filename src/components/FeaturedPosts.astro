@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { withBaseAsset } from '../lib/utils/base-url';
 
 // Get featured blog posts (limit to 3)
 const allPosts = await getCollection('blog');
@@ -35,8 +36,8 @@ function formatDate(date: Date): string {
         <article class="card group hover:shadow-lg transition-all duration-300 animate-fade-in">
           <!-- Featured Image -->
           <div class="aspect-video featured-image-bg rounded-t-lg mb-4 overflow-hidden">
-            <img 
-              src={post.data.featuredImage || `https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(`Blog post about ${post.data.title}, modern web development, clean minimal design`)}&image_size=landscape_16_9`}
+            <img
+              src={post.data.featuredImage ? withBaseAsset(post.data.featuredImage) : `https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(`Blog post about ${post.data.title}, modern web development, clean minimal design`)}&image_size=landscape_16_9`}
               alt={post.data.title}
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               loading="lazy"

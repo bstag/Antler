@@ -4,9 +4,6 @@ description: "Learn how to create blog posts, projects, and documentation in Ant
 group: "Content Management"
 order: 1
 ---
-
-# Content Creation Guide
-
 This guide will walk you through creating different types of content in Antler. You can create content in two ways:
 
 1. **Admin Interface** (Recommended): Use the web-based editor at `/admin` for guided content creation

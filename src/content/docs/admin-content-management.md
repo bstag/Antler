@@ -4,9 +4,6 @@ description: "Detailed guide to creating, editing, and managing content using th
 group: "Admin Interface"
 order: 2
 ---
-
-# Admin Content Management
-
 The Antler admin interface provides powerful content management capabilities through schema-aware forms, a rich markdown editor, and real-time validation. This guide covers all aspects of creating and managing content through the admin interface.
 
 ## Content Editor Overview

@@ -4,9 +4,6 @@ description: Step-by-step instructions for setting up Antler
 group: Getting Started
 order: 0
 ---
-
-# Installation Guide
-
 Welcome to Antler! This guide will walk you through setting up your development environment and getting your static site generator running with its powerful admin interface.
 
 ## System Requirements

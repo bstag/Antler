@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
+import { withBaseAsset } from '../../lib/utils/base-url';
 
 // Get all blog posts
 const allPosts = await getCollection('blog');
@@ -60,8 +61,8 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
           >
             {post.data.featuredImage && (
               <div class="overflow-hidden">
-                <img 
-                  src={post.data.featuredImage} 
+                <img
+                  src={withBaseAsset(post.data.featuredImage)}
                   alt={post.data.title}
                   class="w-full h-48 object-cover hover-scale transition-transform duration-300"
                 />

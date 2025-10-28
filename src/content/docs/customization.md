@@ -4,9 +4,6 @@ description: "How to customize themes, layouts, and styling in Antler"
 group: "Advanced"
 order: 2
 ---
-
-# Customization Guide
-
 Antler is built with customization in mind. This guide covers how to modify themes, layouts, styling, and components to match your brand and requirements.
 
 ## Theme System

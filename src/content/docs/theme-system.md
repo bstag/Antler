@@ -4,9 +4,6 @@ description: "Complete guide to Antler's 16-theme system for both static sites a
 group: "Advanced"
 order: 1
 ---
-
-# Theme System
-
 Antler features a comprehensive theme system with 16 built-in color themes, supporting both light and dark modes. The system works seamlessly across both the static production site and the admin interface, providing consistent theming throughout your entire application.
 
 ## Overview

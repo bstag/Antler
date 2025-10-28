@@ -4,9 +4,6 @@ description: "How to add new content types and extend the Antler system"
 group: "Advanced"
 order: 1
 ---
-
-# Adding Content Types
-
 Antler is designed to be extensible. You can easily add new content types to suit your specific needs, whether it's for testimonials, team members, products, or any other structured content.
 
 ## Understanding Content Collections

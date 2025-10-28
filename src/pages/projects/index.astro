@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
+import { withBaseAsset } from '../../lib/utils/base-url';
 
 const allProjects: CollectionEntry<'projects'>[] = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => 
@@ -60,8 +61,8 @@ const description = 'Explore my portfolio of web development projects and techni
           >
             <div class="aspect-video project-placeholder relative overflow-hidden">
               {project.data.projectImage ? (
-                <img 
-                  src={project.data.projectImage} 
+                <img
+                  src={withBaseAsset(project.data.projectImage)}
                   alt={project.data.projectName}
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

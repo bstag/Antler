@@ -4,9 +4,6 @@ description: "Complete guide to setting up and configuring the serverless contac
 group: "Configuration"
 order: 5
 ---
-
-# Contact Form Setup
-
 description: "Learn how to configure and deploy the serverless contact form functionality in Antler. The contact form supports both serverless deployments (Cloudflare Pages) and static deployments (GitHub Pages) with third-party form services."
 
 ## How It Works

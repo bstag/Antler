@@ -6,9 +6,6 @@ description: >-
 group: Getting Started
 order: 1
 ---
-
-# Getting Started with Antler
-
 Antler is a modern, dual-purpose content management system that combines the best of both worlds:
 
 1. **Static Site Generator**: Creates fast, secure, deployable static websites

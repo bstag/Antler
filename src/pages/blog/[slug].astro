@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
+import { withBaseAsset } from '../../lib/utils/base-url';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -51,8 +52,8 @@ const description = post.data.description;
       <header class="mb-12">
         {post.data.featuredImage && (
           <div class="aspect-video mb-8 rounded-xl overflow-hidden shadow-lg">
-            <img 
-              src={post.data.featuredImage} 
+            <img
+              src={withBaseAsset(post.data.featuredImage)}
               alt={post.data.title}
               class="w-full h-full object-cover"
             />

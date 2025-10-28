@@ -4,9 +4,6 @@ description: "How to deploy your Antler site to various hosting platforms"
 group: "Advanced"
 order: 3
 ---
-
-# Deployment Guide
-
 Antler is a dual-architecture static site generator that operates differently in development and production environments. This guide covers the build process, deployment strategies, and platform-specific configurations.
 
 ## Development vs Production Architecture

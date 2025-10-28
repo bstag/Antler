@@ -4,9 +4,6 @@ description: "Detailed explanation of each content type (blog, projects, docs) a
 group: "Content Management"
 order: 2
 ---
-
-# Content Types & Schemas
-
 Antler uses Astro's Content Collections feature to provide type-safe content management. Each content type has a defined schema that validates your content and provides TypeScript support.
 
 ## Content Collections Overview

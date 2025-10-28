@@ -2,15 +2,12 @@
 projectName: "Antler"
 projectImage: "/images/projects/antler.jpg"
 description: "A modern static site generator that transforms Markdown files into beautiful, performant websites with component-based architecture."
-technologies: ["Astro", "React", "TypeScript", "Tailwind CSS", "Supabase"]
-githubLink: "https://github.com/yourusername/antler"
-liveUrl: "https://your-antler-demo.com"
+technologies: ["Astro", "React", "TypeScript", "Tailwind CSS"]
+githubLink: "https://github.com/bstag/Antler"
+liveUrl: "https://bstag.github.io/Antler/"
 featured: true
-createdAt: 2024-01-15
+createdAt: 2025-10-24
 ---
-
-# Antler
-
 A powerful static site generator built with modern web technologies. This project demonstrates how to create a content management system using flat files (Markdown + YAML frontmatter) while maintaining the flexibility and interactivity of modern web applications.
 
 ## Key Features

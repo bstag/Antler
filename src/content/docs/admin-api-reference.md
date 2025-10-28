@@ -4,9 +4,6 @@ description: "Complete API documentation for Antler admin interface endpoints"
 group: "Admin Interface"
 order: 4
 ---
-
-# Admin API Reference
-
 The Antler admin interface provides a comprehensive REST API for managing content, files, and schemas. All API endpoints are available only during development and are automatically excluded from production builds.
 
 ## Base Configuration

@@ -4,9 +4,6 @@ description: "How the content configuration works, schemas, and customization op
 group: "Content Management"
 order: 3
 ---
-
-# Configuration Guide
-
 Antler uses Astro's Content Collections API for content management. This guide explains how to configure and customize your content types, schemas, and validation rules.
 
 ## Content Configuration File
