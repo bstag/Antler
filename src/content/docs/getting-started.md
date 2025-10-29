@@ -6,26 +6,46 @@ description: >-
 group: Getting Started
 order: 1
 ---
-Antler is a modern, dual-purpose content management system that combines the best of both worlds:
-
-1. **Static Site Generator**: Creates fast, secure, deployable static websites
-2. **Admin Interface**: Provides a user-friendly content management interface during development
+Antler is a sophisticated, dual-purpose content management system that combines the power of static site generation with a comprehensive admin interface for content management.
 
 ## What Makes Antler Unique
 
 ### Dual Architecture
-- **Development Mode**: Full-featured admin interface at `/admin` for content management
+- **Development Mode**: Full-featured React-based admin interface at `/admin` with complete content management capabilities
 - **Production Mode**: Pure static site generation for deployment to any hosting platform
-- **Content-First**: All content stored as Markdown files with YAML frontmatter
-- **Schema-Aware**: Built-in validation and type safety for all content types
+- **Content-First**: All content stored as Markdown files with YAML frontmatter for maximum portability
+- **Schema-Aware**: Built-in validation and type safety with Zod schemas for all content types
 
-### Key Features
-- 📝 **Rich Content Editor**: Markdown editor with live preview
-- 🎨 **Schema-Aware Forms**: Dynamic forms based on content type schemas
-- 📁 **File Management**: Upload and manage images and assets
-- 🚀 **Static Generation**: Deploy anywhere as a static site
-- 🔧 **Type Safety**: Full TypeScript support with Zod validation
-- 📱 **Responsive Design**: Mobile-first admin interface
+### Advanced Features
+
+#### Content Management
+- 📝 **Rich Content Editor**: Advanced Markdown editor with live preview and syntax highlighting
+- 🎨 **Schema-Aware Forms**: Dynamic forms that adapt to content type schemas with real-time validation
+- 📁 **File Management**: Complete file upload, organization, and asset management system
+- 🔄 **Bulk Operations**: Mass content operations for efficient management
+- 🔍 **Content Search**: Advanced search and filtering across all content types
+
+#### Theme System
+- 🎨 **16+ Color Themes**: Professional color schemes including Blue, Purple, Green, Orange families
+- 🌓 **Real-time Switching**: Instant theme changes without page reload
+- 💾 **User Preferences**: Persistent theme selection with localStorage
+- 🎯 **Site-wide Configuration**: Set default themes and control user overrides
+
+#### Resume Management
+- 👤 **Complete Resume System**: 7 specialized content collections for professional profiles
+- 📊 **Personal Information**: Contact details, bio, and professional summary
+- 💼 **Experience Management**: Work history with detailed role descriptions
+- 🎓 **Education Tracking**: Academic background and certifications
+- 🛠️ **Skills Organization**: Technical and soft skills with proficiency levels
+- 🏆 **Achievements**: Awards, certifications, and notable accomplishments
+- 📋 **Projects Portfolio**: Professional and personal project showcases
+
+#### Site Configuration
+- ⚙️ **Template System**: Pre-built site templates for different use cases
+- 🔧 **Configuration Management**: Comprehensive site settings through admin interface
+- 📈 **Analytics Integration**: Built-in support for Google Analytics and other tracking
+- 🔍 **SEO Optimization**: Meta tags, structured data, and search engine optimization
+- 🌐 **Multi-mode Support**: Blog-only, portfolio, documentation, and hybrid modes
 
 ## Quick Start
 
@@ -88,28 +108,53 @@ npm run build
 npm run preview
 ```
 
-## Content Types
+## Content Collections
 
-Antler comes with several pre-configured content types:
+Antler provides comprehensive content collections for different use cases:
 
-- **Blog Posts**: Articles with tags, featured images, and publication dates
-- **Projects**: Portfolio items with technologies, links, and descriptions
-- **Documentation**: Organized docs with groups and ordering
-- **Resume Sections**: Personal, experience, education, skills, and more
+### Core Collections
+- **Blog Posts**: Articles with tags, featured images, publication dates, and reading time
+- **Projects**: Portfolio items with technologies, GitHub links, live URLs, and detailed descriptions
+- **Documentation**: Organized docs with groups, ordering, and cross-references
+- **Team Members**: Staff profiles with roles, bio, and social links
+- **Products**: Product showcases with pricing, features, and specifications
 
-Each content type has its own schema defined in `src/content/config.ts`, ensuring type safety and validation.
+### Resume Collections
+- **Personal Information**: Contact details, professional summary, and bio
+- **Experience**: Work history with detailed role descriptions and achievements
+- **Education**: Academic background, degrees, and certifications
+- **Skills**: Technical and soft skills with proficiency levels
+- **Achievements**: Awards, certifications, and notable accomplishments
+- **Projects**: Professional and personal project portfolio
+- **References**: Professional references and testimonials
+
+Each content collection has its own Zod schema defined in `src/content/config.ts`, ensuring type safety, validation, and consistent data structure across your entire site.
 
 ## Next Steps
 
-- Learn about [Content Creation](./content-creation) methods
-- Explore the [Admin Interface](./admin-interface) features
-- Understand [Content Types](./content-types) and schemas
-- Configure your [Deployment](./deployment) strategy
+### Essential Guides
+- Explore the [Admin Interface](./admin-interface) for comprehensive content management
+- Learn about the [Theme System](./theme-system) and customization options
+- Understand [Resume Management](./resume-management) for professional profiles
+- Review [Site Configuration](./configuration) for advanced settings
+
+### Advanced Features
+- Check out [API Reference](./api-reference) for programmatic access
+- Explore [Site Templates](./site-templates) for different use cases
+- Learn about [Advanced Features](./advanced-features) and customization
+
+### Development Workflow
+1. **Content Creation**: Use the admin interface for guided content creation with schema validation
+2. **Theme Customization**: Select and configure themes through the admin panel
+3. **Site Configuration**: Set up analytics, SEO, and site-wide settings
+4. **File Management**: Upload and organize assets through the file manager
+5. **Production Build**: Generate static files for deployment
 
 ## Getting Help
 
-- Check the documentation for detailed guides
-- Review example content in each content directory
-- Use the admin interface for guided content creation
-- Refer to the API reference for advanced customization
+- **Admin Interface**: Use the built-in help tooltips and guided forms
+- **Documentation**: Comprehensive guides for all features and capabilities
+- **Example Content**: Review sample content in each collection directory
+- **API Reference**: Complete documentation for all available endpoints
+- **Schema Validation**: Real-time feedback and error messages for content validation
 

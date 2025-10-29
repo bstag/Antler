@@ -1,21 +1,48 @@
 ---
 title: "Theme System"
-description: "Complete guide to Antler's 16-theme system for both static sites and admin interface"
-group: "Advanced"
+description: "Comprehensive guide to Antler's theme system with 16+ color themes and real-time switching"
+group: "customization"
 order: 1
 ---
-Antler features a comprehensive theme system with 16 built-in color themes, supporting both light and dark modes. The system works seamlessly across both the static production site and the admin interface, providing consistent theming throughout your entire application.
 
-## Overview
+# Theme System
 
-The theme system consists of:
+Antler CMS features a sophisticated theme system that provides 16+ built-in color themes with seamless switching capabilities. The system supports both site-wide defaults and user preferences, with full integration between development and production modes.
 
-- **16 Color Themes**: Amber, Blue, Cyan, Emerald, Gray, Green, Indigo, Lime, Orange, Pink, Purple, Red, Rose, Sky, Teal, and Yellow
-- **Dual Mode Support**: Light and dark mode for each theme
-- **Universal Coverage**: Works on both static site and admin interface
-- **User Preferences**: Persistent theme selection with localStorage
-- **FOUC Prevention**: Flash of Unstyled Content prevention
-- **CSS Variables**: Theme-aware custom properties for consistent styling
+## Available Themes
+
+### Color Theme Collection
+
+The theme system includes a comprehensive collection of professionally designed color themes:
+
+#### Blue Family
+- **Blue** - Classic professional blue
+- **Indigo** - Deep indigo for sophistication
+- **Cyan** - Bright cyan for modern appeal
+- **Sky** - Light and airy blue
+
+#### Purple Family
+- **Purple** - Rich purple for creativity
+- **Violet** - Soft violet tones
+
+#### Pink/Red Family
+- **Pink** - Soft pink for warmth
+- **Rose** - Elegant rose tones
+- **Red** - Bold red for energy
+
+#### Green Family
+- **Green** - Natural green
+- **Emerald** - Vibrant emerald
+- **Lime** - Fresh lime green
+- **Teal** - Sophisticated teal
+
+#### Warm Tones
+- **Orange** - Vibrant orange for friendliness
+- **Amber** - Warm amber tones
+- **Yellow** - Bright yellow for optimism
+
+#### Neutral
+- **Slate** - Professional gray tones
 
 ## Theme Architecture
 

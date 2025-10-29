@@ -1,9 +1,6 @@
----
-title: "Admin Interface - Comprehensive Guide"
-description: "Complete guide to the powerful React-based Antler admin interface with advanced content management capabilities"
-group: "Admin Interface"
-order: 1
----
+# Antler CMS Admin Interface - Comprehensive Guide
+
+## Overview
 
 The Antler CMS admin interface is a powerful React-based content management system that provides a complete solution for managing your static site content during development. It features a modern, responsive design with comprehensive content management capabilities.
 
@@ -38,18 +35,6 @@ The Antler CMS admin interface is a powerful React-based content management syst
 - Navigation management
 - SEO settings configuration
 - Analytics integration setup
-
-## Accessing the Admin Interface
-
-### Development Mode Only
-The admin interface is **only available during development** and is automatically excluded from production builds. This ensures your deployed site remains fast and secure as a pure static site.
-
-**Access URL**: http://localhost:4321/admin
-
-### Prerequisites
-- Development server must be running (`npm run dev`)
-- Node.js environment with all dependencies installed
-- Modern web browser (Chrome, Firefox, Safari, Edge)
 
 ## Admin Interface Structure
 
@@ -235,13 +220,3 @@ The admin interface communicates with a comprehensive API layer:
 - Ensure Node.js version compatibility (18+)
 
 This comprehensive admin interface makes Antler CMS a powerful tool for both developers and content creators, providing professional-grade content management capabilities while maintaining the simplicity and performance of static site generation.
-- Review network tab for failed requests
-- Verify file system permissions
-- Consult the API reference for endpoint details
-
-## Next Steps
-
-- Learn about [Content Management](./admin-content-management) features
-- Explore [File Management](./admin-file-management) capabilities
-- Review [API Reference](./admin-api-reference) for advanced usage
-- Understand [Deployment](./deployment) differences between development and production

@@ -1,10 +1,268 @@
 ---
-title: "Configuration Guide"
-description: "How the content configuration works, schemas, and customization options"
-group: "Content Management"
-order: 3
+title: "Site Configuration"
+description: "Comprehensive guide to site configuration management, templates, and customization options"
+group: "Configuration"
+order: 1
 ---
-Antler uses Astro's Content Collections API for content management. This guide explains how to configure and customize your content types, schemas, and validation rules.
+
+# Site Configuration Management
+
+Antler CMS provides a comprehensive site configuration system that allows you to customize your site's behavior, appearance, and content structure through both the admin interface and configuration files. The system supports multiple configuration levels and templates for different site types.
+
+## Configuration Architecture
+
+### Configuration Levels
+
+1. **Default Configuration** - Base settings defined in code
+2. **Site Templates** - Pre-configured setups for different site types  
+3. **Site Configuration** - Custom settings in `site.config.json`
+4. **Runtime Configuration** - Dynamic settings managed through admin interface
+
+### Configuration Files
+
+#### Primary Configuration (`site.config.json`)
+Located in the project root, this file contains your site's main configuration:
+
+```json
+{
+  "site": {
+    "title": "Your Site Title",
+    "description": "Site description",
+    "url": "https://yoursite.com",
+    "author": "Your Name"
+  },
+  "theme": {
+    "defaultTheme": "blue",
+    "allowUserThemeSelection": true
+  },
+  "navigation": {
+    "main": [
+      { "name": "Home", "href": "/" },
+      { "name": "Blog", "href": "/blog" },
+      { "name": "Projects", "href": "/projects" }
+    ]
+  },
+  "contentTypes": {
+    "blog": { "enabled": true },
+    "projects": { "enabled": true },
+    "docs": { "enabled": true }
+  }
+}
+```
+
+## Site Configuration Options
+
+### Basic Site Settings
+
+#### Site Information
+- `site.title` - Site title displayed in header and meta tags
+- `site.description` - Site description for SEO and meta tags
+- `site.url` - Canonical site URL for absolute links
+- `site.author` - Default author for content and meta tags
+- `site.logo` - Site logo URL or path
+- `site.favicon` - Favicon URL or path
+
+#### SEO and Meta Settings
+- `seo.defaultImage` - Default social sharing image
+- `seo.twitterHandle` - Twitter handle for Twitter Cards
+- `seo.googleAnalytics` - Google Analytics tracking ID
+- `seo.googleSiteVerification` - Google Search Console verification
+- `seo.robots` - Default robots meta tag content
+
+### Theme Configuration
+
+#### Theme Settings
+- `theme.defaultTheme` - Default color theme for new visitors
+- `theme.allowUserThemeSelection` - Enable user theme switching
+- `theme.darkModeDefault` - Default to dark mode
+- `theme.systemThemeDetection` - Respect system theme preference
+
+#### Available Themes
+The system includes 16+ built-in themes:
+- **Blue Family**: `blue`, `indigo`, `sky`, `cyan`
+- **Green Family**: `green`, `emerald`, `teal`
+- **Warm Family**: `red`, `orange`, `amber`, `yellow`
+- **Purple Family**: `purple`, `violet`, `fuchsia`, `pink`
+- **Neutral**: `gray`, `slate`, `stone`
+
+### Navigation Configuration
+
+#### Main Navigation
+```json
+{
+  "navigation": {
+    "main": [
+      {
+        "name": "Home",
+        "href": "/",
+        "external": false
+      },
+      {
+        "name": "Blog", 
+        "href": "/blog",
+        "external": false,
+        "children": [
+          { "name": "All Posts", "href": "/blog" },
+          { "name": "Categories", "href": "/blog/categories" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Content Type Configuration
+
+#### Enabling/Disabling Content Types
+```json
+{
+  "contentTypes": {
+    "blog": {
+      "enabled": true,
+      "slug": "blog",
+      "title": "Blog",
+      "description": "Latest articles and insights"
+    },
+    "projects": {
+      "enabled": true,
+      "slug": "projects", 
+      "title": "Projects",
+      "description": "Portfolio of work"
+    },
+    "docs": {
+      "enabled": true,
+      "slug": "docs",
+      "title": "Documentation",
+      "description": "Technical documentation"
+    },
+    "resume": {
+      "enabled": false,
+      "slug": "resume",
+      "title": "Resume",
+      "description": "Professional resume"
+    }
+  }
+}
+```
+
+## Site Templates
+
+### Available Templates
+
+#### Blog-Only Template
+Optimized for blogging with minimal additional features:
+```json
+{
+  "template": "blog-only",
+  "contentTypes": {
+    "blog": { "enabled": true },
+    "projects": { "enabled": false },
+    "docs": { "enabled": false }
+  }
+}
+```
+
+#### Portfolio Template
+Focused on showcasing projects and work:
+```json
+{
+  "template": "portfolio", 
+  "contentTypes": {
+    "projects": { "enabled": true },
+    "blog": { "enabled": true },
+    "docs": { "enabled": false }
+  }
+}
+```
+
+#### Documentation Template
+Optimized for technical documentation:
+```json
+{
+  "template": "documentation",
+  "contentTypes": {
+    "docs": { "enabled": true },
+    "blog": { "enabled": false },
+    "projects": { "enabled": false }
+  }
+}
+```
+
+#### Full-Featured Template
+Includes all content types and features:
+```json
+{
+  "template": "full-featured",
+  "contentTypes": {
+    "blog": { "enabled": true },
+    "projects": { "enabled": true },
+    "docs": { "enabled": true },
+    "resume": { "enabled": true }
+  }
+}
+```
+
+## Admin Interface Configuration
+
+### Site Configuration Panel
+Located at `/admin/config/`, provides:
+
+- **Visual configuration editor** for all site settings
+- **Real-time preview** of configuration changes
+- **Template selection** and application
+- **Validation** of configuration values
+- **Export/import** of configuration files
+
+### Configuration Management Features
+
+#### Template Application
+- **One-click template application** with confirmation
+- **Backup creation** before applying templates
+- **Selective template application** (choose which parts to apply)
+- **Template comparison** to see differences
+
+#### Validation and Testing
+- **Real-time validation** of configuration syntax
+- **URL validation** for links and references
+- **Theme compatibility** checking
+- **Navigation structure** validation
+
+## API Integration
+
+### Configuration API Endpoints
+
+#### Get Current Configuration
+```
+GET /admin/api/config
+```
+Returns the complete site configuration.
+
+#### Update Configuration
+```
+POST /admin/api/config
+Content-Type: application/json
+
+{
+  "site": {
+    "title": "Updated Site Title"
+  }
+}
+```
+
+#### Apply Template
+```
+POST /admin/api/config/template
+Content-Type: application/json
+
+{
+  "template": "blog-only",
+  "backup": true
+}
+```
+
+## Content Schema Configuration
+
+Antler uses Astro's Content Collections API with Zod validation for content management.
 
 ## Content Configuration File
 
