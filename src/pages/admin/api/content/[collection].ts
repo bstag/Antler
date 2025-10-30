@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
+import { generateSlug } from '../../../../lib/utils/slug';
 
 export const prerender = false;
 
@@ -208,10 +209,3 @@ export const DELETE: APIRoute = async ({ params, request }) => {
     });
   }
 };
-
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}

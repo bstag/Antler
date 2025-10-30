@@ -3,6 +3,7 @@ import matter from 'gray-matter';
 import fs from 'fs/promises';
 import path from 'path';
 import { logger } from '../utils/logger';
+import { generateSlug } from '../utils/slug';
 
 export class ContentService {
   private static readonly CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
@@ -162,7 +163,7 @@ export class ContentService {
     try {
       // Generate ID from title or projectName
       const title = data.frontmatter.title || data.frontmatter.projectName || 'untitled';
-      const id = this.generateSlug(title);
+      const id = generateSlug(title);
       
       const filePath = path.join(this.CONTENT_DIR, collection, `${id}.md`);
       
@@ -268,13 +269,7 @@ export class ContentService {
     }
   }
 
-  private static generateSlug(text: string): string {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .substring(0, 50);
-  }
+
 
   static async getCollectionStats(collection: string): Promise<{
     total: number;
