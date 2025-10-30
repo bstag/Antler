@@ -7,6 +7,7 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs';
 import path from 'path';
+import { logger } from '../../../lib/utils/logger';
 
 export const prerender = false;
 
@@ -91,7 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
     );
   } catch (error) {
-    console.error('Error updating theme:', error);
+    logger.error('Error updating theme:', error);
 
     return new Response(
       JSON.stringify({

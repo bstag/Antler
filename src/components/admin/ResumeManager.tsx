@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 interface ResumeManagerProps {
   schemas: Record<string, SchemaDefinition>;
@@ -96,7 +97,7 @@ export const ResumeManager: React.FC<ResumeManagerProps> = ({ schemas }) => {
       const results = await Promise.all(statsPromises);
       setStats(Object.fromEntries(results));
     } catch (error) {
-      console.error('Failed to load resume stats:', error);
+      logger.error('Failed to load resume stats:', error);
     } finally {
       setLoading(false);
     }

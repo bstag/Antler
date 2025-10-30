@@ -1,5 +1,6 @@
 import type { FieldDefinition, SchemaDefinition } from './types';
 import { z } from 'zod';
+import { logger } from '../utils/logger';
 
 export class SchemaParser {
   private static parseZodType(zodType: any, fieldName: string): FieldDefinition {
@@ -302,7 +303,7 @@ export class SchemaParser {
 
       return schemas;
     } catch (error) {
-      console.error('Failed to load content collections:', error);
+      logger.error('Failed to load content collections:', error);
       return {};
     }
   }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { FileReference, UploadResult } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 export const FileManager: React.FC = () => {
   const [files, setFiles] = useState<FileReference[]>([]);
@@ -40,7 +41,7 @@ export const FileManager: React.FC = () => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load files');
-      console.error('File loading error:', err);
+      logger.error('File loading error:', err);
     } finally {
       setLoading(false);
     }
@@ -82,7 +83,7 @@ export const FileManager: React.FC = () => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload files');
-      console.error('Upload error:', err);
+      logger.error('Upload error:', err);
     } finally {
       setUploading(false);
     }
@@ -103,7 +104,7 @@ export const FileManager: React.FC = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
       // You could add a toast notification here
-      console.log('Copied to clipboard:', text);
+      logger.log('Copied to clipboard:', text);
     });
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { ContentItem, SchemaDefinition, ContentListResponse } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 interface ContentListProps {
   schemas: Record<string, SchemaDefinition>;
@@ -68,7 +69,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load content');
-      console.error('Content loading error:', err);
+      logger.error('Content loading error:', err);
     } finally {
       setLoading(false);
     }
@@ -95,7 +96,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         alert('Failed to delete item');
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      logger.error('Delete error:', error);
       alert('Failed to delete item');
     } finally {
       setDeleting(null);

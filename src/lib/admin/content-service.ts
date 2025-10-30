@@ -2,6 +2,7 @@ import type { ContentItem, ContentListResponse, ApiResponse } from './types';
 import matter from 'gray-matter';
 import fs from 'fs/promises';
 import path from 'path';
+import { logger } from '../utils/logger';
 
 export class ContentService {
   private static readonly CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
@@ -120,7 +121,7 @@ export class ContentService {
         hasMore: endIndex < total
       };
     } catch (error) {
-      console.error(`Failed to get content list for ${collection}:`, error);
+      logger.error(`Failed to get content list for ${collection}:`, error);
       return {
         items: [],
         total: 0,
@@ -149,7 +150,7 @@ export class ContentService {
         updatedAt: stats.mtime
       };
     } catch (error) {
-      console.error(`Failed to get content item ${collection}/${id}:`, error);
+      logger.error(`Failed to get content item ${collection}/${id}:`, error);
       return null;
     }
   }
@@ -192,7 +193,7 @@ export class ContentService {
         data: createdItem!
       };
     } catch (error) {
-      console.error(`Failed to create content item in ${collection}:`, error);
+      logger.error(`Failed to create content item in ${collection}:`, error);
       return {
         success: false,
         error: 'Failed to create content item'
@@ -230,7 +231,7 @@ export class ContentService {
         data: updatedItem!
       };
     } catch (error) {
-      console.error(`Failed to update content item ${collection}/${id}:`, error);
+      logger.error(`Failed to update content item ${collection}/${id}:`, error);
       return {
         success: false,
         error: 'Failed to update content item'
@@ -259,7 +260,7 @@ export class ContentService {
         success: true
       };
     } catch (error) {
-      console.error(`Failed to delete content item ${collection}/${id}:`, error);
+      logger.error(`Failed to delete content item ${collection}/${id}:`, error);
       return {
         success: false,
         error: 'Failed to delete content item'
@@ -310,7 +311,7 @@ export class ContentService {
         ...(featuredCount > 0 && { featured: featuredCount })
       };
     } catch (error) {
-      console.error(`Failed to get stats for ${collection}:`, error);
+      logger.error(`Failed to get stats for ${collection}:`, error);
       return {
         total: 0,
         recent: 0

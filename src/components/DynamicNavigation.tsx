@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { NavigationItem, SiteConfig } from '../types/config';
 import { configClient } from '../lib/config/client';
 import { withBase, isActivePath } from '../lib/utils/base-url';
+import { logger } from '../lib/utils/logger';
 
 interface DynamicNavigationProps {
   currentPath?: string;
@@ -21,7 +22,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
         setConfig(siteConfig);
         setError(null);
       } catch (err) {
-        console.error('Failed to load site configuration:', err);
+        logger.error('Failed to load site configuration:', err);
         setError(err instanceof Error ? err.message : 'Failed to load configuration');
       } finally {
         setLoading(false);
@@ -64,7 +65,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
   }
 
   if (error) {
-    console.warn('Navigation error:', error);
+    logger.warn('Navigation error:', error);
     // Fallback to default navigation
     const fallbackNav = [
       { id: 'home', label: 'Home', href: '/', enabled: true, order: 0 },

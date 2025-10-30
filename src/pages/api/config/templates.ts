@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { SITE_TEMPLATES } from '../../../lib/config/defaults';
 import { configManager } from '../../../lib/config/manager';
+import { logger } from '../../../lib/utils/logger';
 
 export const prerender = false;
 
@@ -16,7 +17,7 @@ export const GET: APIRoute = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching site templates:', error);
+    logger.error('Error fetching site templates:', error);
     
     return new Response(JSON.stringify({
       error: 'Failed to fetch site templates',
@@ -85,7 +86,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('Error applying site template:', error);
+    logger.error('Error applying site template:', error);
     
     return new Response(JSON.stringify({
       error: 'Failed to apply site template',

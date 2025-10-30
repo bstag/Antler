@@ -4,6 +4,7 @@
  */
 
 import type { ThemeMetadata } from './theme-registry';
+import { logger } from '../utils/logger';
 
 export interface SiteThemeConfig {
   default: string;
@@ -31,7 +32,7 @@ export async function getThemeConfig(): Promise<ThemeConfigResponse> {
     }
     return await response.json();
   } catch (error) {
-    console.warn('API not available (static mode), reading from inline config:', error);
+    logger.warn('API not available (static mode), reading from inline config:', error);
 
     // Fallback: Read from inline JSON config (static sites)
     const configEl = document.getElementById('theme-config');
@@ -48,7 +49,7 @@ export async function getThemeConfig(): Promise<ThemeConfigResponse> {
           availableThemes: config.available || ['blue'],
         };
       } catch (parseError) {
-        console.error('Error parsing inline theme config:', parseError);
+        logger.error('Error parsing inline theme config:', parseError);
       }
     }
 
@@ -79,14 +80,14 @@ export async function updateSiteDefaultTheme(themeName: string): Promise<boolean
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('Failed to update site default theme:', error);
+      logger.error('Failed to update site default theme:', error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.warn('Cannot update site default in static mode:', error);
-    console.info('To change site default theme in static mode, edit site.config.json and rebuild');
+    logger.warn('Cannot update site default in static mode:', error);
+    logger.info('To change site default theme in static mode, edit site.config.json and rebuild');
     return false;
   }
 }
@@ -104,7 +105,7 @@ export async function getAvailableThemesMetadata(): Promise<ThemeMetadata[]> {
     const data = await response.json();
     return data.themes || [];
   } catch (error) {
-    console.warn('API not available (static mode), using local theme registry:', error);
+    logger.warn('API not available (static mode), using local theme registry:', error);
 
     // Fallback: Import theme registry directly (works in static mode)
     const { getAllThemeMetadata } = await import('./theme-registry');
@@ -129,7 +130,7 @@ export async function getSiteConfig(): Promise<SiteThemeConfig> {
       availableThemes: ['blue'],
     };
   } catch (error) {
-    console.error('Error fetching site config:', error);
+    logger.error('Error fetching site config:', error);
     return {
       default: 'blue',
       allowUserOverride: true,

@@ -11,6 +11,7 @@ import { SiteConfiguration } from './SiteConfiguration';
 import { ThemeManager } from './ThemeManager';
 import type { SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch, getAdminBaseUrl } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 // Global styles for admin interface
 const adminStyles = `
@@ -108,7 +109,7 @@ const AdminApp: React.FC<AdminAppProps> = () => {
       setSchemas(schemasMap);
     } catch (err) {
       setError('Failed to load content schemas');
-      console.error('Schema loading error:', err);
+      logger.error('Schema loading error:', err);
     } finally {
       setLoading(false);
     }

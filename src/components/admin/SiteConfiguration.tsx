@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { configClient } from '../../lib/config/client';
 import type { SiteConfig, SiteTemplate } from '../../types/config';
+import { logger } from '../../lib/utils/logger';
 
 interface SiteConfigurationProps {}
 
@@ -24,14 +25,14 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
         configClient.getSiteTemplates()
       ]);
       
-      console.log('Loaded template data:', templateData);
-      console.log('Template entries:', Object.entries(templateData));
+      logger.log('Loaded template data:', templateData);
+      logger.log('Template entries:', Object.entries(templateData));
       
       setConfig(configData);
       setTemplates(templateData);
     } catch (err) {
       setError('Failed to load site configuration');
-      console.error('Config loading error:', err);
+      logger.error('Config loading error:', err);
     } finally {
       setLoading(false);
     }
@@ -48,7 +49,7 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
         throw new Error('Failed to save configuration');
       }
     } catch (err) {
-      console.error('Save error:', err);
+      logger.error('Save error:', err);
       alert('Failed to save configuration: ' + (err as Error).message);
     } finally {
       setSaving(false);
@@ -61,7 +62,7 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
       await configClient.applySiteTemplate(templateId);
       await loadConfigData(); // Reload to get updated config
     } catch (err) {
-      console.error('Template apply error:', err);
+      logger.error('Template apply error:', err);
       alert('Failed to apply template: ' + (err as Error).message);
     } finally {
       setSaving(false);

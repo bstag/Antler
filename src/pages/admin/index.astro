@@ -49,8 +49,10 @@ export async function getStaticPaths() {
         themeLink.href = `${baseUrl}/styles/themes/theme-${colorTheme}.css`;
       }
 
-      // Debug: Log to console
-      console.log('Admin theme initialized:', colorTheme, darkMode);
+      // Debug: Log to console (development only)
+      if (import.meta.env.DEV) {
+        console.log('Admin theme initialized:', colorTheme, darkMode);
+      }
     })();
   </script>
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '../lib/utils/logger';
 
 interface FormData {
   name: string;
@@ -32,14 +33,14 @@ export default function ContactForm() {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    console.log('Form submission started with data:', formData);
+    logger.log('Form submission started with data:', formData);
 
     try {
       // Try Cloudflare Pages function first (for Cloudflare deployment)
       let response;
       let endpoint = '/functions/contact';
       
-      console.log(`Calling serverless function at ${endpoint}...`);
+      logger.log(`Calling serverless function at ${endpoint}...`);
       response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -50,7 +51,7 @@ export default function ContactForm() {
 
       // If Cloudflare function fails, try alternative approaches
       if (!response.ok && response.status === 404) {
-        console.log('Cloudflare function not available, trying alternative...');
+        logger.log('Cloudflare function not available, trying alternative...');
         
         // For GitHub Pages or other static hosts, use a form service
         // You can replace this with EmailJS, Formspree, or Netlify Forms
@@ -79,9 +80,9 @@ export default function ContactForm() {
         });
       }
 
-      console.log('Response status:', response.status);
+      logger.log('Response status:', response.status);
       const result = await response.json();
-      console.log('Response data:', result);
+      logger.log('Response data:', result);
 
       if (!response.ok) {
         throw new Error(result.error || 'Failed to submit form');
@@ -90,7 +91,7 @@ export default function ContactForm() {
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
-      console.error('Form submission failed:', error);
+      logger.error('Form submission failed:', error);
       setSubmitStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
     } finally {

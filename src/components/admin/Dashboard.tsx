@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 interface DashboardProps {
   schemas: Record<string, SchemaDefinition>;
@@ -37,7 +38,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
             }];
           }
         } catch (error) {
-          console.error(`Failed to load stats for ${collection}:`, error);
+          logger.error(`Failed to load stats for ${collection}:`, error);
         }
         return [collection, { total: 0, recent: 0, featured: 0 }];
       });
@@ -46,7 +47,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
       const statsMap = Object.fromEntries(results);
       setStats(statsMap);
     } catch (error) {
-      console.error('Failed to load dashboard stats:', error);
+      logger.error('Failed to load dashboard stats:', error);
     } finally {
       setLoading(false);
     }

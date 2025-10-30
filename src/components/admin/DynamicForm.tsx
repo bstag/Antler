@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { FieldDefinition, SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 interface DynamicFormProps {
   schema: SchemaDefinition;
@@ -683,7 +684,7 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({ onUpload, accept = 
         alert('Upload failed');
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      logger.error('Upload error:', error);
       alert('Upload failed');
     } finally {
       setUploading(false);

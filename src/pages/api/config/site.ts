@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { configManager } from '../../../lib/config/manager';
 import type { SiteConfig } from '../../../types/config';
+import { logger } from '../../../lib/utils/logger';
 
 export const prerender = false;
 
@@ -16,7 +17,7 @@ export const GET: APIRoute = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching site configuration:', error);
+    logger.error('Error fetching site configuration:', error);
     
     return new Response(JSON.stringify({
       error: 'Failed to fetch site configuration',
@@ -61,7 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('Error updating site configuration:', error);
+    logger.error('Error updating site configuration:', error);
     
     return new Response(JSON.stringify({
       error: 'Failed to update site configuration',
@@ -106,7 +107,7 @@ export const PATCH: APIRoute = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('Error partially updating site configuration:', error);
+    logger.error('Error partially updating site configuration:', error);
     
     return new Response(JSON.stringify({
       error: 'Failed to update site configuration',

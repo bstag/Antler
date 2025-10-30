@@ -12,6 +12,7 @@
 import type { SiteConfig } from '../../types/config';
 import { DEFAULT_SITE_CONFIG } from './defaults';
 import { configManager } from './manager';
+import { logger } from '../utils/logger';
 
 /**
  * Get site configuration for use in Astro components (build-time only)
@@ -31,7 +32,7 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     cachedConfig = await configManager.getConfig();
     return cachedConfig;
   } catch (error) {
-    console.warn('Failed to load site configuration, using defaults:', error);
+    logger.warn('Failed to load site configuration, using defaults:', error);
     return DEFAULT_SITE_CONFIG;
   }
 }

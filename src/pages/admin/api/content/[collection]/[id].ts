@@ -3,6 +3,7 @@ import { getEntry } from 'astro:content';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
+import { logger } from '../../../../../lib/utils/logger';
 
 export const prerender = false;
 
@@ -99,7 +100,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
-    console.error('PUT error:', error);
+    logger.error('PUT error:', error);
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to update content'

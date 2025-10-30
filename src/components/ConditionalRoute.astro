@@ -1,5 +1,6 @@
 ---
 import { configManager } from '../lib/config/manager';
+import { logger } from '../lib/utils/logger';
 
 interface Props {
   contentTypeId: string;
@@ -16,7 +17,7 @@ try {
   const contentType = config.contentTypes.find(ct => ct.id === contentTypeId);
   isEnabled = contentType ? contentType.enabled : false;
 } catch (error) {
-  console.error('Failed to load configuration for conditional route:', error);
+  logger.error('Failed to load configuration for conditional route:', error);
   // Default to enabled on error to avoid breaking existing functionality
   isEnabled = true;
 }

@@ -6,6 +6,7 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs';
 import path from 'path';
+import { logger } from '../../../lib/utils/logger';
 
 export const prerender = false;
 
@@ -40,7 +41,7 @@ export const GET: APIRoute = async ({ request }) => {
       },
     });
   } catch (error) {
-    console.error('Error reading theme config:', error);
+    logger.error('Error reading theme config:', error);
 
     return new Response(
       JSON.stringify({

@@ -4,6 +4,7 @@ import { DynamicForm } from './DynamicForm';
 import { MarkdownEditor } from './MarkdownEditor';
 import type { ContentItem, SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
+import { logger } from '../../lib/utils/logger';
 
 interface ContentEditorProps {
   schemas: Record<string, SchemaDefinition>;
@@ -81,7 +82,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load content');
-      console.error('Content loading error:', err);
+      logger.error('Content loading error:', err);
     } finally {
       setLoading(false);
     }
@@ -147,7 +148,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save content');
-      console.error('Save error:', err);
+      logger.error('Save error:', err);
     } finally {
       setSaving(false);
     }

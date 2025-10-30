@@ -4,6 +4,7 @@
  */
 
 import { isValidTheme } from './theme-registry';
+import { logger } from '../utils/logger';
 
 const THEME_STORAGE_KEY = 'antler-selected-theme';
 const DARK_MODE_KEY = 'theme'; // Existing dark mode key
@@ -21,7 +22,7 @@ function getBaseUrl(): string {
  */
 export function loadTheme(themeName: string): void {
   if (!isValidTheme(themeName)) {
-    console.warn(`Invalid theme: ${themeName}, falling back to blue`);
+    logger.warn(`Invalid theme: ${themeName}, falling back to blue`);
     themeName = 'blue';
   }
 
@@ -30,7 +31,7 @@ export function loadTheme(themeName: string): void {
   if (themeLink) {
     themeLink.href = `${baseUrl}/styles/themes/theme-${themeName}.css`;
   } else {
-    console.error('Theme stylesheet link not found in DOM');
+    logger.error('Theme stylesheet link not found in DOM');
   }
 }
 
@@ -70,7 +71,7 @@ export function getSiteDefaultTheme(): string {
  */
 export function saveUserPreference(themeName: string): void {
   if (!isValidTheme(themeName)) {
-    console.warn(`Cannot save invalid theme: ${themeName}`);
+    logger.warn(`Cannot save invalid theme: ${themeName}`);
     return;
   }
 
@@ -107,7 +108,7 @@ export function initializeTheme(): string {
  */
 export function switchTheme(themeName: string, savePreference: boolean = true): void {
   if (!isValidTheme(themeName)) {
-    console.warn(`Cannot switch to invalid theme: ${themeName}`);
+    logger.warn(`Cannot switch to invalid theme: ${themeName}`);
     return;
   }
 

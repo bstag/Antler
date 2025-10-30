@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { logger } from '../../lib/utils/logger';
 
 interface MarkdownEditorProps {
   value: string;
@@ -85,7 +86,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
       setPreviewHtml(html);
     } catch (error) {
-      console.error('Preview generation error:', error);
+      logger.error('Preview generation error:', error);
       setPreviewHtml('<p class="text-red-500">Error generating preview</p>');
     } finally {
       setIsPreviewLoading(false);

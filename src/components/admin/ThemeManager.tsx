@@ -11,6 +11,7 @@ import {
   getThemeConfig,
   updateSiteDefaultTheme
 } from '../../lib/theme/theme-config-api';
+import { logger } from '../../lib/utils/logger';
 
 export const ThemeManager: React.FC = () => {
   const [themes, setThemes] = useState<ThemeMetadata[]>([]);
@@ -41,7 +42,7 @@ export const ThemeManager: React.FC = () => {
       setHasUserPref(hasUserPreference());
 
     } catch (error) {
-      console.error('Error loading theme data:', error);
+      logger.error('Error loading theme data:', error);
       showMessage('error', 'Failed to load theme configuration');
     } finally {
       setLoading(false);

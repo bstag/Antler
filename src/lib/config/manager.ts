@@ -3,6 +3,7 @@ import path from 'path';
 import type { SiteConfig, SiteTemplate, ConfigValidationResult } from '../../types/config';
 import { DEFAULT_SITE_CONFIG, SITE_TEMPLATES } from './defaults';
 import { validateSiteConfig } from './validation';
+import { logger } from '../utils/logger';
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), 'site.config.json');
 const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'lib', 'config', 'templates');
@@ -41,7 +42,7 @@ export class ConfigManager {
       // Validate the loaded config
       const validation = validateSiteConfig(config);
       if (!validation.valid) {
-        console.warn('Invalid configuration detected, using default config:', validation.errors);
+        logger.warn('Invalid configuration detected, using default config:', validation.errors);
         this.cachedConfig = DEFAULT_SITE_CONFIG;
         return DEFAULT_SITE_CONFIG;
       }
@@ -49,7 +50,7 @@ export class ConfigManager {
       this.cachedConfig = config;
       return config;
     } catch (error) {
-      console.error('Error loading site configuration:', error);
+      logger.error('Error loading site configuration:', error);
       this.cachedConfig = DEFAULT_SITE_CONFIG;
       return DEFAULT_SITE_CONFIG;
     }
@@ -80,7 +81,7 @@ export class ConfigManager {
       
       return { valid: true, errors: [] };
     } catch (error) {
-      console.error('Error saving site configuration:', error);
+      logger.error('Error saving site configuration:', error);
       return {
         valid: false,
         errors: [{

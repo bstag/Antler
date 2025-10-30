@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from 'astro';
 import { configManager } from '../lib/config/manager';
+import { logger } from '../lib/utils/logger';
 
 export const routingMiddleware: MiddlewareHandler = async (context, next) => {
   const { url } = context;
@@ -49,7 +50,7 @@ export const routingMiddleware: MiddlewareHandler = async (context, next) => {
     // Continue with the request
     return next();
   } catch (error) {
-    console.error('Routing middleware error:', error);
+    logger.error('Routing middleware error:', error);
     // On error, allow the request to continue to avoid breaking the site
     return next();
   }

@@ -5,6 +5,7 @@
 
 import type { APIRoute } from 'astro';
 import { getAllThemeMetadata } from '../../../lib/theme/theme-registry';
+import { logger } from '../../../lib/utils/logger';
 
 export const prerender = false;
 
@@ -25,7 +26,7 @@ export const GET: APIRoute = async () => {
       }
     );
   } catch (error) {
-    console.error('Error fetching theme metadata:', error);
+    logger.error('Error fetching theme metadata:', error);
 
     return new Response(
       JSON.stringify({
