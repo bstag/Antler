@@ -6,15 +6,24 @@ import { logger } from '../lib/utils/logger';
 
 interface DynamicNavigationProps {
   currentPath?: string;
+  navigationItems?: NavigationItem[];
 }
 
-const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/' }) => {
+const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/', navigationItems }) => {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    // If navigationItems are provided as props, use them directly (static generation)
+    if (navigationItems) {
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    // Otherwise, load config from API (admin/dynamic mode)
     const loadConfig = async () => {
       try {
         setLoading(true);
@@ -30,9 +39,15 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
     };
 
     loadConfig();
-  }, []);
+  }, [navigationItems]);
 
   const getEnabledNavigation = (): NavigationItem[] => {
+    // Use provided navigationItems if available (static generation)
+    if (navigationItems) {
+      return navigationItems;
+    }
+    
+    // Otherwise use config from API (admin/dynamic mode)
     if (!config) return [];
     
     return config.navigation
@@ -52,7 +67,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
     setMobileMenuOpen(false);
   };
 
-  if (loading) {
+  if (loading && !navigationItems) {
     return (
       <div className="hidden md:block">
         <div className="ml-10 flex items-baseline space-x-8">
@@ -64,15 +79,16 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
     );
   }
 
-  if (error) {
+  if (error && !navigationItems) {
     logger.warn('Navigation error:', error);
-    // Fallback to default navigation
+    // Fallback to default navigation - matches site.config.json
     const fallbackNav = [
       { id: 'home', label: 'Home', href: '/', enabled: true, order: 0 },
       { id: 'blog', label: 'Blog', href: '/blog', enabled: true, order: 1 },
       { id: 'projects', label: 'Projects', href: '/projects', enabled: true, order: 2 },
       { id: 'resume', label: 'Resume', href: '/resume', enabled: true, order: 3 },
-      { id: 'contact', label: 'Contact', href: '/contact', enabled: true, order: 4 }
+      { id: 'docs', label: 'Docs', href: '/docs', enabled: true, order: 4 },
+      { id: 'contact', label: 'Contact', href: '/contact', enabled: true, order: 5 }
     ];
     
     return (
@@ -143,7 +159,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
           {enabledNavigation.map((item) => (
             <a
               key={item.id}
-              href={withBase(item.href)}
+              href={navigationItems ? item.href : withBase(item.href)}
               className={`nav-link ${isActiveLink(item.href) ? 'active' : ''}`}
               aria-current={isActiveLink(item.href) ? 'page' : undefined}
             >
@@ -178,7 +194,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
             {enabledNavigation.map((item) => (
               <a
                 key={item.id}
-                href={withBase(item.href)}
+                href={navigationItems ? item.href : withBase(item.href)}
                 onClick={closeMobileMenu}
                 className={`mobile-nav-link ${isActiveLink(item.href) ? 'active' : ''}`}
                 aria-current={isActiveLink(item.href) ? 'page' : undefined}

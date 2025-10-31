@@ -1,5 +1,5 @@
 ---
-import { configManager } from '../lib/config/manager';
+import { getSiteConfig } from '../lib/config/static';
 import { logger } from '../lib/utils/logger';
 
 interface Props {
@@ -13,12 +13,14 @@ let isEnabled = true;
 let config = null;
 
 try {
-  config = await configManager.getConfig();
+  // Use static config loader for build-time compatibility
+  config = await getSiteConfig();
   const contentType = config.contentTypes.find(ct => ct.id === contentTypeId);
   isEnabled = contentType ? contentType.enabled : false;
 } catch (error) {
   logger.error('Failed to load configuration for conditional route:', error);
   // Default to enabled on error to avoid breaking existing functionality
+  // This ensures that content is still accessible even if config loading fails
   isEnabled = true;
 }
 

@@ -9,6 +9,15 @@ const { siteName, logo } = config.customization;
 
 // Get current path for active link highlighting
 const currentPath = Astro.url.pathname;
+
+// Extract navigation items for client component with resolved paths
+const navigationItems = config.navigation
+  .filter(nav => nav.enabled)
+  .sort((a, b) => a.order - b.order)
+  .map(nav => ({
+    ...nav,
+    href: resolvePath(config, nav.href)
+  }));
 ---
 
 <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
@@ -32,7 +41,7 @@ const currentPath = Astro.url.pathname;
       </div>
 
       <!-- Dynamic Navigation -->
-      <DynamicNavigation currentPath={currentPath} client:load />
+      <DynamicNavigation currentPath={currentPath} navigationItems={navigationItems} client:load />
 
       <!-- Theme Toggle -->
       <div class="flex items-center space-x-4">
