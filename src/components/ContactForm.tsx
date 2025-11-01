@@ -9,6 +9,8 @@ interface FormData {
 }
 
 export default function ContactForm() {
+  // Get static form endpoint from environment variable
+  const STATIC_ENDPOINT = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT;
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -36,7 +38,29 @@ export default function ContactForm() {
     logger.log('Form submission started with data:', formData);
 
     try {
-      // Try Cloudflare Pages function first (for Cloudflare deployment)
+      // If static endpoint is configured, use it directly
+      if (STATIC_ENDPOINT) {
+        logger.log(`Posting to static endpoint: ${STATIC_ENDPOINT}`);
+        
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('subject', formData.subject);
+        formDataToSend.append('message', formData.message);
+        
+        await fetch(STATIC_ENDPOINT, {
+          method: 'POST',
+          body: formDataToSend,
+        });
+        
+        // Assume success for static endpoints (no response parsing)
+        logger.log('Static form submission completed');
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        return;
+      }
+
+      // Fallback to serverless function logic
       let response;
       let endpoint = '/functions/contact';
       

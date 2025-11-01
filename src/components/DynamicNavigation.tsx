@@ -14,6 +14,12 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Track hydration status to prevent server/client mismatch
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     // If navigationItems are provided as props, use them directly (static generation)
@@ -56,6 +62,8 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
   };
 
   const isActiveLink = (href: string): boolean => {
+    // Only check active state after hydration to prevent server/client mismatch
+    if (!hydrated) return false;
     return isActivePath(href, currentPath);
   };
 
@@ -70,7 +78,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
   if (loading && !navigationItems) {
     return (
       <div className="hidden md:block">
-        <div className="ml-10 flex items-baseline space-x-8">
+        <div className="flex items-baseline space-x-8">
           <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-4 w-16 rounded"></div>
           <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-4 w-16 rounded"></div>
           <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-4 w-16 rounded"></div>
@@ -95,7 +103,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
       <>
         {/* Desktop Navigation */}
         <div className="hidden md:block">
-          <div className="ml-10 flex items-baseline space-x-8">
+          <div className="flex items-baseline space-x-8">
             {fallbackNav.map((item) => (
               <a
                 key={item.id}
@@ -155,7 +163,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({ currentPath = '/'
     <>
       {/* Desktop Navigation */}
       <div className="hidden md:block">
-        <div className="ml-10 flex items-baseline space-x-8">
+        <div className="flex items-baseline space-x-8">
           {enabledNavigation.map((item) => (
             <a
               key={item.id}
