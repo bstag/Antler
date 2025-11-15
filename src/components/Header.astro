@@ -85,17 +85,4 @@ const navigationItems = config.navigation
       });
     });
   });
-
-  // Set active navigation link
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
-    
-    navLinks.forEach(link => {
-      const href = link.getAttribute('href');
-      if (href && (href === currentPath || (currentPath.startsWith(href) && href !== '/'))) {
-        link.setAttribute('aria-current', 'page');
-      }
-    });
-  });
 </script>

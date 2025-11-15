@@ -18,12 +18,14 @@ export const routingMiddleware: MiddlewareHandler = async (context, next) => {
       return next();
     }
 
-    // Get current site configuration
     const config = await configManager.getConfig();
+    const base = (import.meta as any).env?.BASE_URL || '';
+    const basePrefix = typeof base === 'string' ? (base.endsWith('/') ? base.slice(0, -1) : base) : '';
+    const normalizedPath = basePrefix && pathname.startsWith(basePrefix) ? pathname.slice(basePrefix.length) || '/' : pathname;
     
     // Check if the requested route corresponds to a disabled content type
     const matchingContentType = config.contentTypes.find(ct => 
-      pathname.startsWith(ct.route) && pathname !== '/'
+      normalizedPath.startsWith(ct.route) && normalizedPath !== '/'
     );
 
     if (matchingContentType && !matchingContentType.enabled) {
@@ -36,7 +38,7 @@ export const routingMiddleware: MiddlewareHandler = async (context, next) => {
 
     // Check if navigation item exists and is enabled for the route
     const matchingNavItem = config.navigation.find(nav => 
-      pathname.startsWith(nav.href) && pathname !== '/'
+      normalizedPath.startsWith(nav.href) && normalizedPath !== '/'
     );
 
     if (matchingNavItem && !matchingNavItem.enabled) {

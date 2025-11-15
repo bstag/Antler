@@ -13,6 +13,7 @@ import type { SiteConfig } from '../../types/config';
 import { DEFAULT_SITE_CONFIG } from './defaults';
 import { configManager } from './manager';
 import { logger } from '../utils/logger';
+import { getBaseUrlSSR } from '../utils/base-url';
 
 /**
  * Get site configuration for use in Astro components (build-time only)
@@ -78,11 +79,14 @@ export function getBaseUrl(config: SiteConfig): string {
  */
 export function resolvePath(config: SiteConfig, path: string): string {
   const basePath = config.customization.urls.basePath || '';
+  const ssrBase = getBaseUrlSSR();
 
-  // Ensure path starts with /
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
 
-  // If basePath exists, prepend it
+  if (ssrBase) {
+    return `${ssrBase}${cleanPath}`;
+  }
+
   if (basePath) {
     const cleanBasePath = basePath.replace(/\/$/, '');
     return `${cleanBasePath}${cleanPath}`;

@@ -11,7 +11,12 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "npx playwright show-report",
+    "test:e2e:report:open": "powershell -NoProfile -Command start playwright-report/index.html",
+    "test:e2e:preview": "playwright test -c playwright.preview.config.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.5",
@@ -48,6 +53,7 @@
     "@vitest/ui": "^4.0.2",
     "happy-dom": "^20.0.8",
     "jsdom": "^27.0.1",
-    "vitest": "^4.0.2"
+    "vitest": "^4.0.2",
+    "@playwright/test": "^1.49.0"
   }
 }

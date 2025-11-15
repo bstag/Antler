@@ -210,7 +210,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, schemas }) =
               
               <div className="flex items-center space-x-4">
                 <a
-                  href="/"
+                  href={import.meta.env.BASE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus-ring"

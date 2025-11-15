@@ -1,5 +1,5 @@
 {
-  "siteMode": "full",
+  "siteMode": "resume",
   "contentTypes": [
     {
       "id": "blog",
@@ -7,7 +7,7 @@
       "enabled": true,
       "route": "/blog",
       "icon": "document-text",
-      "order": 1,
+      "order": 3,
       "settings": {
         "postsPerPage": 10,
         "showExcerpts": true,
@@ -20,7 +20,7 @@
       "enabled": true,
       "route": "/projects",
       "icon": "briefcase",
-      "order": 2,
+      "order": 4,
       "settings": {
         "showTechnologies": true,
         "enableFiltering": true
@@ -32,7 +32,7 @@
       "enabled": true,
       "route": "/resume",
       "icon": "user",
-      "order": 3,
+      "order": 1,
       "settings": {
         "showDownloadButton": true,
         "pdfPath": "/resume.pdf"
@@ -44,7 +44,7 @@
       "enabled": true,
       "route": "/docs",
       "icon": "book-open",
-      "order": 4,
+      "order": 5,
       "settings": {
         "enableSearch": true,
         "showTableOfContents": true
@@ -56,7 +56,7 @@
       "enabled": true,
       "route": "/contact",
       "icon": "mail",
-      "order": 5,
+      "order": 2,
       "settings": {
         "enableForm": true,
         "showSocialLinks": true
@@ -82,10 +82,10 @@
     },
     {
       "id": "projects",
-      "label": "Projects",
+      "label": "Portfolio",
       "href": "/projects",
       "enabled": true,
-      "order": 2,
+      "order": 1,
       "icon": "briefcase"
     },
     {
@@ -93,15 +93,15 @@
       "label": "Resume",
       "href": "/resume",
       "enabled": true,
-      "order": 3,
+      "order": 1,
       "icon": "user"
     },
     {
       "id": "docs",
-      "label": "Docs",
+      "label": "Documentation",
       "href": "/docs",
       "enabled": true,
-      "order": 4,
+      "order": 1,
       "icon": "book-open"
     },
     {
@@ -109,7 +109,7 @@
       "label": "Contact",
       "href": "/contact",
       "enabled": true,
-      "order": 5,
+      "order": 2,
       "icon": "mail"
     }
   ],
@@ -135,7 +135,12 @@
       "custom": []
     },
     "seo": {
-      "keywords": ["static site generator", "astro", "markdown", "blog"],
+      "keywords": [
+        "static site generator",
+        "astro",
+        "markdown",
+        "blog"
+      ],
       "defaultImage": "/images/og-default.png"
     },
     "footer": {
@@ -143,26 +148,66 @@
       "showBuiltWith": true,
       "showSocialLinks": true,
       "legalLinks": [
-        { "label": "Privacy Policy", "href": "/privacy", "external": false },
-        { "label": "Terms of Service", "href": "/terms", "external": false }
+        {
+          "label": "Privacy Policy",
+          "href": "/privacy",
+          "external": false
+        },
+        {
+          "label": "Terms of Service",
+          "href": "/terms",
+          "external": false
+        }
       ],
       "customSections": [
         {
           "title": "Quick Links",
           "links": [
-            { "label": "Home", "href": "/", "external": false },
-            { "label": "Blog", "href": "/blog", "external": false },
-            { "label": "Projects", "href": "/projects", "external": false },
-            { "label": "Resume", "href": "/resume", "external": false }
+            {
+              "label": "Home",
+              "href": "/",
+              "external": false
+            },
+            {
+              "label": "Blog",
+              "href": "/blog",
+              "external": false
+            },
+            {
+              "label": "Projects",
+              "href": "/projects",
+              "external": false
+            },
+            {
+              "label": "Resume",
+              "href": "/resume",
+              "external": false
+            }
           ]
         },
         {
           "title": "Resources",
           "links": [
-            { "label": "Documentation", "href": "/docs", "external": false },
-            { "label": "Installation", "href": "/docs/installation", "external": false },
-            { "label": "Contact", "href": "/contact", "external": false },
-            { "label": "GitHub", "href": "https://github.com/yourusername/antler", "external": true }
+            {
+              "label": "Documentation",
+              "href": "/docs",
+              "external": false
+            },
+            {
+              "label": "Installation",
+              "href": "/docs/installation",
+              "external": false
+            },
+            {
+              "label": "Contact",
+              "href": "/contact",
+              "external": false
+            },
+            {
+              "label": "GitHub",
+              "href": "https://github.com/yourusername/antler",
+              "external": true
+            }
           ]
         }
       ]
@@ -206,5 +251,5 @@
       }
     }
   },
-  "lastModified": "2025-10-28T00:00:00.000Z"
+  "lastModified": "2025-11-12T21:16:14.187Z"
 }

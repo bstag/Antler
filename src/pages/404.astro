@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="Page Not Found" description="The page you are looking for does not exist">
+  <Header />
+  <main class="min-h-screen bg-surface flex items-center justify-center">
+    <div class="text-center px-4 py-20">
+      <h1 class="text-5xl font-bold text-slate-900 dark:text-white mb-4">404</h1>
+      <p class="text-xl text-slate-600 dark:text-slate-300 mb-8">Sorry, we couldn’t find that page.</p>
+      <a href={`${import.meta.env.BASE_URL}`} class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover-lift btn-animate">
+        Go Home
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
