@@ -25,6 +25,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
+      'astro:content': '/src/test-utils/astro-content-mock.ts',
     },
   },
 });

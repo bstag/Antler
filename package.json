@@ -50,6 +50,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/multer": "^1.4.12",
+    "@vitest/coverage-v8": "^4.0.7",
     "@vitest/ui": "^4.0.2",
     "happy-dom": "^20.0.8",
     "jsdom": "^27.0.1",
