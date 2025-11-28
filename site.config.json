@@ -29,7 +29,7 @@
     {
       "id": "resume",
       "name": "Resume",
-      "enabled": true,
+      "enabled": false,
       "route": "/resume",
       "icon": "user",
       "order": 1,
@@ -41,7 +41,7 @@
     {
       "id": "docs",
       "name": "Documentation",
-      "enabled": true,
+      "enabled": false,
       "route": "/docs",
       "icon": "book-open",
       "order": 5,
@@ -92,7 +92,7 @@
       "id": "resume",
       "label": "Resume",
       "href": "/resume",
-      "enabled": true,
+      "enabled": false,
       "order": 1,
       "icon": "user"
     },
@@ -100,7 +100,7 @@
       "id": "docs",
       "label": "Documentation",
       "href": "/docs",
-      "enabled": true,
+      "enabled": false,
       "order": 1,
       "icon": "book-open"
     },
@@ -115,37 +115,40 @@
   ],
   "customLinks": [],
   "customization": {
-    "siteName": "Antler",
-    "description": "A modern static site generator built with Astro, React, and TypeScript",
-    "tagline": "Transform your Markdown content into beautiful, performant websites",
+    "siteName": "StagWare",
+    "description": "A modern development team producing solutions that help build His kingdom first!",
+    "tagline": "Solutions made one step at a time",
     "logo": {
-      "type": "svg",
-      "svgContent": "<svg class=\"w-8 h-8\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 2L2 7L12 12L22 7L12 2Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M2 17L12 22L22 17\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M2 12L12 17L22 12\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>",
+      "type": "text",
       "width": "w-8 h-8"
     },
     "author": {
-      "name": "Your Name",
-      "email": "your.email@example.com",
+      "name": "Jason Henriksen",
+      "email": "jhenriksen@stagware.com",
       "bio": "Software developer and content creator"
     },
     "social": {
-      "github": "https://github.com/yourusername",
+      "github": "https://github.com/bstag",
       "twitter": "https://twitter.com/yourusername",
       "linkedin": "https://linkedin.com/in/yourusername",
       "custom": []
     },
     "seo": {
+      "defaultImage": "/images/og-default.png",
       "keywords": [
-        "static site generator",
+        "developer",
+        "systems",
+        "solutions",
+        "csharp",
+        "react",
+        "blazor",
         "astro",
-        "markdown",
-        "blog"
-      ],
-      "defaultImage": "/images/og-default.png"
+        "typescript"
+      ]
     },
     "footer": {
-      "copyrightText": "© 2025 Antler. Built with ❤️ using Astro and React.",
-      "showBuiltWith": true,
+      "copyrightText": "© 2025 StagWare. Built with ❤️ using Antler.",
+      "showBuiltWith": false,
       "showSocialLinks": true,
       "legalLinks": [
         {
@@ -213,11 +216,11 @@
       ]
     },
     "urls": {
-      "baseUrl": "https://bstag.github.io",
-      "basePath": "/Antler"
+      "baseUrl": "https://StagWare.com",
+      "basePath": ""
     },
     "theme": {
-      "default": "blue",
+      "default": "cyan",
       "allowUserOverride": true,
       "availableThemes": [
         "blue",
@@ -251,5 +254,5 @@
       }
     }
   },
-  "lastModified": "2025-11-12T21:16:14.187Z"
+  "lastModified": "2025-11-28T02:26:27.942Z"
 }

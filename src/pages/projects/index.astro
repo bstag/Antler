@@ -98,7 +98,7 @@ const description = 'Explore my portfolio of web development projects and techni
               </div>
               
               <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">
-                <a href={`${import.meta.env.BASE_URL}/projects/${project.slug}`} class="hover:underline">
+                <a href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/projects/${project.slug}`} class="hover:underline">
                   {project.data.projectName}
                 </a>
               </h2>
@@ -139,7 +139,7 @@ const description = 'Explore my portfolio of web development projects and techni
                 </div>
                 
                 <a
-                  href={`${import.meta.env.BASE_URL}/projects/${project.slug}`}
+                  href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/projects/${project.slug}`}
                   class="inline-flex items-center gap-1 text-primary hover:opacity-80 font-medium text-sm transition-all"
                 >
                   Learn More

@@ -12,40 +12,39 @@ import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
       <!-- Badge -->
       <div class="inline-flex items-center px-4 py-2 rounded-full badge badge-primary text-sm font-medium mb-8 animate-fade-in">
         <Zap className="w-4 h-4 mr-2" />
-        Modern Static Site Generation
+        Modern Development Solutions
       </div>
 
       <!-- Main Heading -->
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 animate-slide-up">
         Build Fast,
         <span class="text-primary gradient-text">
-          Beautiful
+          Secure
         </span>
-        Websites
+        Systems
       </h1>
 
       <!-- Subtitle -->
       <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed animate-slide-up animation-delay-200">
-        Transform your Markdown content into stunning, performant websites with Antler. 
-        Built with Astro, React, and TypeScript for the ultimate developer experience.
+        Transform your project or ideas into stunning, performant systems with StagWare. 
+        Building with with your problems in mind, produces solutions that last and expand with your needs.
       </p>
 
-      <!-- CTA Buttons -->
+      <!-- CTA Buttons 
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-slide-up animation-delay-400">
         <a
-          href={import.meta.env.BASE_URL + '/docs/installation'}
+          href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blogs`}
           class="btn-primary group inline-flex items-center px-8 py-4 text-lg font-semibold"
         >
-          Get Started
-          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          Read Blogs
         </a>
         <a
-          href={import.meta.env.BASE_URL + '/projects'}
+          href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/projects`}
           class="btn-secondary inline-flex items-center px-8 py-4 text-lg font-semibold"
         >
           View Projects
         </a>
-      </div>
+      </div> -->
 
       <!-- Feature Icons -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in animation-delay-600">
@@ -54,7 +53,7 @@ import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
             <Code className="w-6 h-6 icon-color" />
           </div>
           <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Developer First</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Built with modern tools and best practices</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Building with Modern Tools and Best Practices</p>
         </div>
 
         <div class="flex flex-col items-center text-center">
@@ -62,7 +61,7 @@ import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
             <Zap className="w-6 h-6 icon-color" />
           </div>
           <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Lightning Fast</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Optimized for performance and SEO</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Optimizing for Performance and Stability</p>
         </div>
 
         <div class="flex flex-col items-center text-center">
@@ -70,7 +69,7 @@ import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
             <Globe className="w-6 h-6 icon-color" />
           </div>
           <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Deploy Anywhere</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Static files work on any hosting platform</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Years of infrastructure experience</p>
         </div>
       </div>
     </div>

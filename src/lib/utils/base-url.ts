@@ -82,7 +82,7 @@ export function withBaseAsset(assetPath: string | undefined): string {
   if (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) {
     const base = getBaseUrlSSR();
     const normalizedPath = assetPath.startsWith('/') ? assetPath : `/${assetPath}`;
-    return base ? `${base}${normalizedPath}` : normalizedPath;
+    return base && base !== '/' ? `${base}${normalizedPath}` : normalizedPath;
   }
 
   // For client-side (runtime)
