@@ -1393,13 +1393,18 @@ const PageSEOTab: React.FC<{
   onSave: (updates: Partial<SiteConfig>) => Promise<void>;
   saving: boolean;
 }> = ({ config, onSave, saving }) => {
-  const pages = config.customization.pages || Object.fromEntries(pageOptions.map(page => [page, {}]));
-
-  const [selectedPage, setSelectedPage] = useState('blog');
-  const [title, setTitle] = useState(pages[selectedPage as keyof typeof pages]?.title || '');
-  const [description, setDescription] = useState(pages[selectedPage as keyof typeof pages]?.description || '');
-  const [image, setImage] = useState(pages[selectedPage as keyof typeof pages]?.image || '');
-  const [keywords, setKeywords] = useState((pages[selectedPage as keyof typeof pages]?.keywords || []).join(', '));
+  const pages = config.customization.pages || {};
+  const allPageTypes = Object.keys(pages).length > 0 
+    ? Object.keys(pages) 
+    : ['blog', 'docs', 'projects', 'resume', 'contact']; // fallback to known types if config is empty
+    
+  const [selectedPage, setSelectedPage] = useState(allPageTypes[0]);
+  const initialPageConfig = (config.customization.pages || {})[selectedPage] || {};
+  
+  const [title, setTitle] = useState(initialPageConfig.title || '');
+  const [description, setDescription] = useState(initialPageConfig.description || '');
+  const [image, setImage] = useState(initialPageConfig.image || '');
+  const [keywords, setKeywords] = useState((initialPageConfig.keywords || []).join(', '));
 
   // Update form when selected page changes
   useEffect(() => {
