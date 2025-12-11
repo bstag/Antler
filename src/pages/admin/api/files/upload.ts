@@ -40,6 +40,22 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Create directory path
     const uploadDir = path.join(process.cwd(), 'public', directory);
+
+    // Security check: Ensure uploadDir is within public directory
+    const publicDir = path.join(process.cwd(), 'public');
+    const resolvedUploadDir = path.resolve(uploadDir);
+    const resolvedPublicDir = path.resolve(publicDir);
+
+    if (!resolvedUploadDir.startsWith(resolvedPublicDir)) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Invalid directory path'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     await fs.mkdir(uploadDir, { recursive: true });
 
     // Save file
