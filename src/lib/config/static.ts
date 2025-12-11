@@ -44,9 +44,9 @@ export async function getSiteConfig(): Promise<SiteConfig> {
       // unless it is just '/', in which case it stays '/'
       const astroBase = import.meta.env.BASE_URL;
 
-      cachedConfig.customization.urls.basePath = astroBase.endsWith('/') && astroBase.length > 1
-        ? astroBase.slice(0, -1)
-        : astroBase;
+      // Normalize: remove trailing slash unless it's just '/'
+      cachedConfig.customization.urls.basePath =
+        astroBase !== '/' && astroBase.endsWith('/') ? astroBase.slice(0, -1) : astroBase;
     }
 
     return cachedConfig;
