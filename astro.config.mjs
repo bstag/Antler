@@ -6,10 +6,16 @@ import rehypeAddBaseUrl from './src/lib/rehype-add-base-url.mjs';
 import fs from 'node:fs';
 
 // Read site.config.json for defaults
-const siteConfig = JSON.parse(fs.readFileSync('./site.config.json', 'utf-8'));
-const defaultSite = siteConfig.customization?.urls?.baseUrl || 'https://bstag.github.io';
-const defaultBase = siteConfig.customization?.urls?.basePath || '/Antler';
-
+let siteConfig = {};
+let defaultSite = 'https://bstag.github.io';
+let defaultBase = '/Antler';
+try {
+  siteConfig = JSON.parse(fs.readFileSync('./site.config.json', 'utf-8'));
+  defaultSite = siteConfig.customization?.urls?.baseUrl || defaultSite;
+  defaultBase = siteConfig.customization?.urls?.basePath || defaultBase;
+} catch (err) {
+  // If file is missing or unreadable, use hardcoded defaults
+}
 // Allow environment variables to override
 const site = process.env.SITE || defaultSite;
 const base = process.env.BASE || defaultBase;
