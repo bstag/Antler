@@ -11,6 +11,7 @@ export interface Props {
   description?: string;
   image?: string;
   type?: string;
+  keywords?: string[];
 }
 
 // Load site configuration
@@ -21,8 +22,13 @@ const {
   title,
   description = defaultDescription,
   image = seo.defaultImage || '/og-image.jpg',
-  type = 'website'
+  type = 'website',
+  keywords = []
 } = Astro.props;
+
+// Combine global keywords with page-specific keywords
+const allKeywords = [...(seo.keywords || []), ...keywords];
+const uniqueKeywords = [...new Set(allKeywords)];
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
@@ -60,8 +66,8 @@ const availableThemes = theme.availableThemes;
     <!-- Additional SEO -->
     <meta name="robots" content="index, follow" />
     <meta name="author" content={author.name} />
-    {seo.keywords && seo.keywords.length > 0 && (
-      <meta name="keywords" content={seo.keywords.join(', ')} />
+    {uniqueKeywords.length > 0 && (
+      <meta name="keywords" content={uniqueKeywords.join(', ')} />
     )}
     {seo.googleSiteVerification && (
       <meta name="google-site-verification" content={seo.googleSiteVerification} />

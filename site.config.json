@@ -143,6 +143,38 @@
       ],
       "defaultImage": "/images/og-default.png"
     },
+    "pages": {
+      "blog": {
+        "title": "Blog",
+        "description": "Insights, tutorials, and thoughts on modern web development",
+        "image": "/images/og-default.png",
+        "keywords": ["blog", "web development", "tutorials"]
+      },
+      "docs": {
+        "title": "Documentation",
+        "description": "Complete guide to using and customizing Antler.",
+        "image": "/images/og-default.png",
+        "keywords": ["documentation", "guide", "help"]
+      },
+      "projects": {
+        "title": "Portfolio",
+        "description": "Showcase of my projects and work.",
+        "image": "/images/og-default.png",
+        "keywords": ["portfolio", "projects", "work"]
+      },
+      "resume": {
+        "title": "Resume",
+        "description": "Professional experience and skills.",
+        "image": "/images/og-default.png",
+        "keywords": ["resume", "cv", "experience"]
+      },
+      "contact": {
+        "title": "Contact",
+        "description": "Get in touch with me.",
+        "image": "/images/og-default.png",
+        "keywords": ["contact", "email", "message"]
+      }
+    },
     "footer": {
       "copyrightText": "© 2025 Antler. Built with ❤️ using Astro and React.",
       "showBuiltWith": true,
