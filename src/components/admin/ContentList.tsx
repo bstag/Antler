@@ -187,6 +187,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             <input
               type="text"
               placeholder={`Search ${collection}...`}
+              aria-label={`Search ${collection}`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="form-input"
@@ -195,6 +196,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           <div className="flex gap-2">
             <select
               value={sortBy}
+              aria-label="Sort by field"
               onChange={(e) => setSortBy(e.target.value)}
               className="form-input"
             >
@@ -205,6 +207,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             </select>
             <select
               value={sortOrder}
+              aria-label="Sort order"
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
               className="form-input"
             >
