@@ -1,4 +1,5 @@
 import type { SiteConfig, SiteTemplate } from '../../types/config';
+import { DEFAULT_SITE_URL, DEFAULT_BASE_PATH } from './site-defaults.mjs';
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
   siteMode: 'full',
@@ -170,8 +171,8 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
       ]
     },
     urls: {
-      baseUrl: 'https://bstag.github.io',
-      basePath: '/Antler'
+      baseUrl: DEFAULT_SITE_URL,
+      basePath: DEFAULT_BASE_PATH
     },
     theme: {
       default: 'blue',
