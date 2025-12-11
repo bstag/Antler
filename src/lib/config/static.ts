@@ -31,24 +31,6 @@ export async function getSiteConfig(): Promise<SiteConfig> {
 
   try {
     cachedConfig = await configManager.getConfig();
-
-    // Override URLs with Astro environment variables if available
-    // This ensures consistency between Astro's built-in routing and our config
-    if (import.meta.env.SITE) {
-      cachedConfig.customization.urls.baseUrl = import.meta.env.SITE;
-    }
-
-    if (import.meta.env.BASE_URL) {
-      // import.meta.env.BASE_URL typically includes the base path with a trailing slash (e.g., /Antler/)
-      // site.config.json typically expects it without trailing slash (e.g., /Antler)
-      // unless it is just '/', in which case it stays '/'
-      const astroBase = import.meta.env.BASE_URL;
-
-      // Normalize: remove trailing slash unless it's just '/'
-      cachedConfig.customization.urls.basePath =
-        astroBase !== '/' && astroBase.endsWith('/') ? astroBase.slice(0, -1) : astroBase;
-    }
-
     return cachedConfig;
   } catch (error) {
     logger.warn('Failed to load site configuration, using defaults:', error);
