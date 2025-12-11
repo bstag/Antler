@@ -161,6 +161,18 @@
         "description": "Showcase of my projects and work.",
         "image": "/images/og-default.png",
         "keywords": ["portfolio", "projects", "work"]
+      },
+      "resume": {
+        "title": "Resume",
+        "description": "Professional experience and skills.",
+        "image": "/images/og-default.png",
+        "keywords": ["resume", "cv", "experience"]
+      },
+      "contact": {
+        "title": "Contact",
+        "description": "Get in touch with me.",
+        "image": "/images/og-default.png",
+        "keywords": ["contact", "email", "message"]
       }
     },
     "footer": {

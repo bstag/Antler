@@ -1433,7 +1433,9 @@ const PageSEOTab: React.FC<{
   const pageOptions = [
     { id: 'blog', label: 'Blog Index' },
     { id: 'docs', label: 'Documentation Index' },
-    { id: 'projects', label: 'Projects Index' }
+    { id: 'projects', label: 'Projects Index' },
+    { id: 'resume', label: 'Resume Page' },
+    { id: 'contact', label: 'Contact Page' }
   ];
 
   return (
