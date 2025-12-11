@@ -1385,16 +1385,15 @@ const SEOTab: React.FC<{
 };
 
 // Page SEO Tab Component
+// Define or import pageOptions array
+const pageOptions = ['blog', 'docs', 'projects', 'resume', 'contact'];
+
 const PageSEOTab: React.FC<{
   config: SiteConfig;
   onSave: (updates: Partial<SiteConfig>) => Promise<void>;
   saving: boolean;
 }> = ({ config, onSave, saving }) => {
-  const pages = config.customization.pages || {
-    blog: {},
-    docs: {},
-    projects: {}
-  };
+  const pages = config.customization.pages || Object.fromEntries(pageOptions.map(page => [page, {}]));
 
   const [selectedPage, setSelectedPage] = useState('blog');
   const [title, setTitle] = useState(pages[selectedPage as keyof typeof pages]?.title || '');
