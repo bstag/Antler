@@ -28,7 +28,10 @@ const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
 const title = post.data.title;
 const description = post.data.description;
-const keywords = post.data.keywords || post.data.tags;
+// Fallback logic: use keywords if defined, otherwise tags, otherwise empty array.
+const keywords = Array.isArray(post.data.keywords)
+  ? post.data.keywords
+  : (Array.isArray(post.data.tags) ? post.data.tags : []);
 ---
 
 <ConditionalRoute contentTypeId="blog">
