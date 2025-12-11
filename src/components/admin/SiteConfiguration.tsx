@@ -1415,6 +1415,15 @@ const PageSEOTab: React.FC<{
     setKeywords((pageConfig.keywords || []).join(', '));
   }, [selectedPage, config.customization.pages]);
 
+  const handleClear = () => {
+    if (window.confirm('Are you sure you want to clear SEO settings for this page? This will revert to site-wide defaults upon saving.')) {
+      setTitle('');
+      setDescription('');
+      setImage('');
+      setKeywords('');
+    }
+  };
+
   const handleSave = async () => {
     const updatedPages = {
       ...(config.customization.pages || {}),
@@ -1521,14 +1530,26 @@ const PageSEOTab: React.FC<{
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="btn-primary"
-          >
-            {saving ? 'Saving...' : `Save ${pageOptions.find(p => p.id === selectedPage)?.label} SEO`}
-          </button>
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+            * Empty fields will use site defaults
+          </p>
+          <div className="flex space-x-3">
+            <button
+              onClick={handleClear}
+              disabled={saving}
+              className="px-4 py-2 border border-red-200 text-red-600 rounded-md hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20 text-sm font-medium transition-colors"
+            >
+              Clear
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="btn-primary"
+            >
+              {saving ? 'Saving...' : `Save ${pageOptions.find(p => p.id === selectedPage)?.label} SEO`}
+            </button>
+          </div>
         </div>
       </div>
     </div>
