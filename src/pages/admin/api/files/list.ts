@@ -9,29 +9,14 @@ export const GET: APIRoute = async ({ url }) => {
     const searchParams = url.searchParams;
     const directory = searchParams.get('directory') || 'images';
     
-    const targetDir = path.join(process.cwd(), 'public', directory);
-
-    // Security check: Ensure targetDir is within public directory
-    const publicRoot = path.join(process.cwd(), 'public');
-    const resolvedTargetDir = path.resolve(targetDir);
-    const resolvedPublicRoot = path.resolve(publicRoot);
-
-    if (!resolvedTargetDir.startsWith(resolvedPublicRoot)) {
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'Invalid directory path'
-      }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    const publicDir = path.join(process.cwd(), 'public', directory);
     
     try {
-      const files = await fs.readdir(targetDir);
+      const files = await fs.readdir(publicDir);
       const fileList = [];
       
       for (const file of files) {
-        const filePath = path.join(targetDir, file);
+        const filePath = path.join(publicDir, file);
         const stats = await fs.stat(filePath);
         
         if (stats.isFile()) {

@@ -25,27 +25,28 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
   const loadStats = async () => {
     try {
       setLoading(true);
-      const collections = Object.keys(schemas);
-      const statsPromises = collections.map(async (collection) => {
-        try {
-          const response = await adminFetch(`admin/api/content/${collection}?limit=1`);
-          if (response.ok) {
-            const data = await response.json();
-            return [collection, {
-              total: data.data.total,
-              recent: 0, // We'll calculate this differently
-              featured: 0
-            }];
-          }
-        } catch (error) {
-          logger.error(`Failed to load stats for ${collection}:`, error);
-        }
-        return [collection, { total: 0, recent: 0, featured: 0 }];
-      });
+      // Batch stats fetching into a single request
+      const response = await adminFetch('admin/api/stats');
+      if (response.ok) {
+        const data = await response.json();
+        const apiStats = data.data;
 
-      const results = await Promise.all(statsPromises);
-      const statsMap = Object.fromEntries(results);
-      setStats(statsMap);
+        // Transform the API response to the format expected by the component
+        const statsMap: Record<string, CollectionStats> = {};
+
+        Object.keys(schemas).forEach(collection => {
+          const collectionStats = apiStats[collection] || { total: 0 };
+          statsMap[collection] = {
+            total: collectionStats.total,
+            recent: 0,
+            featured: 0
+          };
+        });
+
+        setStats(statsMap);
+      } else {
+        logger.error('Failed to load dashboard stats');
+      }
     } catch (error) {
       logger.error('Failed to load dashboard stats:', error);
     } finally {
