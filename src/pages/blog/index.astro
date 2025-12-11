@@ -5,6 +5,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
 import { withBaseAsset } from '../../lib/utils/base-url';
+import { getSiteConfig } from '../../lib/config/static';
 
 // Get all blog posts
 const allPosts = await getCollection('blog');
@@ -14,10 +15,18 @@ const posts = allPosts.sort((a, b) =>
 
 // Get unique tags
 const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+
+// Get SEO config
+const config = await getSiteConfig();
+const pageSEO = config.customization.pages?.blog || {};
+const title = pageSEO.title || "Blog - Antler";
+const description = pageSEO.description || "Latest articles and tutorials about web development, static site generation, and modern web technologies";
+const image = pageSEO.image;
+const keywords = pageSEO.keywords || [];
 ---
 
 <ConditionalRoute contentTypeId="blog">
-  <BaseLayout title="Blog - Antler" description="Latest articles and tutorials about web development, static site generation, and modern web technologies">
+  <BaseLayout title={title} description={description} image={image} keywords={keywords}>
     <Header />
     
     <main class="min-h-screen bg-surface">

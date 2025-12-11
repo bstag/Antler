@@ -66,6 +66,13 @@ export interface SEOSettings {
   keywords?: string[];
 }
 
+export interface PageSEOConfig {
+  title?: string;
+  description?: string;
+  image?: string;
+  keywords?: string[];
+}
+
 export interface FooterLink {
   label: string;
   href: string;
@@ -122,6 +129,7 @@ export interface SiteCustomization {
   author: AuthorInfo;
   social: SocialLinks;
   seo: SEOSettings;
+  pages?: Record<string, PageSEOConfig>;
   footer: FooterConfig;
   urls: SiteURLs;
   theme: ThemeConfig;

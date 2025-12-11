@@ -36,10 +36,11 @@ const nextDoc = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex +
 
 const title = doc.data.title;
 const description = doc.data.description;
+const keywords = doc.data.keywords;
 ---
 
 <ConditionalRoute contentTypeId="docs">
-  <BaseLayout title={title} description={description}>
+  <BaseLayout title={title} description={description} keywords={keywords}>
     <Header />
     <main class="min-h-screen bg-surface">
     <div class="container mx-auto px-4 py-8">
