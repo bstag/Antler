@@ -28,10 +28,11 @@ const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
 const title = post.data.title;
 const description = post.data.description;
+const keywords = post.data.keywords || post.data.tags;
 ---
 
 <ConditionalRoute contentTypeId="blog">
-  <BaseLayout title={title} description={description}>
+  <BaseLayout title={title} description={description} keywords={keywords}>
     <Header />
     <main class="min-h-screen bg-surface">
     <article class="container mx-auto px-4 py-16 max-w-4xl">
