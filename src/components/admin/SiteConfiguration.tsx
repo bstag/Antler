@@ -760,7 +760,7 @@ const HeroTab: React.FC<{
   saving: boolean;
 }> = ({ config, onSave, saving }) => {
   const [hero, setHero] = useState<HeroConfig>(config.customization.hero || {
-    title: { text: 'Build Fast,', highlightedText: 'Beautiful' },
+    title: { text: 'Build Fast,', highlightedText: 'Beautiful', suffixText: 'Websites' },
     subtitle: 'Transform your Markdown content into stunning, performant websites with Antler.',
     badge: { text: 'Modern Static Site Generation', icon: 'Zap' },
     actions: {
@@ -826,27 +826,41 @@ const HeroTab: React.FC<{
           <h4 className="text-md font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
             Main Heading
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Title Text
+                Start Text
               </label>
               <input
                 type="text"
                 value={hero.title.text}
                 onChange={(e) => updateHero('title.text', e.target.value)}
                 className="form-input w-full"
+                placeholder="Build Fast,"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Highlighted Text (Gradient)
+                Highlighted (Gradient)
               </label>
               <input
                 type="text"
                 value={hero.title.highlightedText}
                 onChange={(e) => updateHero('title.highlightedText', e.target.value)}
                 className="form-input w-full"
+                placeholder="Beautiful"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                End Text (Optional)
+              </label>
+              <input
+                type="text"
+                value={hero.title.suffixText || ''}
+                onChange={(e) => updateHero('title.suffixText', e.target.value)}
+                className="form-input w-full"
+                placeholder="Websites"
               />
             </div>
           </div>

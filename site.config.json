@@ -131,7 +131,8 @@
     "hero": {
       "title": {
         "text": "Build Fast,",
-        "highlightedText": "Beautiful"
+        "highlightedText": "Beautiful",
+        "suffixText": "Websites"
       },
       "subtitle": "Transform your Markdown content into stunning, performant websites with Antler. Built with Astro, React, and TypeScript for the ultimate developer experience.",
       "badge": {

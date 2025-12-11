@@ -137,6 +137,7 @@ export interface HeroConfig {
   title: {
     text: string;
     highlightedText: string;
+    suffixText?: string;
   };
   subtitle: string;
   badge: {

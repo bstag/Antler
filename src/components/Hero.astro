@@ -40,6 +40,11 @@ const getFeatureIcon = (iconName: string) => {
         <span class="text-primary gradient-text">
           {hero?.title?.highlightedText}
         </span>
+        {hero?.title?.suffixText && (
+          <span>
+            {hero?.title?.suffixText}
+          </span>
+        )}
       </h1>
 
       <!-- Subtitle -->
