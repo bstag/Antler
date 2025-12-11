@@ -78,7 +78,7 @@ export const ResumeManager: React.FC<ResumeManagerProps> = ({ schemas }) => {
           const response = await adminFetch(`admin/api/content/${collection}`);
           if (response.ok) {
             const data = await response.json();
-            const items = data.data?.items || []; // Fix: Access items from data.data.items
+            const items = data.data?.items || [];
             return [collection, {
               total: items.length,
               recent: items.filter((item: any) => {
