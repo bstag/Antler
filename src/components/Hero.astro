@@ -9,13 +9,21 @@ const IconMap: Record<string, any> = {
   ArrowRight, Code, Zap, Globe, Rocket, Terminal, Book, Layout, Database, Server, Smartphone, PenTool, Image, MessageSquare, Heart, Star, Cloud, Lock, Shield, Settings, Users, Briefcase
 };
 
-const BadgeIcon = hero?.badge?.icon && IconMap[hero.badge.icon] ? IconMap[hero.badge.icon] : Zap;
-const PrimaryActionIcon = hero?.actions?.primary?.icon && IconMap[hero.actions.primary.icon] ? IconMap[hero.actions.primary.icon] : ArrowRight;
-const SecondaryActionIcon = hero?.actions?.secondary?.icon && IconMap[hero.actions.secondary.icon] ? IconMap[hero.actions.secondary.icon] : null;
+// Helper to get icon by name with warning if invalid
+function getIconOrWarn(iconName: string | undefined, fallback: any, context: string) {
+  if (!iconName) return fallback;
+  if (IconMap[iconName]) return IconMap[iconName];
+  console.warn(`[Hero.astro] Invalid icon name "${iconName}" provided for ${context}. Falling back to default.`);
+  return fallback;
+}
+
+const BadgeIcon = getIconOrWarn(hero?.badge?.icon, Zap, "badge");
+const PrimaryActionIcon = getIconOrWarn(hero?.actions?.primary?.icon, ArrowRight, "primary action");
+const SecondaryActionIcon = getIconOrWarn(hero?.actions?.secondary?.icon, null, "secondary action");
 
 // Helper to get icon for features
 const getFeatureIcon = (iconName: string) => {
-  return IconMap[iconName] || Code;
+  return getIconOrWarn(iconName, Code, "feature");
 };
 ---
 
