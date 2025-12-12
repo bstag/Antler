@@ -122,7 +122,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
     );
   }
 
-  const collectionPath = getCollectionPath(collection);
+  const collectionPath = useMemo(() => getCollectionPath(collection), [collection]);
 
   return (
     <div className="space-y-6">
