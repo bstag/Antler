@@ -1014,7 +1014,7 @@ const HeroTab: React.FC<{
                       className="form-input w-full text-sm"
                     />
                   </div>
-                  <div className="md:col-span-3">
+                  <div className="md:col-span-1">
                     <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Description</label>
                     <input
                       type="text"
