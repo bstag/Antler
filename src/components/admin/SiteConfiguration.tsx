@@ -994,7 +994,7 @@ const HeroTab: React.FC<{
           <div className="grid grid-cols-1 gap-4">
             {hero.features.map((feature, index) => (
               <div key={index} className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-3">
-                 <h5 className="text-sm font-semibold text-gray-900 dark:text-white">Feature {index + 1}</h5>
+                <h5 className="text-sm font-semibold text-gray-900 dark:text-white">Feature {index + 1}</h5>
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="md:col-span-1">
                     <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Title</label>
