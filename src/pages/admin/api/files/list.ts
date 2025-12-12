@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs/promises';
 import path from 'path';
+import { resolveSafePath } from '../../../../lib/file-security';
 
 export const prerender = false;
 
@@ -9,7 +10,19 @@ export const GET: APIRoute = async ({ url }) => {
     const searchParams = url.searchParams;
     const directory = searchParams.get('directory') || 'images';
     
-    const publicDir = path.join(process.cwd(), 'public', directory);
+    let publicDir;
+    try {
+      const rootDir = path.join(process.cwd(), 'public');
+      publicDir = resolveSafePath(rootDir, directory);
+    } catch (e) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Invalid directory path'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
     
     try {
       const files = await fs.readdir(publicDir);
