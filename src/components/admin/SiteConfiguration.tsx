@@ -793,7 +793,7 @@ const HeroTab: React.FC<{
         setHero({ ...hero, badge: { ...hero.badge, [child]: value } });
       } else if (parent === 'actions') {
         // e.g. actions.primary.text
-        const [_, actionType, actionField] = field.split('.');
+        const [parent, actionType, actionField] = field.split('.');
         setHero({
           ...hero,
           actions: {
