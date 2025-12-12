@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs/promises';
 import path from 'path';
+import { resolveSafePath } from '../../../../lib/file-security';
 
 export const prerender = false;
 
@@ -38,8 +39,22 @@ export const POST: APIRoute = async ({ request }) => {
     const baseName = path.basename(file.name, extension).replace(/[^a-z0-9]/gi, '-').toLowerCase();
     const filename = `${baseName}-${timestamp}${extension}`;
 
-    // Create directory path
-    const uploadDir = path.join(process.cwd(), 'public', directory);
+    // Create directory path safely
+    let uploadDir;
+    try {
+      const rootDir = path.join(process.cwd(), 'public');
+      uploadDir = resolveSafePath(rootDir, directory);
+    } catch (e) {
+      console.error('Directory path resolution error:', e);
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Invalid directory path'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     await fs.mkdir(uploadDir, { recursive: true });
 
     // Save file

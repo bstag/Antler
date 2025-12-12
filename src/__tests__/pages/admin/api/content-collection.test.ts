@@ -5,7 +5,16 @@ import matter from 'gray-matter';
 import { getCollection } from 'astro:content';
 
 // Mock dependencies
-vi.mock('fs/promises');
+vi.mock('fs/promises', () => ({
+  default: {
+    writeFile: vi.fn(),
+    unlink: vi.fn(),
+    readdir: vi.fn(),
+    readFile: vi.fn(),
+    stat: vi.fn(),
+  }
+}));
+
 vi.mock('../../../../lib/utils/slug', () => ({
   generateSlug: vi.fn((str: string) => str.toLowerCase().replace(/\s+/g, '-'))
 }));
