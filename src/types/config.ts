@@ -121,12 +121,43 @@ export interface ThemeConfig {
   availableThemes: string[];
 }
 
+export interface HeroAction {
+  text: string;
+  link: string;
+  icon?: string | null;
+}
+
+export interface HeroFeature {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface HeroConfig {
+  title: {
+    text: string;
+    highlightedText: string;
+    suffixText?: string;
+  };
+  subtitle: string;
+  badge: {
+    text: string;
+    icon: string;
+  };
+  actions: {
+    primary: HeroAction;
+    secondary: HeroAction;
+  };
+  features: HeroFeature[];
+}
+
 export interface SiteCustomization {
   siteName: string;
   description: string;
   tagline?: string;
   logo?: LogoConfig;
   author: AuthorInfo;
+  hero?: HeroConfig;
   social: SocialLinks;
   seo: SEOSettings;
   pages?: Record<string, PageSEOConfig>;

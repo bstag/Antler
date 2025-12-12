@@ -1,5 +1,30 @@
 ---
-import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
+import { ArrowRight, Code, Zap, Globe, Rocket, Terminal, Book, Layout, Database, Server, Smartphone, PenTool, Image, MessageSquare, Heart, Star, Cloud, Lock, Shield, Settings, Users, Briefcase } from 'lucide-react';
+import siteConfig from '../../site.config.json';
+
+const { hero } = siteConfig.customization;
+
+// Map icon strings to components
+const IconMap: Record<string, any> = {
+  ArrowRight, Code, Zap, Globe, Rocket, Terminal, Book, Layout, Database, Server, Smartphone, PenTool, Image, MessageSquare, Heart, Star, Cloud, Lock, Shield, Settings, Users, Briefcase
+};
+
+// Helper to get icon by name with warning if invalid
+function getIconOrWarn(iconName: string | undefined, fallback: any, context: string) {
+  if (!iconName) return fallback;
+  if (IconMap[iconName]) return IconMap[iconName];
+  console.warn(`[Hero.astro] Invalid icon name "${iconName}" provided for ${context}. Falling back to default.`);
+  return fallback;
+}
+
+const BadgeIcon = getIconOrWarn(hero?.badge?.icon, Zap, "badge");
+const PrimaryActionIcon = getIconOrWarn(hero?.actions?.primary?.icon, ArrowRight, "primary action");
+const SecondaryActionIcon = getIconOrWarn(hero?.actions?.secondary?.icon, null, "secondary action");
+
+// Helper to get icon for features
+const getFeatureIcon = (iconName: string) => {
+  return getIconOrWarn(iconName, Code, "feature");
+};
 ---
 
 <section class="relative overflow-hidden hero-background">
@@ -10,68 +35,67 @@ import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
     <div class="text-center">
       <!-- Badge -->
-      <div class="inline-flex items-center px-4 py-2 rounded-full badge badge-primary text-sm font-medium mb-8 animate-fade-in">
-        <Zap className="w-4 h-4 mr-2" />
-        Modern Static Site Generation
-      </div>
+      {hero?.badge && (
+        <div class="inline-flex items-center px-4 py-2 rounded-full badge badge-primary text-sm font-medium mb-8 animate-fade-in">
+          <BadgeIcon className="w-4 h-4 mr-2" />
+          {hero.badge.text}
+        </div>
+      )}
 
       <!-- Main Heading -->
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 animate-slide-up">
-        Build Fast,
+        {hero?.title?.text}
         <span class="text-primary gradient-text">
-          Beautiful
+          {hero?.title?.highlightedText}
         </span>
-        Websites
+        {hero?.title?.suffixText && (
+          <span>
+            {hero?.title?.suffixText}
+          </span>
+        )}
       </h1>
 
       <!-- Subtitle -->
       <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed animate-slide-up animation-delay-200">
-        Transform your Markdown content into stunning, performant websites with Antler. 
-        Built with Astro, React, and TypeScript for the ultimate developer experience.
+        {hero?.subtitle}
       </p>
 
       <!-- CTA Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-slide-up animation-delay-400">
-        <a
-          href={import.meta.env.BASE_URL + '/docs/installation'}
-          class="btn-primary group inline-flex items-center px-8 py-4 text-lg font-semibold"
-        >
-          Get Started
-          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </a>
-        <a
-          href={import.meta.env.BASE_URL + '/projects'}
-          class="btn-secondary inline-flex items-center px-8 py-4 text-lg font-semibold"
-        >
-          View Projects
-        </a>
+        {hero?.actions?.primary && (
+          <a
+            href={import.meta.env.BASE_URL + hero.actions.primary.link}
+            class="btn-primary group inline-flex items-center px-8 py-4 text-lg font-semibold"
+          >
+            {hero.actions.primary.text}
+            {PrimaryActionIcon && <PrimaryActionIcon className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+          </a>
+        )}
+        {hero?.actions?.secondary && (
+          <a
+            href={import.meta.env.BASE_URL + hero.actions.secondary.link}
+            class="btn-secondary inline-flex items-center px-8 py-4 text-lg font-semibold"
+          >
+            {hero.actions.secondary.text}
+            {SecondaryActionIcon && <SecondaryActionIcon className="ml-2 w-5 h-5" />}
+          </a>
+        )}
       </div>
 
       <!-- Feature Icons -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in animation-delay-600">
-        <div class="flex flex-col items-center text-center">
-          <div class="w-12 h-12 icon-box rounded-lg flex items-center justify-center mb-3">
-            <Code className="w-6 h-6 icon-color" />
-          </div>
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Developer First</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Built with modern tools and best practices</p>
-        </div>
-
-        <div class="flex flex-col items-center text-center">
-          <div class="w-12 h-12 icon-box rounded-lg flex items-center justify-center mb-3">
-            <Zap className="w-6 h-6 icon-color" />
-          </div>
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Lightning Fast</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Optimized for performance and SEO</p>
-        </div>
-
-        <div class="flex flex-col items-center text-center">
-          <div class="w-12 h-12 icon-box rounded-lg flex items-center justify-center mb-3">
-            <Globe className="w-6 h-6 icon-color" />
-          </div>
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Deploy Anywhere</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Static files work on any hosting platform</p>
-        </div>
+        {hero?.features?.map((feature) => {
+          const FeatureIcon = getFeatureIcon(feature.icon);
+          return (
+            <div class="flex flex-col items-center text-center">
+              <div class="w-12 h-12 icon-box rounded-lg flex items-center justify-center mb-3">
+                <FeatureIcon className="w-6 h-6 icon-color" />
+              </div>
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{feature.title}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   </div>
