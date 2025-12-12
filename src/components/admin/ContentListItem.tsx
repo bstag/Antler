@@ -16,6 +16,8 @@ export const ContentListItem = React.memo<ContentListItemProps>(({
   isDeleting,
   onDelete
 }) => {
+  const tags = getItemTags(item);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-4">
@@ -59,9 +61,9 @@ export const ContentListItem = React.memo<ContentListItemProps>(({
       </div>
 
       {/* Tags */}
-      {getItemTags(item).length > 0 && (
+      {tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          {getItemTags(item).slice(0, 5).map((tag) => (
+          {tags.slice(0, 5).map((tag) => (
             <span
               key={tag}
               className="badge badge-primary"
@@ -69,9 +71,9 @@ export const ContentListItem = React.memo<ContentListItemProps>(({
               {tag}
             </span>
           ))}
-          {getItemTags(item).length > 5 && (
+          {tags.length > 5 && (
             <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-              +{getItemTags(item).length - 5} more
+              +{tags.length - 5} more
             </span>
           )}
         </div>
