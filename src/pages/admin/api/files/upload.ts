@@ -45,6 +45,7 @@ export const POST: APIRoute = async ({ request }) => {
       const rootDir = path.join(process.cwd(), 'public');
       uploadDir = resolveSafePath(rootDir, directory);
     } catch (e) {
+      console.error('Directory path resolution error:', e);
       return new Response(JSON.stringify({
         success: false,
         error: 'Invalid directory path'
