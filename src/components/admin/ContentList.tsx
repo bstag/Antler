@@ -110,23 +110,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    // loadItems is called by useEffect when page changes to 1 (if it wasn't already)
-    // If page was already 1, we might need to trigger loadItems manually if searchTerm changed but not committed?
-    // Actually searchTerm state is updated on change, so loadItems will be called by useEffect when searchTerm changes?
-    // No, useEffect depends on searchTerm. So typing causes re-fetch.
-    // Wait, the original code had `loadItems` in useEffect depend on `searchTerm`.
-    // But `handleSearch` calls `loadItems` too.
-    // If `searchTerm` is updated on every keystroke, we are fetching on every keystroke.
-    // The original code: `onChange={(e) => setSearchTerm(e.target.value)}`.
-    // And `useEffect` had `searchTerm` in dep array.
-    // So yes, it was searching on type. `handleSearch` (submit) was redundant if useEffect triggers it.
-    // Optimization: Debounce search or remove searchTerm from useEffect and only search on submit.
-    // But for now, I will keep existing behavior to avoid breaking changes in UX,
-    // although I removed `loadItems` call from `handleSearch` because `setPage(1)` might trigger it,
-    // or if `searchTerm` changed it triggered it.
-    // Let's keep it safe: if we want "search on submit", we should remove searchTerm from useEffect dep array.
-    // If we want "search on type", we keep it. The original code had it in useEffect.
-    // I'll keep it in useEffect.
+    // Reset to page 1; useEffect will trigger loading items when page or searchTerm changes.
   };
 
   if (!collection || !schema) {
