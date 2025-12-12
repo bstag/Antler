@@ -217,6 +217,8 @@ export const FileManager: React.FC = () => {
           <button
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
             className="btn-secondary p-2"
+            aria-label={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
+            title={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
           >
             {viewMode === 'grid' ? '📋' : '⊞'}
           </button>
@@ -347,6 +349,7 @@ export const FileManager: React.FC = () => {
                       checked={selectedFiles.has(file.name)}
                       onChange={() => toggleFileSelection(file.name)}
                       className="absolute top-2 left-2 z-10 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      aria-label={`Select ${file.name}`}
                     />
                     {getFileIcon(file)}
                   </div>
@@ -385,6 +388,7 @@ export const FileManager: React.FC = () => {
                     checked={selectedFiles.has(file.name)}
                     onChange={() => toggleFileSelection(file.name)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    aria-label={`Select ${file.name}`}
                   />
                   <div className="w-12 h-12 flex-shrink-0">
                     {file.type === 'image' ? (
