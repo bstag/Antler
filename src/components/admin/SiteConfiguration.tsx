@@ -977,7 +977,7 @@ const HeroTab: React.FC<{
                 <input
                   type="text"
                   value={hero.actions.secondary.icon || ''}
-                  onChange={(e) => updateHero('actions.secondary.icon', e.target.value)}
+                  onChange={(e) => updateHero('actions.secondary.icon', e.target.value || null)}
                   className="form-input w-full text-sm"
                   placeholder="(Optional)"
                 />
