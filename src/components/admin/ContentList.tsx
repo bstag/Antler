@@ -3,6 +3,7 @@ import { Link, useParams, useLocation } from 'react-router-dom';
 import type { ContentItem, SchemaDefinition, ContentListResponse } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
 import { logger } from '../../lib/utils/logger';
+import { useDebounce } from '../../lib/hooks';
 import { ContentListItem } from './ContentListItem';
 import { getCollectionName } from '../../lib/admin/utils';
 
@@ -17,6 +18,8 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  // Debounce search term to prevent excessive API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [sortBy, setSortBy] = useState('updatedAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -46,7 +49,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         limit: limit.toString(),
         sortBy,
         sortOrder,
-        ...(searchTerm && { search: searchTerm })
+        ...(debouncedSearchTerm && { search: debouncedSearchTerm })
       });
 
       const response = await adminFetch(`admin/api/content/${collection}?${params}`);
@@ -71,7 +74,12 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
     } finally {
       setLoading(false);
     }
-  }, [collection, page, searchTerm, sortBy, sortOrder]);
+  }, [collection, page, debouncedSearchTerm, sortBy, sortOrder]);
+
+  // Reset page when search term changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     if (collection && schema) {
