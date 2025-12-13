@@ -5,6 +5,17 @@ import { resolveSafePath } from '../../../../lib/file-security';
 
 export const prerender = false;
 
+// Security: Validate file extension matches the declared MIME type
+// This prevents uploading 'malicious.php' as 'image/png'
+const MIME_TYPE_EXTENSIONS: Record<string, string[]> = {
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/jpg': ['.jpg', '.jpeg'],
+  'image/png': ['.png'],
+  'image/gif': ['.gif'],
+  'image/webp': ['.webp'],
+  'image/svg+xml': ['.svg'],
+};
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const formData = await request.formData();
@@ -33,9 +44,22 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    const originalExtension = path.extname(file.name).toLowerCase();
+    const allowedExtensions = MIME_TYPE_EXTENSIONS[file.type] || [];
+
+    if (!allowedExtensions.includes(originalExtension)) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: `Invalid file extension for type ${file.type}. Allowed: ${allowedExtensions.join(', ')}`
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
-    const extension = path.extname(file.name);
+    const extension = originalExtension;
     const baseName = path.basename(file.name, extension).replace(/[^a-z0-9]/gi, '-').toLowerCase();
     const filename = `${baseName}-${timestamp}${extension}`;
 
