@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import type { ContentItem, SchemaDefinition, ContentListResponse } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
@@ -26,6 +26,8 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
   const [totalItems, setTotalItems] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+
+  const prevSearchRef = useRef(debouncedSearchTerm);
 
   const limit = 10;
   const schema = collection ? schemas[collection] : null;
@@ -76,16 +78,25 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
     }
   }, [collection, page, debouncedSearchTerm, sortBy, sortOrder]);
 
-  // Reset page when search term changes
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearchTerm]);
-
+  // Combined effect to handle search term changes (which reset page) AND loading data
   useEffect(() => {
     if (collection && schema) {
+      // Check if search term changed
+      if (debouncedSearchTerm !== prevSearchRef.current) {
+        prevSearchRef.current = debouncedSearchTerm;
+        if (page !== 1) {
+          // If search term changed and we are not on page 1, reset to page 1.
+          // This will trigger a re-render with page=1.
+          // We return here to skip the fetch in this render (which would use the old page).
+          // The next render (with page=1) will trigger this effect again, but search term will match ref, so it will proceed to load.
+          setPage(1);
+          return;
+        }
+      }
+
       loadItems();
     }
-  }, [collection, schema, loadItems]);
+  }, [collection, schema, loadItems, debouncedSearchTerm, page]);
 
   const handleDelete = useCallback(async (id: string) => {
     if (!collection || !confirm('Are you sure you want to delete this item?')) return;
