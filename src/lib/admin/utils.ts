@@ -4,6 +4,20 @@ export const getCollectionName = (collection: string): string => {
   switch (collection) {
     case 'docs':
       return 'Documentation';
+    case 'resumePersonal':
+      return 'Personal Info';
+    case 'resumeExperience':
+      return 'Experience';
+    case 'resumeEducation':
+      return 'Education';
+    case 'resumeCertifications':
+      return 'Certifications';
+    case 'resumeSkills':
+      return 'Skills';
+    case 'resumeLanguages':
+      return 'Languages';
+    case 'resumeProjects':
+      return 'Resume Projects';
     default:
       return collection.charAt(0).toUpperCase() + collection.slice(1);
   }
