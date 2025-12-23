@@ -190,10 +190,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
     Object.entries(schemas).filter(([collection]) => !collection.startsWith('resume'))
   );
 
-  // Calculate resume stats (unused variable removed or kept if needed later, but reducing it just to ignore is fine)
-  // const resumeStats = Object.entries(stats)
-  //   .filter(([collection]) => collection.startsWith('resume'))
-  //   .reduce((total, [, stat]) => total + stat.total, 0);
+  // Resume stats calculation removed – was not being used in this component.
 
   return (
     <div className="space-y-8">
