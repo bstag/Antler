@@ -11,6 +11,7 @@ export const FileManager: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentDirectory, setCurrentDirectory] = useState('images');
+  const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -101,9 +102,10 @@ export const FileManager: React.FC = () => {
     e.preventDefault();
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, fileName: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      // You could add a toast notification here
+      setCopiedFile(fileName);
+      setTimeout(() => setCopiedFile(null), 2000);
       logger.log('Copied to clipboard:', text);
     });
   };
@@ -366,10 +368,24 @@ export const FileManager: React.FC = () => {
                   </div>
                   <div className="mt-3 flex items-center space-x-2">
                     <button
-                      onClick={() => copyToClipboard(file.path)}
-                      className="flex-1 text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      onClick={() => copyToClipboard(file.path, file.name)}
+                      className={`flex-1 text-xs px-2 py-1 border rounded transition-colors duration-200 flex items-center justify-center gap-1 ${
+                        copiedFile === file.name
+                          ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
+                          : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                      aria-label={copiedFile === file.name ? `Copied URL for ${file.name}` : `Copy URL for ${file.name}`}
                     >
-                      Copy URL
+                      {copiedFile === file.name ? (
+                        <>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Copied!
+                        </>
+                      ) : (
+                        'Copy URL'
+                      )}
                     </button>
                     {file.type === 'image' && (
                       <button
@@ -414,10 +430,24 @@ export const FileManager: React.FC = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => copyToClipboard(file.path)}
-                      className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      onClick={() => copyToClipboard(file.path, file.name)}
+                      className={`text-xs px-3 py-1 border rounded transition-colors duration-200 flex items-center gap-1 ${
+                        copiedFile === file.name
+                          ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
+                          : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                      aria-label={copiedFile === file.name ? `Copied URL for ${file.name}` : `Copy URL for ${file.name}`}
                     >
-                      Copy URL
+                      {copiedFile === file.name ? (
+                        <>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Copied!
+                        </>
+                      ) : (
+                        'Copy URL'
+                      )}
                     </button>
                     {file.type === 'image' && (
                       <button
