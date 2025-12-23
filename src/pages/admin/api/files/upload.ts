@@ -13,7 +13,8 @@ const MIME_TYPE_EXTENSIONS: Record<string, string[]> = {
   'image/png': ['.png'],
   'image/gif': ['.gif'],
   'image/webp': ['.webp'],
-  'image/svg+xml': ['.svg'],
+  // Sentinel: Removed 'image/svg+xml' to prevent Stored XSS attacks via malicious SVG uploads.
+  // SVGs can contain executable JavaScript which triggers when viewed directly in the browser.
 };
 
 export const POST: APIRoute = async ({ request }) => {
@@ -33,11 +34,12 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Validate file type (images only for now)
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    // Sentinel: Removed 'image/svg+xml' from allowed types to prevent Stored XSS
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       return new Response(JSON.stringify({
         success: false,
-        error: 'Invalid file type. Only images are allowed.'
+        error: 'Invalid file type. Only raster images (JPG, PNG, GIF, WEBP) are allowed. SVG uploads are disabled for security.'
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
