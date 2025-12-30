@@ -12,6 +12,7 @@ export const FileManager: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentDirectory, setCurrentDirectory] = useState('images');
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -92,6 +93,7 @@ export const FileManager: React.FC = () => {
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(false);
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles.length > 0) {
       handleFileUpload(droppedFiles);
@@ -100,6 +102,17 @@ export const FileManager: React.FC = () => {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    // Prevent flickering by checking if the related target (where mouse moved to)
+    // is still inside the current target (the drop zone)
+    if (e.currentTarget.contains(e.relatedTarget as Node)) {
+      return;
+    }
+    setIsDragging(false);
   };
 
   const copyToClipboard = (text: string, fileName: string) => {
@@ -241,12 +254,26 @@ export const FileManager: React.FC = () => {
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-gray-400 dark:hover:border-gray-500 transition-colors bg-gray-50 dark:bg-gray-800"
+        onDragLeave={handleDragLeave}
+        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ${
+          isDragging
+            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+            : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-500'
+        }`}
       >
-        <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className={`w-12 h-12 mx-auto mb-4 transition-colors duration-200 ${
+            isDragging ? 'text-blue-500' : 'text-gray-400'
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
         </svg>
-        <p className="text-gray-600 dark:text-gray-300 mb-2">Drag and drop files here, or click to select</p>
+        <p className={`mb-2 transition-colors duration-200 ${isDragging ? 'text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-600 dark:text-gray-300'}`}>
+          {isDragging ? 'Drop files to upload!' : 'Drag and drop files here, or click to select'}
+        </p>
         <button
           onClick={() => fileInputRef.current?.click()}
           className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
@@ -388,12 +415,15 @@ export const FileManager: React.FC = () => {
                       )}
                     </button>
                     {file.type === 'image' && (
-                      <button
-                        onClick={() => window.open(file.path, '_blank')}
-                        className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      <a
+                        href={file.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 inline-block no-underline"
+                        aria-label={`View ${file.name} in new tab`}
                       >
                         View
-                      </button>
+                      </a>
                     )}
                   </div>
                 </div>
@@ -450,12 +480,15 @@ export const FileManager: React.FC = () => {
                       )}
                     </button>
                     {file.type === 'image' && (
-                      <button
-                        onClick={() => window.open(file.path, '_blank')}
-                        className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      <a
+                        href={file.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 inline-block no-underline"
+                        aria-label={`View ${file.name} in new tab`}
                       >
                         View
-                      </button>
+                      </a>
                     )}
                   </div>
                 </div>
