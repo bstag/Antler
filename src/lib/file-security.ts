@@ -23,3 +23,13 @@ export function resolveSafePath(rootDir: string, requestedPath: string): string 
 
   return resolvedPath;
 }
+
+// Whitelist of allowed collection names
+// We use a regex to ensure collection names are alphanumeric and safe
+export const SAFE_COLLECTION_REGEX = /^[a-zA-Z0-9_-]+$/;
+
+export function validateCollection(collection: string) {
+  if (!collection || !SAFE_COLLECTION_REGEX.test(collection)) {
+    throw new Error('Invalid collection name');
+  }
+}
