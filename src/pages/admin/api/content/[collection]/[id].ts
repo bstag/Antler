@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import { logger } from '../../../../../lib/utils/logger';
+import { resolveSafePath, validateCollection } from '../../../../../lib/file-security';
 
 export const prerender = false;
 
@@ -21,6 +22,13 @@ export const GET: APIRoute = async ({ params }) => {
   }
 
   try {
+    validateCollection(collection);
+
+    // We can't rely solely on getEntry for file reading because it returns processed data.
+    // We want raw content for the editor.
+    // However, we should check if entry exists via getEntry first?
+    // getEntry is safe, but we also read the file manually.
+
     const entry = await getEntry(collection as any, id) as any;
     
     if (!entry) {
@@ -34,7 +42,9 @@ export const GET: APIRoute = async ({ params }) => {
     }
 
     // Read the raw markdown file to get the content
-    const filePath = path.join(process.cwd(), 'src', 'content', collection, `${id}.md`);
+    const contentRoot = path.join(process.cwd(), 'src', 'content');
+    const filePath = resolveSafePath(contentRoot, path.join(collection, `${id}.md`));
+
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const { data: frontmatter, content } = matter(fileContent);
 
@@ -55,6 +65,17 @@ export const GET: APIRoute = async ({ params }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
+    const errorMessage = (error as Error).message;
+    if (errorMessage.includes('Access denied') || errorMessage.includes('Invalid collection')) {
+         return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid path or collection'
+        }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to fetch content'
@@ -79,12 +100,16 @@ export const PUT: APIRoute = async ({ params, request }) => {
   }
 
   try {
+    validateCollection(collection);
+
     const body = await request.json();
     const { frontmatter, content } = body;
 
     // Create markdown content with frontmatter
     const fileContent = matter.stringify(content || '', frontmatter);
-    const filePath = path.join(process.cwd(), 'src', 'content', collection, `${id}.md`);
+
+    const contentRoot = path.join(process.cwd(), 'src', 'content');
+    const filePath = resolveSafePath(contentRoot, path.join(collection, `${id}.md`));
 
     // Write file to disk
     await fs.writeFile(filePath, fileContent, 'utf-8');
@@ -101,6 +126,18 @@ export const PUT: APIRoute = async ({ params, request }) => {
     });
   } catch (error) {
     logger.error('PUT error:', error);
+
+    const errorMessage = (error as Error).message;
+    if (errorMessage.includes('Access denied') || errorMessage.includes('Invalid collection')) {
+         return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid path or collection'
+        }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to update content'

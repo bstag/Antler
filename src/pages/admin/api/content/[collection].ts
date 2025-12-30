@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import { generateSlug } from '../../../../lib/utils/slug';
+import { resolveSafePath, validateCollection } from '../../../../lib/file-security';
 
 export const prerender = false;
 
@@ -25,6 +26,9 @@ export const GET: APIRoute = async ({ params, url }) => {
   }
 
   try {
+    validateCollection(collection);
+
+    // Explicitly cast to any because getCollection types are tricky in this generic context
     const entries = await getCollection(collection as any) as any[];
     
     // Filter by search term if provided
@@ -67,6 +71,17 @@ export const GET: APIRoute = async ({ params, url }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
+    // If validation fails or collection doesn't exist
+    if ((error as Error).message === 'Invalid collection name' || (error as Error).message.includes('Collection')) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid collection'
+        }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to fetch content'
@@ -91,18 +106,27 @@ export const POST: APIRoute = async ({ params, request }) => {
   }
 
   try {
+    validateCollection(collection);
+
     const body = await request.json();
     const { frontmatter, content, filename } = body;
 
     // Generate filename if not provided
     const slug = filename || generateSlug(frontmatter.title || 'untitled');
-    const filePath = path.join(process.cwd(), 'src', 'content', collection, `${slug}.md`);
+
+    // Define the content root
+    const contentRoot = path.join(process.cwd(), 'src', 'content');
+
+    // Construct the target directory
+    // Note: Since we validated collection with regex, path.join(contentRoot, collection) is safe
+
+    const targetPath = resolveSafePath(contentRoot, path.join(collection, `${slug}.md`));
 
     // Create markdown content with frontmatter
     const fileContent = matter.stringify(content || '', frontmatter);
 
     // Write file to disk
-    await fs.writeFile(filePath, fileContent, 'utf-8');
+    await fs.writeFile(targetPath, fileContent, 'utf-8');
 
     return new Response(JSON.stringify({
       success: true,
@@ -115,6 +139,19 @@ export const POST: APIRoute = async ({ params, request }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
+    console.error('POST Content Error:', error);
+    const errorMessage = (error as Error).message;
+
+    if (errorMessage.includes('Access denied') || errorMessage.includes('Invalid collection')) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid path or collection'
+        }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to create content'
@@ -141,16 +178,19 @@ export const PUT: APIRoute = async ({ params, request }) => {
   }
 
   try {
+    validateCollection(collection);
+
     const body = await request.json();
     const { frontmatter, content } = body;
 
-    const filePath = path.join(process.cwd(), 'src', 'content', collection, `${id}.md`);
+    const contentRoot = path.join(process.cwd(), 'src', 'content');
+    const targetPath = resolveSafePath(contentRoot, path.join(collection, `${id}.md`));
 
     // Create markdown content with frontmatter
     const fileContent = matter.stringify(content || '', frontmatter);
 
     // Write file to disk
-    await fs.writeFile(filePath, fileContent, 'utf-8');
+    await fs.writeFile(targetPath, fileContent, 'utf-8');
 
     return new Response(JSON.stringify({
       success: true,
@@ -163,6 +203,17 @@ export const PUT: APIRoute = async ({ params, request }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
+    const errorMessage = (error as Error).message;
+    if (errorMessage.includes('Access denied') || errorMessage.includes('Invalid collection')) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid path or collection'
+        }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to update content'
@@ -189,8 +240,12 @@ export const DELETE: APIRoute = async ({ params, request }) => {
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'src', 'content', collection, `${id}.md`);
-    await fs.unlink(filePath);
+    validateCollection(collection);
+
+    const contentRoot = path.join(process.cwd(), 'src', 'content');
+    const targetPath = resolveSafePath(contentRoot, path.join(collection, `${id}.md`));
+
+    await fs.unlink(targetPath);
 
     return new Response(JSON.stringify({
       success: true,
@@ -200,6 +255,17 @@ export const DELETE: APIRoute = async ({ params, request }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
+     const errorMessage = (error as Error).message;
+    if (errorMessage.includes('Access denied') || errorMessage.includes('Invalid collection')) {
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid path or collection'
+        }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     return new Response(JSON.stringify({
       success: false,
       error: 'Failed to delete content'
