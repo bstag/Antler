@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { logger } from '../../lib/utils/logger';
 import {
   Bold,
@@ -96,7 +97,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         return '<ul class="list-disc list-inside my-4">' + match + '</ul>';
       });
 
-      setPreviewHtml(html);
+      // Sentinel: Sanitize HTML to prevent XSS
+      const cleanHtml = DOMPurify.sanitize(html);
+      setPreviewHtml(cleanHtml);
     } catch (error) {
       logger.error('Preview generation error:', error);
       setPreviewHtml('<p class="text-red-500">Error generating preview</p>');

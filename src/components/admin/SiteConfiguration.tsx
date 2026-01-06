@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { configClient } from '../../lib/config/client';
 import type { SiteConfig, SiteTemplate, HeroConfig, HeroAction, HeroFeature } from '../../types/config';
 import { logger } from '../../lib/utils/logger';
@@ -1364,7 +1365,8 @@ const LogoTab: React.FC<{
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center space-x-2">
                 {logoType === 'svg' && svgContent && (
-                  <div dangerouslySetInnerHTML={{ __html: svgContent }} />
+                  // Sentinel: Sanitize SVG content to prevent XSS
+                  <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svgContent) }} />
                 )}
                 {logoType === 'image' && imagePath && (
                   <img src={imagePath} alt={imageAlt} className={width || 'w-8 h-8'} />
