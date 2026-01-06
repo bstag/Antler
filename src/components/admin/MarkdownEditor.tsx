@@ -1,5 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { logger } from '../../lib/utils/logger';
+import {
+  Bold,
+  Italic,
+  Link,
+  Code,
+  Heading1,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Quote
+} from 'lucide-react';
 
 interface MarkdownEditorProps {
   value: string;
@@ -140,61 +152,61 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const toolbarButtons = [
     {
       label: 'Bold',
-      icon: 'B',
+      icon: <Bold className="w-4 h-4" />,
       action: () => insertText('**', '**'),
       shortcut: 'Ctrl+B'
     },
     {
       label: 'Italic',
-      icon: 'I',
+      icon: <Italic className="w-4 h-4" />,
       action: () => insertText('*', '*'),
       shortcut: 'Ctrl+I'
     },
     {
       label: 'Link',
-      icon: '🔗',
+      icon: <Link className="w-4 h-4" />,
       action: () => insertText('[', '](url)'),
       shortcut: 'Ctrl+K'
     },
     {
       label: 'Code',
-      icon: '</>',
+      icon: <Code className="w-4 h-4" />,
       action: () => insertText('`', '`'),
       shortcut: ''
     },
     {
       label: 'Heading 1',
-      icon: 'H1',
+      icon: <Heading1 className="w-4 h-4" />,
       action: () => insertText('# '),
       shortcut: ''
     },
     {
       label: 'Heading 2',
-      icon: 'H2',
+      icon: <Heading2 className="w-4 h-4" />,
       action: () => insertText('## '),
       shortcut: ''
     },
     {
       label: 'Heading 3',
-      icon: 'H3',
+      icon: <Heading3 className="w-4 h-4" />,
       action: () => insertText('### '),
       shortcut: ''
     },
     {
       label: 'Bullet List',
-      icon: '•',
+      icon: <List className="w-4 h-4" />,
       action: () => insertText('- '),
       shortcut: ''
     },
     {
       label: 'Numbered List',
-      icon: '1.',
+      icon: <ListOrdered className="w-4 h-4" />,
       action: () => insertText('1. '),
       shortcut: ''
     },
     {
       label: 'Quote',
-      icon: '"',
+      icon: <Quote className="w-4 h-4" />,
       action: () => insertText('> '),
       shortcut: ''
     }
@@ -243,6 +255,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 key={index}
                 onClick={button.action}
                 title={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ''}`}
+                aria-label={button.label}
                 className="px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               >
                 {button.icon}
