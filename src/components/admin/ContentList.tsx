@@ -11,8 +11,9 @@ interface ContentListProps {
   schemas: Record<string, SchemaDefinition>;
 }
 
-export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
-  const { collection } = useParams<{ collection: string }>();
+// Inner component that handles the actual list logic
+// It accepts collection as a prop to allow the parent to control remounting via key
+const ContentListInner: React.FC<ContentListProps & { collection: string }> = ({ schemas, collection }) => {
   const location = useLocation();
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -142,6 +143,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
   }
 
   const collectionPath = useMemo(() => getCollectionPath(collection), [collection]);
+  const showSkeletons = loading && items.length === 0;
 
   return (
     <div className="space-y-6">
@@ -211,7 +213,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
       </div>
 
       {/* Content List */}
-      {loading ? (
+      {showSkeletons ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -269,7 +271,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className={`space-y-4 ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
           {items.map((item) => (
             <ContentListItem
               key={item.id}
@@ -331,5 +333,22 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         </div>
       )}
     </div>
+  );
+};
+
+// Wrapper component to handle routing key
+export const ContentList: React.FC<ContentListProps> = (props) => {
+  const { collection } = useParams<{ collection: string }>();
+
+  if (!collection) {
+    return null;
+  }
+
+  return (
+    <ContentListInner
+      key={collection}
+      {...props}
+      collection={collection}
+    />
   );
 };
