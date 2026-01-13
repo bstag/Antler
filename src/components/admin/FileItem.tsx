@@ -71,12 +71,15 @@ export const FileItem = React.memo<FileItemProps>(({
               )}
             </button>
             {file.type === 'image' && (
-              <button
-                onClick={() => window.open(file.path, '_blank')}
-                className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              <a
+                href={file.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 no-underline"
+                aria-label={`View ${file.name}`}
               >
                 View
-              </button>
+              </a>
             )}
           </div>
         </div>
@@ -143,12 +146,15 @@ export const FileItem = React.memo<FileItemProps>(({
             )}
           </button>
           {file.type === 'image' && (
-            <button
-              onClick={() => window.open(file.path, '_blank')}
-              className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            <a
+              href={file.path}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 no-underline"
+              aria-label={`View ${file.name}`}
             >
               View
-            </button>
+            </a>
           )}
         </div>
       </div>
