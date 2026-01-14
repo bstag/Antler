@@ -43,7 +43,7 @@ const availableThemes = theme.availableThemes;
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/favicon.svg`} />
     <meta name="generator" content={Astro.generator} />
     
     <!-- Canonical URL -->
@@ -98,12 +98,12 @@ const availableThemes = theme.availableThemes;
     </script>
 
     <!-- Load Color Theme CSS -->
-    <link id="theme-stylesheet" rel="stylesheet" href={`${import.meta.env.BASE_URL}/styles/themes/theme-${defaultTheme}.css`} />
+    <link id="theme-stylesheet" rel="stylesheet" href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/styles/themes/theme-${defaultTheme}.css`} />
 
     <title>{title}</title>
 
     <!-- Prevent theme flash (FOUC) and initialize color theme -->
-    <script is:inline define:vars={{ defaultTheme, baseUrl: import.meta.env.BASE_URL }}>
+    <script is:inline define:vars={{ defaultTheme, baseUrl: (import.meta.env.BASE_URL || '').replace(/\/$/, '') }}>
       (function() {
         // Initialize dark/light mode
         const savedDarkMode = localStorage.getItem('theme');
@@ -124,7 +124,8 @@ const availableThemes = theme.availableThemes;
         // Load color theme CSS
         const themeLink = document.getElementById('theme-stylesheet');
         if (themeLink && userPreference) {
-          themeLink.href = `${baseUrl}/styles/themes/theme-${colorTheme}.css`;
+          const normalized = (baseUrl || '').replace(/\/$/, '');
+          themeLink.href = `${normalized}/styles/themes/theme-${colorTheme}.css`;
         }
       })();
     </script>

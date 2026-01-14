@@ -83,7 +83,7 @@ export function resolvePath(config: SiteConfig, path: string): string {
 
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
 
-  if (ssrBase) {
+  if (ssrBase && ssrBase !== '/') {
     return `${ssrBase}${cleanPath}`;
   }
 

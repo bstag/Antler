@@ -17,15 +17,15 @@ export default defineConfig({
     mode: 'standalone',
   }),
 
-  site: 'https://bstag.github.io',
-  base: '/Antler',
+  site: 'https://StagWare.com',
+  base: '/',
   markdown: {
     shikiConfig: {
       theme: 'github-dark-dimmed',
       wrap: true
     },
     rehypePlugins: [
-      [rehypeAddBaseUrl, { base: '/Antler' }]
+      [rehypeAddBaseUrl, { base: '/' }]
     ]
   },
   vite: {
