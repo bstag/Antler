@@ -1,8 +1,21 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs/promises';
 import path from 'path';
+import { resolveSafePath } from '../../../../lib/file-security';
 
 export const prerender = false;
+
+// Security: Validate file extension matches the declared MIME type
+// This prevents uploading 'malicious.php' as 'image/png'
+const MIME_TYPE_EXTENSIONS: Record<string, string[]> = {
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/jpg': ['.jpg', '.jpeg'],
+  'image/png': ['.png'],
+  'image/gif': ['.gif'],
+  'image/webp': ['.webp'],
+  // Sentinel: Removed 'image/svg+xml' to prevent Stored XSS attacks via malicious SVG uploads.
+  // SVGs can contain executable JavaScript which triggers when viewed directly in the browser.
+};
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -21,11 +34,25 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Validate file type (images only for now)
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    // Sentinel: Removed 'image/svg+xml' from allowed types to prevent Stored XSS
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       return new Response(JSON.stringify({
         success: false,
-        error: 'Invalid file type. Only images are allowed.'
+        error: 'Invalid file type. Only raster images (JPG, PNG, GIF, WEBP) are allowed. SVG uploads are disabled for security.'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const originalExtension = path.extname(file.name).toLowerCase();
+    const allowedExtensions = MIME_TYPE_EXTENSIONS[file.type] || [];
+
+    if (!allowedExtensions.includes(originalExtension)) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: `Invalid file extension for type ${file.type}. Allowed: ${allowedExtensions.join(', ')}`
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -34,12 +61,26 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Generate unique filename
     const timestamp = Date.now();
-    const extension = path.extname(file.name);
+    const extension = originalExtension;
     const baseName = path.basename(file.name, extension).replace(/[^a-z0-9]/gi, '-').toLowerCase();
     const filename = `${baseName}-${timestamp}${extension}`;
 
-    // Create directory path
-    const uploadDir = path.join(process.cwd(), 'public', directory);
+    // Create directory path safely
+    let uploadDir;
+    try {
+      const rootDir = path.join(process.cwd(), 'public');
+      uploadDir = resolveSafePath(rootDir, directory);
+    } catch (e) {
+      console.error('Directory path resolution error:', e);
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Invalid directory path'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     await fs.mkdir(uploadDir, { recursive: true });
 
     // Save file

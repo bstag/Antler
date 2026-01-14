@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from './AdminLayout';
-import { Dashboard } from './Dashboard';
-import { ContentList } from './ContentList';
-import { ContentEditor } from './ContentEditor';
-import { FileManager } from './FileManager';
-import { ResumeManager } from './ResumeManager';
-import { ResumeLayout } from './ResumeLayout';
-import { SiteConfiguration } from './SiteConfiguration';
-import { ThemeManager } from './ThemeManager';
 import type { SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch, getAdminBaseUrl } from '../../lib/admin/api-client';
 import { logger } from '../../lib/utils/logger';
+
+// Lazy load admin pages to improve initial bundle size
+const Dashboard = lazy(() => import('./Dashboard').then(module => ({ default: module.Dashboard })));
+const ContentList = lazy(() => import('./ContentList').then(module => ({ default: module.ContentList })));
+const ContentEditor = lazy(() => import('./ContentEditor').then(module => ({ default: module.ContentEditor })));
+const FileManager = lazy(() => import('./FileManager').then(module => ({ default: module.FileManager })));
+const ResumeManager = lazy(() => import('./ResumeManager').then(module => ({ default: module.ResumeManager })));
+const ResumeLayout = lazy(() => import('./ResumeLayout').then(module => ({ default: module.ResumeLayout })));
+const SiteConfiguration = lazy(() => import('./SiteConfiguration').then(module => ({ default: module.SiteConfiguration })));
+const ThemeManager = lazy(() => import('./ThemeManager').then(module => ({ default: module.ThemeManager })));
 
 // Global styles for admin interface
 const adminStyles = `
@@ -68,6 +70,15 @@ const adminStyles = `
 `;
 
 interface AdminAppProps {}
+
+const LoadingSpinner = () => (
+  <div className="min-h-[50vh] flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-500 dark:text-gray-400 text-sm">Loading...</p>
+    </div>
+  </div>
+);
 
 const AdminApp: React.FC<AdminAppProps> = () => {
   const [schemas, setSchemas] = useState<Record<string, SchemaDefinition>>({});
@@ -163,29 +174,33 @@ const AdminApp: React.FC<AdminAppProps> = () => {
       <Routes>
         {/* Resume Manager Routes */}
         <Route path="/resume/*" element={
-          <ResumeLayout schemas={resumeSchemas}>
-            <Routes>
-              <Route path="/" element={<ResumeManager schemas={resumeSchemas} />} />
-              <Route path="/content/:collection" element={<ContentList schemas={resumeSchemas} />} />
-              <Route path="/content/:collection/new" element={<ContentEditor schemas={resumeSchemas} />} />
-              <Route path="/content/:collection/:id" element={<ContentEditor schemas={resumeSchemas} />} />
-            </Routes>
-          </ResumeLayout>
+          <Suspense fallback={<LoadingSpinner />}>
+            <ResumeLayout schemas={resumeSchemas}>
+              <Routes>
+                <Route path="/" element={<ResumeManager schemas={resumeSchemas} />} />
+                <Route path="/content/:collection" element={<ContentList schemas={resumeSchemas} />} />
+                <Route path="/content/:collection/new" element={<ContentEditor schemas={resumeSchemas} />} />
+                <Route path="/content/:collection/:id" element={<ContentEditor schemas={resumeSchemas} />} />
+              </Routes>
+            </ResumeLayout>
+          </Suspense>
         } />
         
         {/* Main Admin Routes */}
         <Route path="/*" element={
           <AdminLayout schemas={mainSchemas}>
-            <Routes>
-              <Route path="/" element={<Dashboard schemas={mainSchemas} />} />
-              <Route path="/content/:collection" element={<ContentList schemas={mainSchemas} />} />
-              <Route path="/content/:collection/new" element={<ContentEditor schemas={mainSchemas} />} />
-              <Route path="/content/:collection/:id" element={<ContentEditor schemas={mainSchemas} />} />
-              <Route path="/files" element={<FileManager />} />
-              <Route path="/theme-settings" element={<ThemeManager />} />
-              <Route path="/site-config" element={<SiteConfiguration />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                <Route path="/" element={<Dashboard schemas={mainSchemas} />} />
+                <Route path="/content/:collection" element={<ContentList schemas={mainSchemas} />} />
+                <Route path="/content/:collection/new" element={<ContentEditor schemas={mainSchemas} />} />
+                <Route path="/content/:collection/:id" element={<ContentEditor schemas={mainSchemas} />} />
+                <Route path="/files" element={<FileManager />} />
+                <Route path="/theme-settings" element={<ThemeManager />} />
+                <Route path="/site-config" element={<SiteConfiguration />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
           </AdminLayout>
         } />
       </Routes>

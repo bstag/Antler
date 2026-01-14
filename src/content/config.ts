@@ -11,6 +11,7 @@ const blog = defineCollection({
     author: z.string().optional(),
     readingTime: z.number().optional(),
     featured: z.boolean().optional(),
+    keywords: z.array(z.string()).optional(),
   }),
 });
 
@@ -35,6 +36,7 @@ const docs = defineCollection({
     description: z.string().optional(),
     group: z.string(),
     order: z.number(),
+    keywords: z.array(z.string()).optional(),
   }),
 });
 
