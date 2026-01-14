@@ -1,11 +1,18 @@
 ---
-projectName: "RhemaPulse"
-projectImage: "/images/projects/RhemaPulse.png"
-description: "Transform your sermons into actionable insights with AI-powered transcription, summaries, scripture detection, and action items for pastors and ministry leaders."
-technologies: ["React", "TypeScript", "Tailwind CSS","Supabase"]
-liveUrl: "https://Rhema-Pulse.com"
+projectName: RhemaPulse
+projectImage: /images/projects/RhemaPulse.webp
+description: >-
+  Transform your sermons into actionable insights with AI-powered transcription,
+  summaries, scripture detection, and action items for pastors and ministry
+  leaders.
+technologies:
+  - React
+  - TypeScript
+  - Tailwind CSS
+  - Supabase
+liveUrl: 'https://Rhema-Pulse.com'
 featured: true
-createdAt: 2025-11-24
+createdAt: '2025-11-24T00:00:00.000Z'
 ---
 # RhemaPulse — Project Summary
 

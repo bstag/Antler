@@ -2,7 +2,7 @@
 title: Rhema Pulse
 description: Transforming Ministry Documentation
 publicationDate: '2025-11-24T00:00:00.000Z'
-featuredImage: /images/blog/RhemaPulse.png
+featuredImage: /images/blog/RhemaPulse.webp
 tags:
   - React
   - CloudFlare
