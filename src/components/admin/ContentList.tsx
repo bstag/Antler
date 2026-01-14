@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import type { ContentItem, SchemaDefinition, ContentListResponse } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
 import { logger } from '../../lib/utils/logger';
+import { useDebounce } from '../../lib/hooks';
+import { ContentListItem } from './ContentListItem';
+import { getCollectionName } from '../../lib/admin/utils';
 
 interface ContentListProps {
   schemas: Record<string, SchemaDefinition>;
 }
 
-export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
-  const { collection } = useParams<{ collection: string }>();
+// Inner component that handles the actual list logic
+// It accepts collection as a prop to allow the parent to control remounting via key
+const ContentListInner: React.FC<ContentListProps & { collection: string }> = ({ schemas, collection }) => {
+  const location = useLocation();
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  // Debounce search term to prevent excessive API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [sortBy, setSortBy] = useState('updatedAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -21,22 +28,19 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
   const [hasMore, setHasMore] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
 
+  const prevSearchRef = useRef(debouncedSearchTerm);
+
   const limit = 10;
   const schema = collection ? schemas[collection] : null;
 
   // Detect if we're in the resume manager context
-  const isResumeContext = window.location.pathname.startsWith('/admin/resume');
-  const getCollectionPath = (collection: string) => {
-    return isResumeContext ? `/resume/content/${collection}` : `/content/${collection}`;
-  };
+  const isResumeContext = location.pathname.startsWith('/admin/resume');
 
-  useEffect(() => {
-    if (collection && schema) {
-      loadItems();
-    }
-  }, [collection, schema, searchTerm, sortBy, sortOrder, page]);
+  const getCollectionPath = useCallback((collectionName: string) => {
+    return isResumeContext ? `/resume/content/${collectionName}` : `/content/${collectionName}`;
+  }, [isResumeContext]);
 
-  const loadItems = async () => {
+  const loadItems = useCallback(async () => {
     if (!collection) return;
 
     try {
@@ -48,7 +52,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         limit: limit.toString(),
         sortBy,
         sortOrder,
-        ...(searchTerm && { search: searchTerm })
+        ...(debouncedSearchTerm && { search: debouncedSearchTerm })
       });
 
       const response = await adminFetch(`admin/api/content/${collection}?${params}`);
@@ -73,9 +77,29 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [collection, page, debouncedSearchTerm, sortBy, sortOrder]);
 
-  const handleDelete = async (id: string) => {
+  // Combined effect to handle search term changes (which reset page) AND loading data
+  useEffect(() => {
+    if (collection && schema) {
+      // Check if search term changed
+      if (debouncedSearchTerm !== prevSearchRef.current) {
+        prevSearchRef.current = debouncedSearchTerm;
+        if (page !== 1) {
+          // If search term changed and we are not on page 1, reset to page 1.
+          // This will trigger a re-render with page=1.
+          // We return here to skip the fetch in this render (which would use the old page).
+          // The next render (with page=1) will trigger this effect again, but search term will match ref, so it will proceed to load.
+          setPage(1);
+          return;
+        }
+      }
+
+      loadItems();
+    }
+  }, [collection, schema, loadItems, debouncedSearchTerm, page]);
+
+  const handleDelete = useCallback(async (id: string) => {
     if (!collection || !confirm('Are you sure you want to delete this item?')) return;
 
     try {
@@ -101,51 +125,12 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
     } finally {
       setDeleting(null);
     }
-  };
+  }, [collection, loadItems]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    loadItems();
-  };
-
-  const getCollectionName = (collection: string) => {
-    switch (collection) {
-      case 'docs':
-        return 'Documentation';
-      default:
-        return collection.charAt(0).toUpperCase() + collection.slice(1);
-    }
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const getItemPreview = (item: ContentItem) => {
-    if (item.frontmatter.description) {
-      return item.frontmatter.description;
-    }
-    if (item.content) {
-      return item.content.substring(0, 150) + '...';
-    }
-    return 'No description available';
-  };
-
-  const getItemTags = (item: ContentItem) => {
-    if (item.frontmatter.tags && Array.isArray(item.frontmatter.tags)) {
-      return item.frontmatter.tags;
-    }
-    if (item.frontmatter.technologies && Array.isArray(item.frontmatter.technologies)) {
-      return item.frontmatter.technologies;
-    }
-    return [];
+    // Reset to page 1; useEffect will trigger loading items when page or searchTerm changes.
   };
 
   if (!collection || !schema) {
@@ -156,6 +141,9 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
       </div>
     );
   }
+
+  const collectionPath = useMemo(() => getCollectionPath(collection), [collection]);
+  const showSkeletons = loading && items.length === 0;
 
   return (
     <div className="space-y-6">
@@ -170,7 +158,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           </p>
         </div>
         <Link
-          to={`${getCollectionPath(collection)}/new`}
+          to={`${collectionPath}/new`}
           className="btn-primary inline-flex items-center"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,6 +175,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             <input
               type="text"
               placeholder={`Search ${collection}...`}
+              aria-label={`Search ${collection}`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="form-input"
@@ -195,6 +184,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           <div className="flex gap-2">
             <select
               value={sortBy}
+              aria-label="Sort by field"
               onChange={(e) => setSortBy(e.target.value)}
               className="form-input"
             >
@@ -205,6 +195,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             </select>
             <select
               value={sortOrder}
+              aria-label="Sort order"
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
               className="form-input"
             >
@@ -222,7 +213,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
       </div>
 
       {/* Content List */}
-      {loading ? (
+      {showSkeletons ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -270,7 +261,7 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
             {searchTerm ? `No ${collection} match your search criteria.` : `You haven't created any ${collection} yet.`}
           </p>
           <Link
-            to={`${getCollectionPath(collection)}/new`}
+            to={`${collectionPath}/new`}
             className="btn-primary inline-flex items-center"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,68 +271,15 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className={`space-y-4 ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
           {items.map((item) => (
-            <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    <Link
-                      to={`${getCollectionPath(collection)}/${item.id}`}
-                      className="text-primary hover:opacity-80 transition-opacity"
-                    >
-                      {item.title}
-                    </Link>
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-                    {getItemPreview(item)}
-                  </p>
-                  <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-4">
-                    <span>Updated {formatDate(item.updatedAt)}</span>
-                    <span>Created {formatDate(item.createdAt)}</span>
-                    {item.frontmatter.featured && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        Featured
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 ml-4">
-                  <Link
-                    to={`${getCollectionPath(collection)}/${item.id}`}
-                    className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    disabled={deleting === item.id}
-                    className="inline-flex items-center px-3 py-1 border border-red-300 dark:border-red-600 shadow-sm text-xs font-medium rounded text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50"
-                  >
-                    {deleting === item.id ? 'Deleting...' : 'Delete'}
-                  </button>
-                </div>
-              </div>
-              
-              {/* Tags */}
-              {getItemTags(item).length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {getItemTags(item).slice(0, 5).map((tag) => (
-                    <span
-                      key={tag}
-                      className="badge badge-primary"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                  {getItemTags(item).length > 5 && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                      +{getItemTags(item).length - 5} more
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
+            <ContentListItem
+              key={item.id}
+              item={item}
+              collectionPath={collectionPath}
+              isDeleting={deleting === item.id}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}
@@ -395,5 +333,22 @@ export const ContentList: React.FC<ContentListProps> = ({ schemas }) => {
         </div>
       )}
     </div>
+  );
+};
+
+// Wrapper component to handle routing key
+export const ContentList: React.FC<ContentListProps> = (props) => {
+  const { collection } = useParams<{ collection: string }>();
+
+  if (!collection) {
+    return null;
+  }
+
+  return (
+    <ContentListInner
+      key={collection}
+      {...props}
+      collection={collection}
+    />
   );
 };

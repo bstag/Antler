@@ -42,6 +42,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, schemas }) =
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
               >
                 <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 

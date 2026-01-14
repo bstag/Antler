@@ -127,6 +127,47 @@
       "email": "jhenriksen@stagware.com",
       "bio": "Software developer and content creator"
     },
+    "hero": {
+      "title": {
+        "text": "Build Fast,",
+        "highlightedText": "Secure",
+        "suffixText": "Systems"
+      },
+      "subtitle": "Transform your project or ideas into stunning, performant systems with StagWare. Building with with your problems in mind, produces solutions that last and expand with your needs.",
+      "badge": {
+        "text": "Modern Development Solutions",
+        "icon": "Zap"
+      },
+      "actions": {
+        "primary": {
+          "text": "Read Blogs",
+          "link": "/blog",
+          "icon": "ArrowRight"
+        },
+        "secondary": {
+          "text": "View Projects",
+          "link": "/projects",
+          "icon": null
+        }
+      },
+      "features": [
+        {
+          "title": "Developer First",
+          "description": "Building with Modern Tools and Best Practices",
+          "icon": "Code"
+        },
+        {
+          "title": "Lightning Fast",
+          "description": "Optimizing for Performance and Stability",
+          "icon": "Zap"
+        },
+        {
+          "title": "Deploy Anywhere",
+          "description": "Years of infrastructure experience",
+          "icon": "Globe"
+        }
+      ]
+    },
     "social": {
       "github": "https://github.com/bstag",
       "twitter": "https://twitter.com/yourusername",
@@ -145,6 +186,38 @@
         "astro",
         "typescript"
       ]
+    },
+    "pages": {
+      "blog": {
+        "title": "Blog",
+        "description": "Insights, tutorials, and thoughts on modern web development",
+        "image": "/images/og-default.png",
+        "keywords": ["blog", "web development", "tutorials"]
+      },
+      "docs": {
+        "title": "Documentation",
+        "description": "Complete guide to using and customizing Antler.",
+        "image": "/images/og-default.png",
+        "keywords": ["documentation", "guide", "help"]
+      },
+      "projects": {
+        "title": "Portfolio",
+        "description": "Showcase of my projects and work.",
+        "image": "/images/og-default.png",
+        "keywords": ["portfolio", "projects", "work"]
+      },
+      "resume": {
+        "title": "Resume",
+        "description": "Professional experience and skills.",
+        "image": "/images/og-default.png",
+        "keywords": ["resume", "cv", "experience"]
+      },
+      "contact": {
+        "title": "Contact",
+        "description": "Get in touch with me.",
+        "image": "/images/og-default.png",
+        "keywords": ["contact", "email", "message"]
+      }
     },
     "footer": {
       "copyrightText": "© 2025 StagWare. Built with ❤️ using Antler.",

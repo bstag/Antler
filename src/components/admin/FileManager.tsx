@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import type { FileReference, UploadResult } from '../../lib/admin/types';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import type { FileReference } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
 import { logger } from '../../lib/utils/logger';
+import { FileItem } from './FileItem';
 
 export const FileManager: React.FC = () => {
   const [files, setFiles] = useState<FileReference[]>([]);
@@ -11,6 +12,7 @@ export const FileManager: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentDirectory, setCurrentDirectory] = useState('images');
+  const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -101,40 +103,25 @@ export const FileManager: React.FC = () => {
     e.preventDefault();
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = useCallback((text: string, fileName: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      // You could add a toast notification here
+      setCopiedFile(fileName);
+      setTimeout(() => setCopiedFile(null), 2000);
       logger.log('Copied to clipboard:', text);
     });
-  };
+  }, []);
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+  const toggleFileSelection = useCallback((fileName: string) => {
+    setSelectedFiles((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(fileName)) {
+        newSelected.delete(fileName);
+      } else {
+        newSelected.add(fileName);
+      }
+      return newSelected;
     });
-  };
-
-  const toggleFileSelection = (fileName: string) => {
-    const newSelected = new Set(selectedFiles);
-    if (newSelected.has(fileName)) {
-      newSelected.delete(fileName);
-    } else {
-      newSelected.add(fileName);
-    }
-    setSelectedFiles(newSelected);
-  };
+  }, []);
 
   const selectAll = () => {
     if (selectedFiles.size === files.length) {
@@ -142,54 +129,6 @@ export const FileManager: React.FC = () => {
     } else {
       setSelectedFiles(new Set(files.map(f => f.name)));
     }
-  };
-
-  const getFileIcon = (file: FileReference) => {
-    if (file.type === 'image') {
-      return (
-        <img
-          src={file.path}
-          alt={file.name}
-          className="w-full h-32 object-cover rounded"
-          loading="lazy"
-        />
-      );
-    }
-
-    // File type icons
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    let iconColor = 'text-gray-400';
-    let iconContent = '📄';
-
-    switch (extension) {
-      case 'pdf':
-        iconColor = 'text-red-500';
-        iconContent = '📄';
-        break;
-      case 'doc':
-      case 'docx':
-        iconColor = 'text-blue-500';
-        iconContent = '📝';
-        break;
-      case 'xls':
-      case 'xlsx':
-        iconColor = 'text-green-500';
-        iconContent = '📊';
-        break;
-      case 'zip':
-      case 'rar':
-        iconColor = 'text-yellow-500';
-        iconContent = '🗜️';
-        break;
-      default:
-        iconContent = '📄';
-    }
-
-    return (
-      <div className={`w-full h-32 flex items-center justify-center text-4xl ${iconColor}`}>
-        {iconContent}
-      </div>
-    );
   };
 
   return (
@@ -217,6 +156,8 @@ export const FileManager: React.FC = () => {
           <button
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
             className="btn-secondary p-2"
+            aria-label={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
+            title={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
           >
             {viewMode === 'grid' ? '📋' : '⊞'}
           </button>
@@ -332,101 +273,15 @@ export const FileManager: React.FC = () => {
       ) : (
         <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
           {files.map((file) => (
-            <div
+            <FileItem
               key={file.name}
-              className={`card-hover overflow-hidden ${
-                selectedFiles.has(file.name) ? 'ring-2' : ''
-              }`}
-              style={selectedFiles.has(file.name) ? { borderColor: 'var(--color-primary)' } : undefined}
-            >
-              {viewMode === 'grid' ? (
-                <div className="p-4">
-                  <div className="relative mb-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedFiles.has(file.name)}
-                      onChange={() => toggleFileSelection(file.name)}
-                      className="absolute top-2 left-2 z-10 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    {getFileIcon(file)}
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white truncate" title={file.name}>
-                      {file.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatFileSize(file.size)}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatDate(file.modifiedAt)}
-                    </p>
-                  </div>
-                  <div className="mt-3 flex items-center space-x-2">
-                    <button
-                      onClick={() => copyToClipboard(file.path)}
-                      className="flex-1 text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
-                      Copy URL
-                    </button>
-                    {file.type === 'image' && (
-                      <button
-                        onClick={() => window.open(file.path, '_blank')}
-                        className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                      >
-                        View
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 flex items-center space-x-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedFiles.has(file.name)}
-                    onChange={() => toggleFileSelection(file.name)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <div className="w-12 h-12 flex-shrink-0">
-                    {file.type === 'image' ? (
-                      <img
-                        src={file.path}
-                        alt={file.name}
-                        className="w-full h-full object-cover rounded"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl text-gray-400">
-                        📄
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {file.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatFileSize(file.size)} • {formatDate(file.modifiedAt)}
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => copyToClipboard(file.path)}
-                      className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
-                      Copy URL
-                    </button>
-                    {file.type === 'image' && (
-                      <button
-                        onClick={() => window.open(file.path, '_blank')}
-                        className="text-xs px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                      >
-                        View
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+              file={file}
+              selected={selectedFiles.has(file.name)}
+              onToggle={toggleFileSelection}
+              onCopy={copyToClipboard}
+              copiedFile={copiedFile}
+              viewMode={viewMode}
+            />
           ))}
         </div>
       )}

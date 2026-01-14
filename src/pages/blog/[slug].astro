@@ -28,10 +28,14 @@ const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
 const title = post.data.title;
 const description = post.data.description;
+// Fallback logic: use keywords if defined, otherwise tags, otherwise empty array.
+const keywords = Array.isArray(post.data.keywords)
+  ? post.data.keywords
+  : (Array.isArray(post.data.tags) ? post.data.tags : []);
 ---
 
 <ConditionalRoute contentTypeId="blog">
-  <BaseLayout title={title} description={description}>
+  <BaseLayout title={title} description={description} keywords={keywords}>
     <Header />
     <main class="min-h-screen bg-surface">
     <article class="container mx-auto px-4 py-16 max-w-4xl">

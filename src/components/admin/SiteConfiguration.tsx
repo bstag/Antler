@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { configClient } from '../../lib/config/client';
-import type { SiteConfig, SiteTemplate } from '../../types/config';
+import type { SiteConfig, SiteTemplate, HeroConfig, HeroAction, HeroFeature } from '../../types/config';
 import { logger } from '../../lib/utils/logger';
 
 interface SiteConfigurationProps {}
@@ -131,9 +132,11 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
           {[
             { id: 'overview', label: 'Overview', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
             { id: 'general', label: 'General', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
+            { id: 'hero', label: 'Hero', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
             { id: 'logo', label: 'Logo', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
             { id: 'social', label: 'Social', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
-            { id: 'seo', label: 'SEO', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+            { id: 'seo', label: 'Global SEO', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+            { id: 'page-seo', label: 'Page SEO', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
             { id: 'footer', label: 'Footer', icon: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z' },
             { id: 'content-types', label: 'Content Types', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
             { id: 'navigation', label: 'Navigation', icon: 'M4 6h16M4 12h16M4 18h16' },
@@ -163,6 +166,10 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
           <GeneralTab config={config} onSave={saveConfig} saving={saving} />
         )}
 
+        {activeTab === 'hero' && (
+          <HeroTab config={config} onSave={saveConfig} saving={saving} />
+        )}
+
         {activeTab === 'logo' && (
           <LogoTab config={config} onSave={saveConfig} saving={saving} />
         )}
@@ -173,6 +180,10 @@ export const SiteConfiguration: React.FC<SiteConfigurationProps> = () => {
 
         {activeTab === 'seo' && (
           <SEOTab config={config} onSave={saveConfig} saving={saving} />
+        )}
+
+        {activeTab === 'page-seo' && (
+          <PageSEOTab config={config} onSave={saveConfig} saving={saving} />
         )}
 
         {activeTab === 'footer' && (
@@ -743,6 +754,296 @@ const TemplatesTab: React.FC<{
   );
 };
 
+// Hero Tab Component
+const HeroTab: React.FC<{
+  config: SiteConfig;
+  onSave: (updates: Partial<SiteConfig>) => Promise<void>;
+  saving: boolean;
+}> = ({ config, onSave, saving }) => {
+  const [hero, setHero] = useState<HeroConfig>(config.customization.hero || {
+    title: { text: 'Build Fast,', highlightedText: 'Beautiful', suffixText: 'Websites' },
+    subtitle: 'Transform your Markdown content into stunning, performant websites with Antler.',
+    badge: { text: 'Modern Static Site Generation', icon: 'Zap' },
+    actions: {
+      primary: { text: 'Get Started', link: '/docs/installation', icon: 'ArrowRight' },
+      secondary: { text: 'View Projects', link: '/projects', icon: null }
+    },
+    features: [
+      { title: 'Developer First', description: 'Built with modern tools and best practices', icon: 'Code' },
+      { title: 'Lightning Fast', description: 'Optimized for performance and SEO', icon: 'Zap' },
+      { title: 'Deploy Anywhere', description: 'Static files work on any hosting platform', icon: 'Globe' }
+    ]
+  });
+
+  const handleSave = async () => {
+    await onSave({
+      customization: {
+        ...config.customization,
+        hero
+      }
+    });
+  };
+
+  const updateHero = (field: string, value: any) => {
+    // Helper to handle nested updates
+    if (field.includes('.')) {
+      const [parent, child] = field.split('.');
+      if (parent === 'title') {
+        setHero({ ...hero, title: { ...hero.title, [child]: value } });
+      } else if (parent === 'badge') {
+        setHero({ ...hero, badge: { ...hero.badge, [child]: value } });
+      } else if (parent === 'actions') {
+        // e.g. actions.primary.text
+        const [parent, actionType, actionField] = field.split('.');
+        setHero({
+          ...hero,
+          actions: {
+            ...hero.actions,
+            [actionType as 'primary' | 'secondary']: {
+              ...hero.actions[actionType as 'primary' | 'secondary'],
+              [actionField]: value
+            }
+          }
+        });
+      }
+    } else {
+      setHero({ ...hero, [field]: value });
+    }
+  };
+
+  const updateFeature = (index: number, field: string, value: string) => {
+    const newFeatures = [...hero.features];
+    newFeatures[index] = { ...newFeatures[index], [field]: value };
+    setHero({ ...hero, features: newFeatures });
+  };
+
+  return (
+    <div className="p-6">
+      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Hero Section Configuration</h3>
+
+      <div className="space-y-8 max-w-4xl">
+        {/* Title & Subtitle */}
+        <div className="space-y-4">
+          <h4 className="text-md font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+            Main Heading
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Start Text
+              </label>
+              <input
+                type="text"
+                value={hero.title.text}
+                onChange={(e) => updateHero('title.text', e.target.value)}
+                className="form-input w-full"
+                placeholder="Build Fast,"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Highlighted (Gradient)
+              </label>
+              <input
+                type="text"
+                value={hero.title.highlightedText}
+                onChange={(e) => updateHero('title.highlightedText', e.target.value)}
+                className="form-input w-full"
+                placeholder="Beautiful"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                End Text (Optional)
+              </label>
+              <input
+                type="text"
+                value={hero.title.suffixText || ''}
+                onChange={(e) => updateHero('title.suffixText', e.target.value)}
+                className="form-input w-full"
+                placeholder="Websites"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Subtitle
+            </label>
+            <textarea
+              value={hero.subtitle}
+              onChange={(e) => updateHero('subtitle', e.target.value)}
+              rows={2}
+              className="form-input w-full"
+            />
+          </div>
+        </div>
+
+        {/* Badge */}
+        <div className="space-y-4">
+          <h4 className="text-md font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+            Badge
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Badge Text
+              </label>
+              <input
+                type="text"
+                value={hero.badge.text}
+                onChange={(e) => updateHero('badge.text', e.target.value)}
+                className="form-input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Badge Icon (Lucide Icon Name)
+              </label>
+              <input
+                type="text"
+                value={hero.badge.icon}
+                onChange={(e) => updateHero('badge.icon', e.target.value)}
+                className="form-input w-full"
+                placeholder="Zap"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="space-y-4">
+          <h4 className="text-md font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+            Actions (Buttons)
+          </h4>
+
+          {/* Primary Action */}
+          <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-3">
+            <h5 className="text-sm font-semibold text-gray-900 dark:text-white">Primary Button</h5>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Text</label>
+                <input
+                  type="text"
+                  value={hero.actions.primary.text}
+                  onChange={(e) => updateHero('actions.primary.text', e.target.value)}
+                  className="form-input w-full text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Link</label>
+                <input
+                  type="text"
+                  value={hero.actions.primary.link}
+                  onChange={(e) => updateHero('actions.primary.link', e.target.value)}
+                  className="form-input w-full text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Icon</label>
+                <input
+                  type="text"
+                  value={hero.actions.primary.icon || ''}
+                  onChange={(e) => updateHero('actions.primary.icon', e.target.value)}
+                  className="form-input w-full text-sm"
+                  placeholder="ArrowRight"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Secondary Action */}
+          <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-3">
+            <h5 className="text-sm font-semibold text-gray-900 dark:text-white">Secondary Button</h5>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Text</label>
+                <input
+                  type="text"
+                  value={hero.actions.secondary.text}
+                  onChange={(e) => updateHero('actions.secondary.text', e.target.value)}
+                  className="form-input w-full text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Link</label>
+                <input
+                  type="text"
+                  value={hero.actions.secondary.link}
+                  onChange={(e) => updateHero('actions.secondary.link', e.target.value)}
+                  className="form-input w-full text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Icon</label>
+                <input
+                  type="text"
+                  value={hero.actions.secondary.icon || ''}
+                  onChange={(e) => updateHero('actions.secondary.icon', e.target.value || null)}
+                  className="form-input w-full text-sm"
+                  placeholder="(Optional)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="space-y-4">
+          <h4 className="text-md font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+            Features (3 Columns)
+          </h4>
+          <div className="grid grid-cols-1 gap-4">
+            {hero.features.map((feature, index) => (
+              <div key={index} className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-3">
+                <h5 className="text-sm font-semibold text-gray-900 dark:text-white">Feature {index + 1}</h5>
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="md:col-span-1">
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Title</label>
+                    <input
+                      type="text"
+                      value={feature.title}
+                      onChange={(e) => updateFeature(index, 'title', e.target.value)}
+                      className="form-input w-full text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-1">
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Icon</label>
+                    <input
+                      type="text"
+                      value={feature.icon}
+                      onChange={(e) => updateFeature(index, 'icon', e.target.value)}
+                      className="form-input w-full text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-1">
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Description</label>
+                    <input
+                      type="text"
+                      value={feature.description}
+                      onChange={(e) => updateFeature(index, 'description', e.target.value)}
+                      className="form-input w-full text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="btn-primary"
+          >
+            {saving ? 'Saving...' : 'Save Hero Settings'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // General Settings Tab Component
 const GeneralTab: React.FC<{
   config: SiteConfig;
@@ -1064,7 +1365,8 @@ const LogoTab: React.FC<{
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center space-x-2">
                 {logoType === 'svg' && svgContent && (
-                  <div dangerouslySetInnerHTML={{ __html: svgContent }} />
+                  // Sentinel: Sanitize SVG content to prevent XSS
+                  <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svgContent) }} />
                 )}
                 {logoType === 'image' && imagePath && (
                   <img src={imagePath} alt={imageAlt} className={width || 'w-8 h-8'} />
@@ -1276,11 +1578,11 @@ const SEOTab: React.FC<{
 
   return (
     <div className="p-6">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">SEO Settings</h3>
+      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Global SEO Settings</h3>
 
       <div className="space-y-6 max-w-2xl">
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Configure meta tags and SEO settings to improve your site's visibility in search engines and social media.
+          Configure default meta tags and SEO settings to improve your site's visibility in search engines and social media.
         </p>
 
         <div className="space-y-4">
@@ -1302,7 +1604,7 @@ const SEOTab: React.FC<{
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Keywords
+              Global Keywords
             </label>
             <input
               type="text"
@@ -1312,7 +1614,7 @@ const SEOTab: React.FC<{
               placeholder="static site, blog, portfolio, astro"
             />
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Comma-separated keywords for meta tags
+              Comma-separated keywords for meta tags on all pages
             </p>
           </div>
 
@@ -1371,8 +1673,180 @@ const SEOTab: React.FC<{
             disabled={saving}
             className="btn-primary"
           >
-            {saving ? 'Saving...' : 'Save SEO Settings'}
+            {saving ? 'Saving...' : 'Save Global SEO Settings'}
           </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Page SEO Tab Component
+// Define or import pageOptions array
+const pageOptions = ['blog', 'docs', 'projects', 'resume', 'contact'];
+
+const PageSEOTab: React.FC<{
+  config: SiteConfig;
+  onSave: (updates: Partial<SiteConfig>) => Promise<void>;
+  saving: boolean;
+}> = ({ config, onSave, saving }) => {
+  const pages = config.customization.pages || {};
+  const allPageTypes = Object.keys(pages).length > 0 
+    ? Object.keys(pages) 
+    : ['blog', 'docs', 'projects', 'resume', 'contact']; // fallback to known types if config is empty
+    
+  const [selectedPage, setSelectedPage] = useState(allPageTypes[0]);
+  const initialPageConfig = (config.customization.pages || {})[selectedPage] || {};
+  
+  const [title, setTitle] = useState(initialPageConfig.title || '');
+  const [description, setDescription] = useState(initialPageConfig.description || '');
+  const [image, setImage] = useState(initialPageConfig.image || '');
+  const [keywords, setKeywords] = useState((initialPageConfig.keywords || []).join(', '));
+
+  // Update form when selected page changes
+  useEffect(() => {
+    const pageConfig = (config.customization.pages || {})[selectedPage] || {};
+    setTitle(pageConfig.title || '');
+    setDescription(pageConfig.description || '');
+    setImage(pageConfig.image || '');
+    setKeywords((pageConfig.keywords || []).join(', '));
+  }, [selectedPage, config.customization.pages]);
+
+  const handleClear = () => {
+    if (window.confirm('Are you sure you want to clear SEO settings for this page? This will revert to site-wide defaults upon saving.')) {
+      setTitle('');
+      setDescription('');
+      setImage('');
+      setKeywords('');
+    }
+  };
+
+  const handleSave = async () => {
+    const updatedPages = {
+      ...(config.customization.pages || {}),
+      [selectedPage]: {
+        title: title || undefined,
+        description: description || undefined,
+        image: image || undefined,
+        keywords: keywords ? keywords.split(',').map(k => k.trim()).filter(k => k) : undefined
+      }
+    };
+
+    await onSave({
+      customization: {
+        ...config.customization,
+        pages: updatedPages
+      }
+    });
+  };
+
+  const pageOptions = [
+    { id: 'blog', label: 'Blog Index' },
+    { id: 'docs', label: 'Documentation Index' },
+    { id: 'projects', label: 'Projects Index' },
+    { id: 'resume', label: 'Resume Page' },
+    { id: 'contact', label: 'Contact Page' }
+  ];
+
+  return (
+    <div className="p-6">
+      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">Page SEO Settings</h3>
+
+      <div className="space-y-6 max-w-2xl">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Configure specific SEO settings for main index pages.
+        </p>
+
+        {/* Page Selector */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Select Page
+          </label>
+          <select
+            value={selectedPage}
+            onChange={(e) => setSelectedPage(e.target.value)}
+            className="form-input w-full"
+          >
+            {pageOptions.map(option => (
+              <option key={option.id} value={option.id}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Page Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="form-input w-full"
+              placeholder="e.g. Blog - My Site"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Page Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              className="form-input w-full"
+              placeholder="Description for this specific page"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              OG Image
+            </label>
+            <input
+              type="text"
+              value={image}
+              onChange={(e) => setImage(e.target.value)}
+              className="form-input w-full"
+              placeholder="/images/blog-og.png"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Keywords
+            </label>
+            <input
+              type="text"
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              className="form-input w-full"
+              placeholder="page, specific, keywords"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+            * Empty fields will use site defaults
+          </p>
+          <div className="flex space-x-3">
+            <button
+              onClick={handleClear}
+              disabled={saving}
+              className="px-4 py-2 border border-red-200 text-red-600 rounded-md hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20 text-sm font-medium transition-colors"
+            >
+              Clear
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="btn-primary"
+            >
+              {saving ? 'Saving...' : `Save ${pageOptions.find(p => p.id === selectedPage)?.label} SEO`}
+            </button>
+          </div>
         </div>
       </div>
     </div>

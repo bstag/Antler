@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
+import { getSiteConfig } from '../../lib/config/static';
 
 const allDocs = await getCollection('docs');
 const sortedDocs = allDocs.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
@@ -17,12 +18,17 @@ const groupedDocs = sortedDocs.reduce((acc, doc) => {
   return acc;
 }, {} as Record<string, typeof allDocs>);
 
-const title = 'Documentation';
-const description = 'Complete guide to using and customizing Antler.';
+// Get SEO config
+const config = await getSiteConfig();
+const pageSEO = config.customization.pages?.docs || {};
+const title = pageSEO.title || 'Documentation';
+const description = pageSEO.description || 'Complete guide to using and customizing Antler.';
+const image = pageSEO.image;
+const keywords = pageSEO.keywords || [];
 ---
 
 <ConditionalRoute contentTypeId="docs">
-  <BaseLayout title={title} description={description}>
+  <BaseLayout title={title} description={description} image={image} keywords={keywords}>
     <Header />
     <main class="min-h-screen bg-surface">
     <div class="container mx-auto px-4 py-16">
