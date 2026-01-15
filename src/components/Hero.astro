@@ -25,6 +25,12 @@ const SecondaryActionIcon = getIconOrWarn(hero?.actions?.secondary?.icon, null, 
 const getFeatureIcon = (iconName: string) => {
   return getIconOrWarn(iconName, Code, "feature");
 };
+
+// Helper to format URL with base path
+const formatUrl = (path: string) => {
+  const baseUrl = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
+  return `${baseUrl}${path}`;
+};
 ---
 
 <section class="relative overflow-hidden hero-background">
@@ -64,7 +70,7 @@ const getFeatureIcon = (iconName: string) => {
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-slide-up animation-delay-400">
         {hero?.actions?.primary && (
           <a
-            href={import.meta.env.BASE_URL + hero.actions.primary.link}
+            href={formatUrl(hero.actions.primary.link)}
             class="btn-primary group inline-flex items-center px-8 py-4 text-lg font-semibold"
           >
             {hero.actions.primary.text}
@@ -73,7 +79,7 @@ const getFeatureIcon = (iconName: string) => {
         )}
         {hero?.actions?.secondary && (
           <a
-            href={import.meta.env.BASE_URL + hero.actions.secondary.link}
+            href={formatUrl(hero.actions.secondary.link)}
             class="btn-secondary inline-flex items-center px-8 py-4 text-lg font-semibold"
           >
             {hero.actions.secondary.text}
