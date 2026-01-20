@@ -279,7 +279,8 @@ export const FileManager: React.FC = () => {
               selected={selectedFiles.has(file.name)}
               onToggle={toggleFileSelection}
               onCopy={copyToClipboard}
-              copiedFile={copiedFile}
+              // Pass boolean to allow React.memo to prevent re-renders of other items
+              isCopied={copiedFile === file.name}
               viewMode={viewMode}
             />
           ))}
