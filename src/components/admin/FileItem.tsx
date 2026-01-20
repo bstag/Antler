@@ -7,7 +7,7 @@ interface FileItemProps {
   selected: boolean;
   onToggle: (fileName: string) => void;
   onCopy: (path: string, fileName: string) => void;
-  copiedFile: string | null;
+  isCopied: boolean;
   viewMode: 'grid' | 'list';
 }
 
@@ -16,7 +16,7 @@ export const FileItem = React.memo<FileItemProps>(({
   selected,
   onToggle,
   onCopy,
-  copiedFile,
+  isCopied,
   viewMode
 }) => {
   if (viewMode === 'grid') {
@@ -53,13 +53,13 @@ export const FileItem = React.memo<FileItemProps>(({
             <button
               onClick={() => onCopy(file.path, file.name)}
               className={`flex-1 text-xs px-2 py-1 border rounded transition-colors duration-200 flex items-center justify-center gap-1 ${
-                copiedFile === file.name
+                isCopied
                   ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
                   : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
-              aria-label={copiedFile === file.name ? `Copied URL for ${file.name}` : `Copy URL for ${file.name}`}
+              aria-label={isCopied ? `Copied URL for ${file.name}` : `Copy URL for ${file.name}`}
             >
-              {copiedFile === file.name ? (
+              {isCopied ? (
                 <>
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -128,13 +128,13 @@ export const FileItem = React.memo<FileItemProps>(({
           <button
             onClick={() => onCopy(file.path, file.name)}
             className={`text-xs px-3 py-1 border rounded transition-colors duration-200 flex items-center gap-1 ${
-              copiedFile === file.name
+              isCopied
                 ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
                 : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
             }`}
-            aria-label={copiedFile === file.name ? `Copied URL for ${file.name}` : `Copy URL for ${file.name}`}
+            aria-label={isCopied ? `Copied URL for ${file.name}` : `Copy URL for ${file.name}`}
           >
-            {copiedFile === file.name ? (
+            {isCopied ? (
               <>
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

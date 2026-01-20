@@ -17,7 +17,7 @@ describe('FileItem', () => {
     selected: false,
     onToggle: vi.fn(),
     onCopy: vi.fn(),
-    copiedFile: null,
+    isCopied: false,
     viewMode: 'grid' as const,
   };
 
