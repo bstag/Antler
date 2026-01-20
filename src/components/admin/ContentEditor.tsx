@@ -24,6 +24,11 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const formSubmitRef = useRef<(() => void) | null>(null);
 
+  // Refs for keyboard shortcuts to ensure we always use the latest callbacks
+  const saveRef = useRef<() => void>(() => {});
+  const cancelRef = useRef<() => void>(() => {});
+  const setTabRef = useRef<(tab: 'frontmatter' | 'content') => void>(() => {});
+
   const [isNew, setIsNew] = useState(id === 'new');
   const schema = collection ? schemas[collection] : null;
 
@@ -188,6 +193,43 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       navigate(getCollectionPath(collection));
     }
   };
+
+  // Update refs for keyboard shortcuts
+  useEffect(() => {
+    saveRef.current = handleSave;
+    cancelRef.current = handleCancel;
+    setTabRef.current = setActiveTab;
+  }, [handleSave, handleCancel]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Save: Ctrl+S or Cmd+S
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveRef.current();
+      }
+
+      // Cancel: Esc
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        cancelRef.current();
+      }
+
+      // Switch tabs: Ctrl+1 / Ctrl+2
+      if ((e.ctrlKey || e.metaKey) && e.key === '1') {
+        e.preventDefault();
+        setTabRef.current('frontmatter');
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === '2') {
+        e.preventDefault();
+        setTabRef.current('content');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const getCollectionName = (collection: string) => {
     switch (collection) {
