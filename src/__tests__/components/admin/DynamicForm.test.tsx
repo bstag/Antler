@@ -157,6 +157,14 @@ describe('DynamicForm', () => {
 
       expect(screen.queryByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
     });
+
+    it('should have accessible label for array fields', () => {
+      render(<DynamicForm schema={mockBlogSchema} />);
+
+      const tagsInput = screen.getByLabelText(/tags/i);
+      expect(tagsInput).toBeInTheDocument();
+      expect(tagsInput).toHaveAttribute('id', 'field-tags');
+    });
   });
 
   describe('Form Interaction', () => {
