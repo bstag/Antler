@@ -329,54 +329,64 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {objectFields.map((objField) => (
-                <div key={objField.key} className={objField.type === 'textarea' ? 'md:col-span-2' : ''}>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {objField.label}
-                  </label>
-                  <Controller
-                    name={`${field.name}.${index}.${objField.key}`}
-                    control={control}
-                    render={({ field: formField }) => {
-                      if (objField.type === 'textarea') {
-                        return (
-                          <textarea
-                            {...formField}
-                            rows={3}
-                            className="form-input"
-                            placeholder={`Enter ${objField.label.toLowerCase()}`}
-                          />
-                        );
-                      } else if (objField.type === 'date') {
-                        return (
-                          <input
-                            {...formField}
-                            type="date"
-                            className="form-input"
-                          />
-                        );
-                      } else if (objField.type === 'array') {
-                        return (
-                          <TagInput
-                            value={formField.value || []}
-                            onChange={formField.onChange}
-                            placeholder={`Add ${objField.label.toLowerCase()}`}
-                          />
-                        );
-                      } else {
-                        return (
-                          <input
-                            {...formField}
-                            type="text"
-                            className="form-input"
-                            placeholder={`Enter ${objField.label.toLowerCase()}`}
-                          />
-                        );
-                      }
-                    }}
-                  />
-                </div>
-              ))}
+              {objectFields.map((objField) => {
+                const fieldId = `field-${field.name}-${index}-${objField.key}`;
+                return (
+                  <div key={objField.key} className={objField.type === 'textarea' ? 'md:col-span-2' : ''}>
+                    <label
+                      htmlFor={fieldId}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      {objField.label}
+                    </label>
+                    <Controller
+                      name={`${field.name}.${index}.${objField.key}`}
+                      control={control}
+                      render={({ field: formField }) => {
+                        if (objField.type === 'textarea') {
+                          return (
+                            <textarea
+                              {...formField}
+                              id={fieldId}
+                              rows={3}
+                              className="form-input"
+                              placeholder={`Enter ${objField.label.toLowerCase()}`}
+                            />
+                          );
+                        } else if (objField.type === 'date') {
+                          return (
+                            <input
+                              {...formField}
+                              id={fieldId}
+                              type="date"
+                              className="form-input"
+                            />
+                          );
+                        } else if (objField.type === 'array') {
+                          return (
+                            <TagInput
+                              value={formField.value || []}
+                              onChange={formField.onChange}
+                              placeholder={`Add ${objField.label.toLowerCase()}`}
+                              id={fieldId}
+                            />
+                          );
+                        } else {
+                          return (
+                            <input
+                              {...formField}
+                              id={fieldId}
+                              type="text"
+                              className="form-input"
+                              placeholder={`Enter ${objField.label.toLowerCase()}`}
+                            />
+                          );
+                        }
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -412,6 +422,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 value={formField.value || []}
                 onChange={formField.onChange}
                 placeholder={`Add ${field.name}`}
+                id={fieldId}
               />
             )}
           />
@@ -591,9 +602,10 @@ interface TagInputProps {
   value: string[];
   onChange: (tags: string[]) => void;
   placeholder?: string;
+  id?: string;
 }
 
-const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder }) => {
+const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder, id }) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const addTag = (tag: string) => {
@@ -630,12 +642,14 @@ const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder }) => 
               type="button"
               onClick={() => removeTag(tag)}
               className="tag-input-remove"
+              aria-label={`Remove ${tag}`}
             >
               ×
             </button>
           </span>
         ))}
         <input
+          id={id}
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
