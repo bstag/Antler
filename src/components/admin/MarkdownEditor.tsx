@@ -115,7 +115,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
 
-    // Optimization: Use textarea.value instead of value prop to avoid re-creation on every keystroke
+    // Optimization: Read from textarea.value so we don't need to depend on the value prop.
+    // If value were included in the useCallback dependency array, this function would be
+    // recreated on every keystroke, defeating the purpose of memoizing it.
     const val = textarea.value;
     const selectedText = val.substring(start, end);
     const newText = val.substring(0, start) + before + selectedText + after + val.substring(end);
