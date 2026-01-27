@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import DOMPurify from 'dompurify';
 import { logger } from '../../lib/utils/logger';
 import {
@@ -20,7 +20,7 @@ interface MarkdownEditorProps {
   placeholder?: string;
 }
 
-export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
+export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
   value,
   onChange,
   placeholder = 'Write your content here...'
@@ -108,14 +108,17 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   };
 
-  const insertText = (before: string, after: string = '') => {
+  const insertText = useCallback((before: string, after: string = '') => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const selectedText = value.substring(start, end);
-    const newText = value.substring(0, start) + before + selectedText + after + value.substring(end);
+
+    // Optimization: Use textarea.value instead of value prop to avoid re-creation on every keystroke
+    const val = textarea.value;
+    const selectedText = val.substring(start, end);
+    const newText = val.substring(0, start) + before + selectedText + after + val.substring(end);
     
     onChange(newText);
     
@@ -124,9 +127,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       textarea.focus();
       textarea.setSelectionRange(start + before.length, end + before.length);
     }, 0);
-  };
+  }, [onChange]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     // Handle keyboard shortcuts
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
@@ -150,9 +153,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       e.preventDefault();
       insertText('  ');
     }
-  };
+  }, [insertText]);
 
-  const toolbarButtons = [
+  const toolbarButtons = useMemo(() => [
     {
       label: 'Bold',
       icon: <Bold className="w-4 h-4" />,
@@ -213,7 +216,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       action: () => insertText('> '),
       shortcut: ''
     }
-  ];
+  ], [insertText]);
 
   return (
     <div className="space-y-4">
@@ -309,4 +312,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       )}
     </div>
   );
-};
+});
+
+MarkdownEditor.displayName = 'MarkdownEditor';

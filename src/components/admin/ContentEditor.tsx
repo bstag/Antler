@@ -179,11 +179,11 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     setSuccess(null); // Clear success message when making changes
   }, []);
 
-  const handleContentChange = (newContent: string) => {
+  const handleContentChange = useCallback((newContent: string) => {
     setContent(newContent);
     setHasChanges(true);
     setSuccess(null); // Clear success message when making changes
-  };
+  }, []);
 
   const handleCancel = () => {
     if (hasChanges && !confirm('You have unsaved changes. Are you sure you want to leave?')) {
