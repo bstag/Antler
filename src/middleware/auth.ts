@@ -1,4 +1,5 @@
 import type { MiddlewareHandler } from 'astro';
+import { safeCompare } from '../lib/utils/security';
 import { getAdminPassword, getAdminUser, isDev } from './auth-config';
 
 export const authMiddleware: MiddlewareHandler = async (context, next) => {
@@ -31,7 +32,13 @@ export const authMiddleware: MiddlewareHandler = async (context, next) => {
 
             const validUser = getAdminUser() || 'admin';
 
-            if (user === validUser && pass === adminPassword) {
+            // Sentinel: Use constant-time comparison to prevent timing attacks
+            const userStr = typeof user === 'string' ? user : '';
+            const passStr = typeof pass === 'string' ? pass : '';
+            const userOk = safeCompare(userStr, validUser);
+            const passOk = safeCompare(passStr, adminPassword);
+
+            if (userOk && passOk) {
               return next();
             }
         } catch (e) {
