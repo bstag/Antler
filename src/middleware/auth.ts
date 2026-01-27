@@ -33,8 +33,12 @@ export const authMiddleware: MiddlewareHandler = async (context, next) => {
             const validUser = getAdminUser() || 'admin';
 
             // Sentinel: Use constant-time comparison to prevent timing attacks
-            if (typeof user === 'string' && typeof pass === 'string' &&
-                safeCompare(user, validUser) && safeCompare(pass, adminPassword)) {
+            const userStr = typeof user === 'string' ? user : '';
+            const passStr = typeof pass === 'string' ? pass : '';
+            const userOk = safeCompare(userStr, validUser);
+            const passOk = safeCompare(passStr, adminPassword);
+
+            if (userOk && passOk) {
               return next();
             }
         } catch (e) {
