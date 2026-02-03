@@ -15,7 +15,7 @@ describe('securityMiddleware', () => {
 
   beforeEach(() => {
     context = {
-      url: new URL('http://localhost:3000/'),
+      url: new URL('http://localhost:3000/admin/dashboard'), // Default to admin route
       request: {
         headers: new Map(),
       },
@@ -30,7 +30,7 @@ describe('securityMiddleware', () => {
     vi.clearAllMocks();
   });
 
-  it('adds security headers to response', async () => {
+  it('adds security headers to admin response', async () => {
     const result = await securityMiddleware(context, next) as Response;
 
     expect(next).toHaveBeenCalled();
@@ -44,21 +44,27 @@ describe('securityMiddleware', () => {
     expect(result.headers.get('X-XSS-Protection')).toBe('1; mode=block');
   });
 
-  it('adds Content-Security-Policy header', async () => {
+  it('does NOT add security headers to non-admin response', async () => {
+    context.url = new URL('http://localhost:3000/blog/my-post');
+    const result = await securityMiddleware(context, next) as Response;
+
+    expect(result.headers.get('Content-Security-Policy')).toBeNull();
+    expect(result.headers.get('X-Frame-Options')).toBeNull();
+  });
+
+  it('adds Content-Security-Policy header to admin routes', async () => {
     const result = await securityMiddleware(context, next) as Response;
     const csp = result.headers.get('Content-Security-Policy');
 
-    // This should fail initially
     expect(csp).toBeDefined();
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("object-src 'none'");
   });
 
-  it('adds Permissions-Policy header', async () => {
+  it('adds Permissions-Policy header to admin routes', async () => {
     const result = await securityMiddleware(context, next) as Response;
     const pp = result.headers.get('Permissions-Policy');
 
-    // This should fail initially
     expect(pp).toBeDefined();
     expect(pp).toContain("camera=()");
   });
@@ -78,7 +84,6 @@ describe('securityMiddleware', () => {
     const result = await securityMiddleware(context, next) as Response;
     const csp = result.headers.get('Content-Security-Policy');
 
-    // This expects CSP to be present
     expect(csp).toBeDefined();
     expect(csp).toContain('upgrade-insecure-requests');
   });
