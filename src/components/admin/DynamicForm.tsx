@@ -1,10 +1,322 @@
 import React, { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import type { Control, UseFormGetValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { FieldDefinition, SchemaDefinition } from '../../lib/admin/types';
 import { adminFetch } from '../../lib/admin/api-client';
 import { logger } from '../../lib/utils/logger';
+
+// Tag Input Component
+interface TagInputProps {
+  value: string[];
+  onChange: (tags: string[]) => void;
+  placeholder?: string;
+  id?: string;
+}
+
+const TagInput: React.FC<TagInputProps> = React.memo(({ value, onChange, placeholder, id }) => {
+  const [inputValue, setInputValue] = React.useState('');
+
+  const addTag = (tag: string) => {
+    const trimmedTag = tag.trim();
+    if (trimmedTag && !value.includes(trimmedTag)) {
+      onChange([...value, trimmedTag]);
+    }
+    setInputValue('');
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    onChange(value.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(inputValue);
+    } else if (e.key === 'Backspace' && !inputValue && value.length > 0) {
+      removeTag(value[value.length - 1]);
+    }
+  };
+
+  return (
+    <div className="tag-input-wrapper">
+      <div className="flex flex-wrap gap-1">
+        {value.map(tag => (
+          <span
+            key={tag}
+            className="tag-input-tag"
+          >
+            {tag}
+            <button
+              type="button"
+              onClick={() => removeTag(tag)}
+              className="tag-input-remove"
+              aria-label={`Remove ${tag}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          id={id}
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={() => inputValue && addTag(inputValue)}
+          placeholder={value.length === 0 ? placeholder : ''}
+          className="flex-1 min-w-[120px] border-none outline-none text-sm bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+        />
+      </div>
+    </div>
+  );
+});
+
+TagInput.displayName = 'TagInput';
+
+// NestedObjectField Component
+interface NestedObjectFieldProps {
+  field: FieldDefinition;
+  parentPath: string;
+  control: Control<any>;
+  getValues: UseFormGetValues<any>;
+}
+
+const NestedObjectField = React.memo<NestedObjectFieldProps>(({ field, parentPath, control, getValues }) => {
+  const fieldPath = parentPath ? `${parentPath}.${field.name}` : field.name;
+  const value = getValues(fieldPath) || {};
+
+  // Get object keys from current value or provide common resume object keys
+  const getObjectKeys = (fieldName: string, currentValue: any) => {
+    if (currentValue && typeof currentValue === 'object' && Object.keys(currentValue).length > 0) {
+      return Object.keys(currentValue);
+    }
+
+    // Provide default keys for known resume objects
+    switch (fieldName) {
+      case 'personalInfo':
+        return ['name', 'title', 'email', 'phone', 'location', 'linkedin', 'github', 'website'];
+      case 'skills':
+        return ['technical', 'soft', 'tools'];
+      default:
+        return ['name', 'value'];
+    }
+  };
+
+  const objectKeys = getObjectKeys(field.name, value);
+
+  return (
+    <div className="space-y-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+      <h4 className="font-medium text-gray-900 dark:text-white capitalize">
+        {field.name.replace(/([A-Z])/g, ' $1').trim()}
+      </h4>
+      {objectKeys.map((key) => (
+        <div key={key}>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize">
+            {key.replace(/([A-Z])/g, ' $1').trim()}
+          </label>
+          <Controller
+            name={`${fieldPath}.${key}`}
+            control={control}
+            render={({ field: formField }) => (
+              <input
+                {...formField}
+                type="text"
+                className="form-input"
+                placeholder={`Enter ${key}`}
+              />
+            )}
+          />
+        </div>
+      ))}
+    </div>
+  );
+});
+
+NestedObjectField.displayName = 'NestedObjectField';
+
+// ArrayOfObjectsField Component
+interface ArrayOfObjectsFieldProps {
+  field: FieldDefinition;
+  control: Control<any>;
+}
+
+const ArrayOfObjectsField = React.memo<ArrayOfObjectsFieldProps>(({ field, control }) => {
+  const { fields: arrayFields, append, remove } = useFieldArray({
+    control,
+    name: field.name
+  });
+
+  const getDefaultObjectForField = (fieldName: string) => {
+    switch (fieldName) {
+      case 'experience':
+        return { company: '', position: '', startDate: '', endDate: '', description: '', achievements: [] };
+      case 'education':
+        return { institution: '', degree: '', field: '', graduationDate: '', gpa: '' };
+      case 'certifications':
+        return { name: '', issuer: '', date: '', expiryDate: '', credentialId: '' };
+      case 'languages':
+        return { language: '', proficiency: '' };
+      case 'projects':
+        return { name: '', description: '', technologies: [], url: '' };
+      default:
+        return { name: '', value: '' };
+    }
+  };
+
+  const getFieldsForObject = (fieldName: string) => {
+    switch (fieldName) {
+      case 'experience':
+        return [
+          { key: 'company', label: 'Company', type: 'text' },
+          { key: 'position', label: 'Position', type: 'text' },
+          { key: 'startDate', label: 'Start Date', type: 'date' },
+          { key: 'endDate', label: 'End Date', type: 'date' },
+          { key: 'description', label: 'Description', type: 'textarea' },
+          { key: 'achievements', label: 'Achievements', type: 'array' }
+        ];
+      case 'education':
+        return [
+          { key: 'institution', label: 'Institution', type: 'text' },
+          { key: 'degree', label: 'Degree', type: 'text' },
+          { key: 'field', label: 'Field of Study', type: 'text' },
+          { key: 'graduationDate', label: 'Graduation Date', type: 'date' },
+          { key: 'gpa', label: 'GPA', type: 'text' }
+        ];
+      case 'certifications':
+        return [
+          { key: 'name', label: 'Certification Name', type: 'text' },
+          { key: 'issuer', label: 'Issuer', type: 'text' },
+          { key: 'date', label: 'Date Obtained', type: 'date' },
+          { key: 'expiryDate', label: 'Expiry Date', type: 'date' },
+          { key: 'credentialId', label: 'Credential ID', type: 'text' }
+        ];
+      case 'languages':
+        return [
+          { key: 'language', label: 'Language', type: 'text' },
+          { key: 'proficiency', label: 'Proficiency Level', type: 'text' }
+        ];
+      case 'projects':
+        return [
+          { key: 'name', label: 'Project Name', type: 'text' },
+          { key: 'description', label: 'Description', type: 'textarea' },
+          { key: 'technologies', label: 'Technologies', type: 'array' },
+          { key: 'url', label: 'Project URL', type: 'text' }
+        ];
+      default:
+        return [
+          { key: 'name', label: 'Name', type: 'text' },
+          { key: 'value', label: 'Value', type: 'text' }
+        ];
+    }
+  };
+
+  const objectFields = getFieldsForObject(field.name);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h4 className="font-medium text-gray-900 dark:text-white capitalize">
+          {field.name.replace(/([A-Z])/g, ' $1').trim()}
+        </h4>
+        <button
+          type="button"
+          onClick={() => append(getDefaultObjectForField(field.name))}
+          className="btn-primary btn-sm"
+        >
+          Add {field.name.slice(0, -1)}
+        </button>
+      </div>
+
+      {arrayFields.map((item, index) => (
+        <div key={item.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+          <div className="flex justify-between items-center">
+            <h5 className="font-medium text-gray-800 dark:text-gray-200">
+              {field.name.charAt(0).toUpperCase() + field.name.slice(1, -1)} {index + 1}
+            </h5>
+            <button
+              type="button"
+              onClick={() => remove(index)}
+              className="btn-danger btn-sm"
+            >
+              Remove
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {objectFields.map((objField) => {
+              const fieldId = `field-${field.name}-${index}-${objField.key}`;
+              return (
+                <div key={objField.key} className={objField.type === 'textarea' ? 'md:col-span-2' : ''}>
+                  <label
+                    htmlFor={fieldId}
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
+                    {objField.label}
+                  </label>
+                  <Controller
+                    name={`${field.name}.${index}.${objField.key}`}
+                    control={control}
+                    render={({ field: formField }) => {
+                      if (objField.type === 'textarea') {
+                        return (
+                          <textarea
+                            {...formField}
+                            id={fieldId}
+                            rows={3}
+                            className="form-input"
+                            placeholder={`Enter ${objField.label.toLowerCase()}`}
+                          />
+                        );
+                      } else if (objField.type === 'date') {
+                        return (
+                          <input
+                            {...formField}
+                            id={fieldId}
+                            type="date"
+                            className="form-input"
+                          />
+                        );
+                      } else if (objField.type === 'array') {
+                        return (
+                          <TagInput
+                            value={formField.value || []}
+                            onChange={formField.onChange}
+                            placeholder={`Add ${objField.label.toLowerCase()}`}
+                            id={fieldId}
+                          />
+                        );
+                      } else {
+                        return (
+                          <input
+                            {...formField}
+                            id={fieldId}
+                            type="text"
+                            className="form-input"
+                            placeholder={`Enter ${objField.label.toLowerCase()}`}
+                          />
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {arrayFields.length === 0 && (
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          No {field.name} added yet. Click "Add {field.name.slice(0, -1)}" to get started.
+        </div>
+      )}
+    </div>
+  );
+});
+
+ArrayOfObjectsField.displayName = 'ArrayOfObjectsField';
 
 interface DynamicFormProps {
   schema: SchemaDefinition;
@@ -173,244 +485,17 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     }
   };
 
-  // Component for rendering nested object fields
-  const NestedObjectField: React.FC<{ field: FieldDefinition; parentPath: string }> = ({ field, parentPath }) => {
-    const fieldPath = parentPath ? `${parentPath}.${field.name}` : field.name;
-    const value = getValues(fieldPath) || {};
-    
-    // Get object keys from current value or provide common resume object keys
-    const getObjectKeys = (fieldName: string, currentValue: any) => {
-      if (currentValue && typeof currentValue === 'object' && Object.keys(currentValue).length > 0) {
-        return Object.keys(currentValue);
-      }
-      
-      // Provide default keys for known resume objects
-      switch (fieldName) {
-        case 'personalInfo':
-          return ['name', 'title', 'email', 'phone', 'location', 'linkedin', 'github', 'website'];
-        case 'skills':
-          return ['technical', 'soft', 'tools'];
-        default:
-          return ['name', 'value'];
-      }
-    };
-
-    const objectKeys = getObjectKeys(field.name, value);
-
-    return (
-      <div className="space-y-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-        <h4 className="font-medium text-gray-900 dark:text-white capitalize">
-          {field.name.replace(/([A-Z])/g, ' $1').trim()}
-        </h4>
-        {objectKeys.map((key) => (
-          <div key={key}>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize">
-              {key.replace(/([A-Z])/g, ' $1').trim()}
-            </label>
-            <Controller
-              name={`${fieldPath}.${key}`}
-              control={control}
-              render={({ field: formField }) => (
-                <input
-                  {...formField}
-                  type="text"
-                  className="form-input"
-                  placeholder={`Enter ${key}`}
-                />
-              )}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  // Component for rendering array of objects
-  const ArrayOfObjectsField: React.FC<{ field: FieldDefinition }> = ({ field }) => {
-    const { fields: arrayFields, append, remove } = useFieldArray({
-      control,
-      name: field.name
-    });
-
-    const getDefaultObjectForField = (fieldName: string) => {
-      switch (fieldName) {
-        case 'experience':
-          return { company: '', position: '', startDate: '', endDate: '', description: '', achievements: [] };
-        case 'education':
-          return { institution: '', degree: '', field: '', graduationDate: '', gpa: '' };
-        case 'certifications':
-          return { name: '', issuer: '', date: '', expiryDate: '', credentialId: '' };
-        case 'languages':
-          return { language: '', proficiency: '' };
-        case 'projects':
-          return { name: '', description: '', technologies: [], url: '' };
-        default:
-          return { name: '', value: '' };
-      }
-    };
-
-    const getFieldsForObject = (fieldName: string) => {
-      switch (fieldName) {
-        case 'experience':
-          return [
-            { key: 'company', label: 'Company', type: 'text' },
-            { key: 'position', label: 'Position', type: 'text' },
-            { key: 'startDate', label: 'Start Date', type: 'date' },
-            { key: 'endDate', label: 'End Date', type: 'date' },
-            { key: 'description', label: 'Description', type: 'textarea' },
-            { key: 'achievements', label: 'Achievements', type: 'array' }
-          ];
-        case 'education':
-          return [
-            { key: 'institution', label: 'Institution', type: 'text' },
-            { key: 'degree', label: 'Degree', type: 'text' },
-            { key: 'field', label: 'Field of Study', type: 'text' },
-            { key: 'graduationDate', label: 'Graduation Date', type: 'date' },
-            { key: 'gpa', label: 'GPA', type: 'text' }
-          ];
-        case 'certifications':
-          return [
-            { key: 'name', label: 'Certification Name', type: 'text' },
-            { key: 'issuer', label: 'Issuer', type: 'text' },
-            { key: 'date', label: 'Date Obtained', type: 'date' },
-            { key: 'expiryDate', label: 'Expiry Date', type: 'date' },
-            { key: 'credentialId', label: 'Credential ID', type: 'text' }
-          ];
-        case 'languages':
-          return [
-            { key: 'language', label: 'Language', type: 'text' },
-            { key: 'proficiency', label: 'Proficiency Level', type: 'text' }
-          ];
-        case 'projects':
-          return [
-            { key: 'name', label: 'Project Name', type: 'text' },
-            { key: 'description', label: 'Description', type: 'textarea' },
-            { key: 'technologies', label: 'Technologies', type: 'array' },
-            { key: 'url', label: 'Project URL', type: 'text' }
-          ];
-        default:
-          return [
-            { key: 'name', label: 'Name', type: 'text' },
-            { key: 'value', label: 'Value', type: 'text' }
-          ];
-      }
-    };
-
-    const objectFields = getFieldsForObject(field.name);
-
-    return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h4 className="font-medium text-gray-900 dark:text-white capitalize">
-            {field.name.replace(/([A-Z])/g, ' $1').trim()}
-          </h4>
-          <button
-            type="button"
-            onClick={() => append(getDefaultObjectForField(field.name))}
-            className="btn-primary btn-sm"
-          >
-            Add {field.name.slice(0, -1)}
-          </button>
-        </div>
-        
-        {arrayFields.map((item, index) => (
-          <div key={item.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
-            <div className="flex justify-between items-center">
-              <h5 className="font-medium text-gray-800 dark:text-gray-200">
-                {field.name.charAt(0).toUpperCase() + field.name.slice(1, -1)} {index + 1}
-              </h5>
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="btn-danger btn-sm"
-              >
-                Remove
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {objectFields.map((objField) => {
-                const fieldId = `field-${field.name}-${index}-${objField.key}`;
-                return (
-                  <div key={objField.key} className={objField.type === 'textarea' ? 'md:col-span-2' : ''}>
-                    <label
-                      htmlFor={fieldId}
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                    >
-                      {objField.label}
-                    </label>
-                    <Controller
-                      name={`${field.name}.${index}.${objField.key}`}
-                      control={control}
-                      render={({ field: formField }) => {
-                        if (objField.type === 'textarea') {
-                          return (
-                            <textarea
-                              {...formField}
-                              id={fieldId}
-                              rows={3}
-                              className="form-input"
-                              placeholder={`Enter ${objField.label.toLowerCase()}`}
-                            />
-                          );
-                        } else if (objField.type === 'date') {
-                          return (
-                            <input
-                              {...formField}
-                              id={fieldId}
-                              type="date"
-                              className="form-input"
-                            />
-                          );
-                        } else if (objField.type === 'array') {
-                          return (
-                            <TagInput
-                              value={formField.value || []}
-                              onChange={formField.onChange}
-                              placeholder={`Add ${objField.label.toLowerCase()}`}
-                              id={fieldId}
-                            />
-                          );
-                        } else {
-                          return (
-                            <input
-                              {...formField}
-                              id={fieldId}
-                              type="text"
-                              className="form-input"
-                              placeholder={`Enter ${objField.label.toLowerCase()}`}
-                            />
-                          );
-                        }
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-        
-        {arrayFields.length === 0 && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No {field.name} added yet. Click "Add {field.name.slice(0, -1)}" to get started.
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const renderField = (field: FieldDefinition) => {
     const fieldId = `field-${field.name}`;
     const baseClasses = "form-input";
 
     switch (field.type) {
       case 'object':
-        return <NestedObjectField field={field} parentPath="" />;
+        return <NestedObjectField field={field} parentPath="" control={control} getValues={getValues} />;
 
       case 'array':
         if (field.arrayType === 'object') {
-          return <ArrayOfObjectsField field={field} />;
+          return <ArrayOfObjectsField field={field} control={control} />;
         }
         // Fall through to existing array handling for simple arrays
         return (
@@ -594,72 +679,6 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         </button>
       </div>
     </form>
-  );
-};
-
-// Tag Input Component
-interface TagInputProps {
-  value: string[];
-  onChange: (tags: string[]) => void;
-  placeholder?: string;
-  id?: string;
-}
-
-const TagInput: React.FC<TagInputProps> = ({ value, onChange, placeholder, id }) => {
-  const [inputValue, setInputValue] = React.useState('');
-
-  const addTag = (tag: string) => {
-    const trimmedTag = tag.trim();
-    if (trimmedTag && !value.includes(trimmedTag)) {
-      onChange([...value, trimmedTag]);
-    }
-    setInputValue('');
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    onChange(value.filter(tag => tag !== tagToRemove));
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      addTag(inputValue);
-    } else if (e.key === 'Backspace' && !inputValue && value.length > 0) {
-      removeTag(value[value.length - 1]);
-    }
-  };
-
-  return (
-    <div className="tag-input-wrapper">
-      <div className="flex flex-wrap gap-1">
-        {value.map(tag => (
-          <span
-            key={tag}
-            className="tag-input-tag"
-          >
-            {tag}
-            <button
-              type="button"
-              onClick={() => removeTag(tag)}
-              className="tag-input-remove"
-              aria-label={`Remove ${tag}`}
-            >
-              ×
-            </button>
-          </span>
-        ))}
-        <input
-          id={id}
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onBlur={() => inputValue && addTag(inputValue)}
-          placeholder={value.length === 0 ? placeholder : ''}
-          className="flex-1 min-w-[120px] border-none outline-none text-sm bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-        />
-      </div>
-    </div>
   );
 };
 
