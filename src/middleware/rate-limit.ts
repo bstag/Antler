@@ -23,15 +23,15 @@ if (cleanupInterval.unref) {
 }
 
 export const rateLimitMiddleware: MiddlewareHandler = async (context, next) => {
-  const { url, clientAddress } = context;
+  const { url } = context;
 
   // Only rate limit admin routes
   if (url.pathname.startsWith('/admin')) {
     // Get client IP - fallback to 'unknown' if not available
     let ip = 'unknown';
     try {
-        if (clientAddress) {
-            ip = clientAddress;
+        if (context.clientAddress) {
+            ip = context.clientAddress;
         }
     } catch (e) {
         // Ignore errors retrieving IP
