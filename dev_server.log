@@ -1,0 +1,77 @@
+
+> antler@0.0.1 dev /app
+> astro dev
+
+03:21:52 [@astrojs/node] Enabling sessions with filesystem storage
+03:21:52 [types] Generated 1ms
+03:21:53 [content] Syncing content
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/docs/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumePersonal/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumeExperience/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumeEducation/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumeCertifications/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumeSkills/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumeLanguages/" does not exist.
+03:21:53 [WARN] [glob-loader] The base directory "/app/src/content/resumeProjects/" does not exist.
+03:21:53 [content] Synced content
+03:21:53 [vite] Re-optimizing dependencies because vite config has changed
+
+ astro  v5.16.9 ready in 1467 ms
+
+┃ Local    http://localhost:4321/
+┃ Network  use --host to expose
+
+03:21:53 watching for file changes...
+
+ update  ▶ New version of Astro available: 5.17.1
+  Run pnpm dlx @astrojs/upgrade to update
+
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:54 [200] /admin/files 2058ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:56 [200] /admin/api/schema/blog 10ms
+03:22:56 [200] /admin/api/schema/projects 11ms
+03:22:56 [200] /admin/api/schema/docs 11ms
+03:22:56 [200] /admin/api/schema/resumePersonal 12ms
+03:22:56 [200] /admin/api/schema/resumeExperience 12ms
+03:22:56 [200] /admin/api/schema/resumeEducation 12ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:56 [200] /admin/api/schema/resumeSkills 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:56 [200] /admin/api/schema/resumeCertifications 2ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:56 [200] /admin/api/schema/resumeLanguages 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:56 [200] /admin/api/schema/resumeProjects 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:22:56 [200] /admin/api/files/list 7ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:16 [200] /admin/files 10ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/blog 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/projects 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/docs 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumePersonal 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumeExperience 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumeEducation 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumeCertifications 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumeLanguages 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumeProjects 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/schema/resumeSkills 1ms
+⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.
+03:23:17 [200] /admin/api/files/list 13ms
+ ELIFECYCLE  Command failed.
