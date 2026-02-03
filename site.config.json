@@ -290,7 +290,7 @@
     },
     "urls": {
       "baseUrl": "https://StagWare.com",
-      "basePath": ""
+      "basePath": "/Antler"
     },
     "theme": {
       "default": "cyan",

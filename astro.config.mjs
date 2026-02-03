@@ -18,14 +18,14 @@ export default defineConfig({
   }),
 
   site: 'https://StagWare.com',
-  base: '/',
+  base: '/Antler',
   markdown: {
     shikiConfig: {
       theme: 'github-dark-dimmed',
       wrap: true
     },
     rehypePlugins: [
-      [rehypeAddBaseUrl, { base: '/' }]
+      [rehypeAddBaseUrl, { base: '/Antler' }]
     ]
   },
   vite: {
