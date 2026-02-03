@@ -35,6 +35,7 @@ jobs:
           cache: 'npm'
           
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v4
         
       - name: Install dependencies
@@ -42,6 +43,8 @@ jobs:
         
       - name: Build with Astro
         run: npm run build
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

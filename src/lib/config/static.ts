@@ -65,11 +65,17 @@ export function getConfigValue<T>(
  */
 export function getBaseUrl(config: SiteConfig): string {
   const baseUrl = config.customization.urls.baseUrl || '';
-  const basePath = config.customization.urls.basePath || '';
+  let basePath = config.customization.urls.basePath || '';
 
-  // Remove trailing slash from baseUrl and leading slash from basePath
+  // Use SSR base URL if available (overrides config)
+  const ssrBase = getBaseUrlSSR();
+  if (ssrBase && ssrBase !== '/') {
+    basePath = ssrBase;
+  }
+
+  // Remove trailing slash from baseUrl and leading/trailing slash from basePath
   const cleanBaseUrl = baseUrl.replace(/\/$/, '');
-  const cleanBasePath = basePath.replace(/^\//, '');
+  const cleanBasePath = basePath.replace(/^\//, '').replace(/\/$/, '');
 
   return cleanBasePath ? `${cleanBaseUrl}/${cleanBasePath}` : cleanBaseUrl;
 }
