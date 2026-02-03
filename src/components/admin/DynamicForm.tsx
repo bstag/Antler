@@ -111,25 +111,32 @@ const NestedObjectField = React.memo<NestedObjectFieldProps>(({ field, parentPat
       <h4 className="font-medium text-gray-900 dark:text-white capitalize">
         {field.name.replace(/([A-Z])/g, ' $1').trim()}
       </h4>
-      {objectKeys.map((key) => (
-        <div key={key}>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize">
-            {key.replace(/([A-Z])/g, ' $1').trim()}
-          </label>
-          <Controller
-            name={`${fieldPath}.${key}`}
-            control={control}
-            render={({ field: formField }) => (
-              <input
-                {...formField}
-                type="text"
-                className="form-input"
-                placeholder={`Enter ${key}`}
-              />
-            )}
-          />
-        </div>
-      ))}
+      {objectKeys.map((key) => {
+        const inputId = `${fieldPath.replace(/\./g, '-')}-${key}`;
+        return (
+          <div key={key}>
+            <label
+              htmlFor={inputId}
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize"
+            >
+              {key.replace(/([A-Z])/g, ' $1').trim()}
+            </label>
+            <Controller
+              name={`${fieldPath}.${key}`}
+              control={control}
+              render={({ field: formField }) => (
+                <input
+                  {...formField}
+                  id={inputId}
+                  type="text"
+                  className="form-input"
+                  placeholder={`Enter ${key}`}
+                />
+              )}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 });
