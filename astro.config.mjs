@@ -18,14 +18,14 @@ export default defineConfig({
   }),
 
   site: 'https://StagWare.com',
-  base: '/',
+  base: process.env.BASE_PATH || '/',
   markdown: {
     shikiConfig: {
       theme: 'github-dark-dimmed',
       wrap: true
     },
     rehypePlugins: [
-      [rehypeAddBaseUrl, { base: '/' }]
+      [rehypeAddBaseUrl, { base: process.env.BASE_PATH || '/' }]
     ]
   },
   vite: {
