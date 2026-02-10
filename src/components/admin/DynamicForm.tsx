@@ -444,9 +444,9 @@ const FormField = React.memo<FormFieldProps>(({ field, control, error, getValues
                   checked={formField.value || false}
                   className="form-checkbox"
                 />
-                <label htmlFor={fieldId} className="ml-2 block text-sm text-gray-900 dark:text-white">
+                <span className="ml-2 block text-sm text-gray-900 dark:text-white">
                   {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
-                </label>
+                </span>
               </div>
             )}
           />
