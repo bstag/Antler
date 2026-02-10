@@ -6,20 +6,23 @@ export const authMiddleware: MiddlewareHandler = async (context, next) => {
   const { url, request } = context;
   const adminPassword = getAdminPassword();
 
+  const isProtectedPath = url.pathname.startsWith('/admin') ||
+                          url.pathname.startsWith('/api/config') ||
+                          url.pathname.startsWith('/api/theme');
+
   // If no password configured, proceed
   // In a real production environment, we might want to default to denying access,
   // but to avoid breaking existing deployments that haven't set the env var yet,
   // we allow access and log a warning in development.
   if (!adminPassword) {
-    if (url.pathname.startsWith('/admin') && isDev()) {
-       console.warn('⚠️ ADMIN_PASSWORD not set. Admin interface is unsecured.');
+    if (isProtectedPath && isDev()) {
+       console.warn('⚠️ ADMIN_PASSWORD not set. Admin interface and API are unsecured.');
     }
     return next();
   }
 
-  // Only protect /admin routes
-  // This covers both the UI (/admin/...) and the API (/admin/api/...)
-  if (url.pathname.startsWith('/admin')) {
+  // Protect Admin UI and Administrative APIs
+  if (isProtectedPath) {
     const authHeader = request.headers.get('Authorization');
 
     if (authHeader) {

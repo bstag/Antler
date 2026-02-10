@@ -97,4 +97,38 @@ describe('authMiddleware', () => {
     expect(next).toHaveBeenCalled();
     expect(result).toBe('next-called');
   });
+
+  // Security Regression Tests
+  it('denies access to /api/config routes when unauthenticated', async () => {
+    vi.mocked(authConfig.getAdminPassword).mockReturnValue('secret');
+    context.url = new URL('http://localhost:3000/api/config/site');
+
+    const result = await authMiddleware(context, next) as Response;
+
+    expect(next).not.toHaveBeenCalled();
+    expect(result).toBeInstanceOf(Response);
+    expect(result.status).toBe(401);
+  });
+
+  it('denies access to /api/theme routes when unauthenticated', async () => {
+    vi.mocked(authConfig.getAdminPassword).mockReturnValue('secret');
+    context.url = new URL('http://localhost:3000/api/theme/set-default');
+
+    const result = await authMiddleware(context, next) as Response;
+
+    expect(next).not.toHaveBeenCalled();
+    expect(result).toBeInstanceOf(Response);
+    expect(result.status).toBe(401);
+  });
+
+  it('allows access to /api/config routes when authenticated', async () => {
+    vi.mocked(authConfig.getAdminPassword).mockReturnValue('secret');
+    context.url = new URL('http://localhost:3000/api/config/site');
+    context.request.headers.set('Authorization', 'Basic ' + btoa('admin:secret'));
+
+    const result = await authMiddleware(context, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(result).toBe('next-called');
+  });
 });
