@@ -179,7 +179,6 @@ const AdminApp: React.FC<AdminAppProps> = () => {
               <Routes>
                 <Route path="/" element={<ResumeManager schemas={resumeSchemas} />} />
                 <Route path="/content/:collection" element={<ContentList schemas={resumeSchemas} />} />
-                <Route path="/content/:collection/new" element={<ContentEditor schemas={resumeSchemas} />} />
                 <Route path="/content/:collection/:id" element={<ContentEditor schemas={resumeSchemas} />} />
               </Routes>
             </ResumeLayout>
@@ -193,7 +192,6 @@ const AdminApp: React.FC<AdminAppProps> = () => {
               <Routes>
                 <Route path="/" element={<Dashboard schemas={mainSchemas} />} />
                 <Route path="/content/:collection" element={<ContentList schemas={mainSchemas} />} />
-                <Route path="/content/:collection/new" element={<ContentEditor schemas={mainSchemas} />} />
                 <Route path="/content/:collection/:id" element={<ContentEditor schemas={mainSchemas} />} />
                 <Route path="/files" element={<FileManager />} />
                 <Route path="/theme-settings" element={<ThemeManager />} />

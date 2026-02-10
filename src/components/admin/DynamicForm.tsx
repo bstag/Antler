@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import type { Control, UseFormGetValues } from 'react-hook-form';
+import type { Control, UseFormGetValues, FieldError } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { FieldDefinition, SchemaDefinition } from '../../lib/admin/types';
@@ -325,6 +325,198 @@ const ArrayOfObjectsField = React.memo<ArrayOfObjectsFieldProps>(({ field, contr
 
 ArrayOfObjectsField.displayName = 'ArrayOfObjectsField';
 
+// FormField Component
+interface FormFieldProps {
+  field: FieldDefinition;
+  control: Control<any>;
+  error?: FieldError | { message?: string };
+  getValues: UseFormGetValues<any>;
+}
+
+const FormField = React.memo<FormFieldProps>(({ field, control, error, getValues }) => {
+  const fieldId = `field-${field.name}`;
+  const baseClasses = "form-input";
+
+  const renderInput = () => {
+    switch (field.type) {
+      case 'object':
+        return <NestedObjectField field={field} parentPath="" control={control} getValues={getValues} />;
+
+      case 'array':
+        if (field.arrayType === 'object') {
+          return <ArrayOfObjectsField field={field} control={control} />;
+        }
+        // Fall through to existing array handling for simple arrays
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <TagInput
+                value={formField.value || []}
+                onChange={formField.onChange}
+                placeholder={`Add ${field.name}`}
+                id={fieldId}
+              />
+            )}
+          />
+        );
+
+      case 'string':
+        if (field.enumValues) {
+          return (
+            <Controller
+              name={field.name}
+              control={control}
+              render={({ field: formField }) => (
+                <select
+                  {...formField}
+                  id={fieldId}
+                  className={baseClasses}
+                  required={field.required}
+                  aria-required={field.required}
+                >
+                  <option value="">Select {field.name}</option>
+                  {field.enumValues!.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          );
+        }
+
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <input
+                {...formField}
+                value={formField.value ?? ''}
+                type="text"
+                id={fieldId}
+                className={baseClasses}
+                placeholder={`Enter ${field.name}`}
+                required={field.required}
+                aria-required={field.required}
+              />
+            )}
+          />
+        );
+
+      case 'number':
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <input
+                {...formField}
+                value={formField.value ?? ''}
+                type="number"
+                id={fieldId}
+                className={baseClasses}
+                placeholder={`Enter ${field.name}`}
+                min={field.validation?.min}
+                max={field.validation?.max}
+                required={field.required}
+                aria-required={field.required}
+                onChange={(e) => formField.onChange(e.target.value ? Number(e.target.value) : '')}
+              />
+            )}
+          />
+        );
+
+      case 'boolean':
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <div className="flex items-center">
+                <input
+                  {...formField}
+                  type="checkbox"
+                  id={fieldId}
+                  checked={formField.value || false}
+                  className="form-checkbox"
+                />
+                <span className="ml-2 block text-sm text-gray-900 dark:text-white">
+                  {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
+                </span>
+              </div>
+            )}
+          />
+        );
+
+      case 'date':
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <input
+                {...formField}
+                type="date"
+                id={fieldId}
+                className={baseClasses}
+                required={field.required}
+                aria-required={field.required}
+                value={formField.value ? new Date(formField.value).toISOString().split('T')[0] : ''}
+                onChange={(e) => formField.onChange(e.target.value ? new Date(e.target.value) : '')}
+              />
+            )}
+          />
+        );
+
+      default:
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: formField }) => (
+              <input
+                {...formField}
+                value={formField.value ?? ''}
+                type="text"
+                id={fieldId}
+                className={baseClasses}
+                placeholder={`Enter ${field.name}`}
+                required={field.required}
+                aria-required={field.required}
+              />
+            )}
+          />
+        );
+    }
+  };
+
+  return (
+    <div>
+      <label
+        htmlFor={fieldId}
+        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
+        {field.required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+
+      {renderInput()}
+
+      {error && (
+        <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          {error.message as string}
+        </p>
+      )}
+    </div>
+  );
+});
+
+FormField.displayName = 'FormField';
+
 interface DynamicFormProps {
   schema: SchemaDefinition;
   defaultValues?: Record<string, any>;
@@ -420,7 +612,13 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     const processed = { ...defaultValues, ...data };
 
     schema.fields.forEach(field => {
-      const value = processed[field.name];
+        let value = processed[field.name];
+
+        // Apply default value from schema if missing
+        if (value === undefined && field.defaultValue !== undefined) {
+          value = field.defaultValue;
+          processed[field.name] = value;
+        }
 
       // Convert date strings to Date objects for the form
       if (field.type === 'date' && value) {
@@ -486,159 +684,6 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     }
   }, [registerSubmitRef, handleSubmit, onSubmit]);
 
-  const onFormSubmit = (data: Record<string, any>) => {
-    if (onSubmit) {
-      onSubmit(data);
-    }
-  };
-
-  const renderField = (field: FieldDefinition) => {
-    const fieldId = `field-${field.name}`;
-    const baseClasses = "form-input";
-
-    switch (field.type) {
-      case 'object':
-        return <NestedObjectField field={field} parentPath="" control={control} getValues={getValues} />;
-
-      case 'array':
-        if (field.arrayType === 'object') {
-          return <ArrayOfObjectsField field={field} control={control} />;
-        }
-        // Fall through to existing array handling for simple arrays
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <TagInput
-                value={formField.value || []}
-                onChange={formField.onChange}
-                placeholder={`Add ${field.name}`}
-                id={fieldId}
-              />
-            )}
-          />
-        );
-
-      case 'string':
-        if (field.enumValues) {
-          return (
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: formField }) => (
-                <select
-                  {...formField}
-                  id={fieldId}
-                  className={baseClasses}
-                >
-                  <option value="">Select {field.name}</option>
-                  {field.enumValues!.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-          );
-        }
-
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <input
-                {...formField}
-                type="text"
-                id={fieldId}
-                className={baseClasses}
-                placeholder={`Enter ${field.name}`}
-              />
-            )}
-          />
-        );
-
-      case 'number':
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <input
-                {...formField}
-                type="number"
-                id={fieldId}
-                className={baseClasses}
-                placeholder={`Enter ${field.name}`}
-                min={field.validation?.min}
-                max={field.validation?.max}
-                onChange={(e) => formField.onChange(e.target.value ? Number(e.target.value) : '')}
-              />
-            )}
-          />
-        );
-
-      case 'boolean':
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <div className="flex items-center">
-                <input
-                  {...formField}
-                  type="checkbox"
-                  id={fieldId}
-                  checked={formField.value || false}
-                  className="form-checkbox"
-                />
-                <label htmlFor={fieldId} className="ml-2 block text-sm text-gray-900 dark:text-white">
-                  {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
-                </label>
-              </div>
-            )}
-          />
-        );
-
-      case 'date':
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <input
-                {...formField}
-                type="date"
-                id={fieldId}
-                className={baseClasses}
-                value={formField.value ? new Date(formField.value).toISOString().split('T')[0] : ''}
-                onChange={(e) => formField.onChange(e.target.value ? new Date(e.target.value) : '')}
-              />
-            )}
-          />
-        );
-
-      default:
-        return (
-          <Controller
-            name={field.name}
-            control={control}
-            render={({ field: formField }) => (
-              <input
-                {...formField}
-                type="text"
-                id={fieldId}
-                className={baseClasses}
-                placeholder={`Enter ${field.name}`}
-              />
-            )}
-          />
-        );
-    }
-  };
-
   const handleFormSubmit = (data: Record<string, any>) => {
     if (onSubmit) {
       onSubmit(data);
@@ -648,23 +693,13 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   return (
     <form onSubmit={onSubmit ? handleSubmit(handleFormSubmit) : undefined} className="space-y-6">
       {schema.fields.map(field => (
-        <div key={field.name}>
-          <label
-            htmlFor={`field-${field.name}`}
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
-            {field.required && <span className="text-red-500 ml-1">*</span>}
-          </label>
-          
-          {renderField(field)}
-          
-          {errors[field.name] && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors[field.name]?.message as string}
-            </p>
-          )}
-        </div>
+        <FormField
+          key={field.name}
+          field={field}
+          control={control}
+          error={errors[field.name] as FieldError}
+          getValues={getValues}
+        />
       ))}
 
       <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
