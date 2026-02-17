@@ -40,35 +40,40 @@ const TagInput: React.FC<TagInputProps> = React.memo(({ value, onChange, placeho
   };
 
   return (
-    <div className="tag-input-wrapper">
-      <div className="flex flex-wrap gap-1">
-        {value.map(tag => (
-          <span
-            key={tag}
-            className="tag-input-tag"
-          >
-            {tag}
-            <button
-              type="button"
-              onClick={() => removeTag(tag)}
-              className="tag-input-remove"
-              aria-label={`Remove ${tag}`}
+    <div>
+      <div className="tag-input-wrapper">
+        <div className="flex flex-wrap gap-1">
+          {value.map(tag => (
+            <span
+              key={tag}
+              className="tag-input-tag"
             >
-              ×
-            </button>
-          </span>
-        ))}
-        <input
-          id={id}
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onBlur={() => inputValue && addTag(inputValue)}
-          placeholder={value.length === 0 ? placeholder : ''}
-          className="flex-1 min-w-[120px] border-none outline-none text-sm bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-        />
+              {tag}
+              <button
+                type="button"
+                onClick={() => removeTag(tag)}
+                className="tag-input-remove"
+                aria-label={`Remove ${tag}`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          <input
+            id={id}
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={() => inputValue && addTag(inputValue)}
+            placeholder={value.length === 0 ? placeholder : ''}
+            className="flex-1 min-w-[120px] border-none outline-none text-sm bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+          />
+        </div>
       </div>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 ml-1">
+        Press Enter or comma to add tags
+      </p>
     </div>
   );
 });
