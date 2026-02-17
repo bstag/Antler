@@ -1,4 +1,5 @@
 import type { MiddlewareHandler } from 'astro';
+import { startsWithBase } from '../lib/utils/path-matcher';
 
 // Simple in-memory rate limiting
 // Map<IP, { count: number, resetTime: number }>
@@ -26,7 +27,7 @@ export const rateLimitMiddleware: MiddlewareHandler = async (context, next) => {
   const { url } = context;
 
   // Only rate limit admin routes
-  if (url.pathname.startsWith('/admin')) {
+  if (startsWithBase(url.pathname, '/admin')) {
     // Get client IP - fallback to 'unknown' if not available
     let ip = 'unknown';
     try {
