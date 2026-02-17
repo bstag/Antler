@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from 'astro';
 import { isDev } from './auth-config';
+import { startsWithBase } from '../lib/utils/path-matcher';
 
 export const securityMiddleware: MiddlewareHandler = async (context, next) => {
   const response = await next();
@@ -7,7 +8,7 @@ export const securityMiddleware: MiddlewareHandler = async (context, next) => {
 
   // Apply strict security headers only to Admin routes
   // The public site is statically generated and may have different requirements (e.g., user themes)
-  if (url.pathname.startsWith('/admin')) {
+  if (startsWithBase(url.pathname, '/admin')) {
     // Security Headers
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-Frame-Options', 'SAMEORIGIN');
