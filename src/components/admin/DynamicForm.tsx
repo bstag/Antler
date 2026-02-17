@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useCallback, useRef } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import type { Control, UseFormGetValues, FieldError } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -542,69 +542,71 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 }) => {
   
   // Create Zod schema from field definitions
-  const createZodSchema = (fields: FieldDefinition[]) => {
-    const schemaObject: Record<string, any> = {};
+  const zodSchema = useMemo(() => {
+    const createZodSchema = (fields: FieldDefinition[]) => {
+      const schemaObject: Record<string, any> = {};
 
-    fields.forEach(field => {
-      let fieldSchema: any;
+      fields.forEach(field => {
+        let fieldSchema: any;
 
-      switch (field.type) {
-        case 'string':
-          fieldSchema = z.string();
-          if (field.enumValues) {
-            fieldSchema = z.enum(field.enumValues as [string, ...string[]]);
-          }
-          break;
-        case 'number':
-          fieldSchema = z.number();
-          if (field.validation?.min !== undefined) {
-            fieldSchema = fieldSchema.min(field.validation.min);
-          }
-          if (field.validation?.max !== undefined) {
-            fieldSchema = fieldSchema.max(field.validation.max);
-          }
-          break;
-        case 'boolean':
-          fieldSchema = z.boolean();
-          break;
-        case 'date':
-          fieldSchema = z.date();
-          break;
-        case 'array':
-          if (field.arrayType === 'string') {
-            fieldSchema = z.array(z.string());
-          } else if (field.arrayType === 'number') {
-            fieldSchema = z.array(z.number());
-          } else if (field.arrayType === 'object') {
-            // For arrays of objects, use a more flexible schema
-            fieldSchema = z.array(z.record(z.any()));
-          } else {
-            fieldSchema = z.array(z.string());
-          }
-          break;
-        case 'object':
-          // For nested objects, use a flexible record schema
-          fieldSchema = z.record(z.any());
-          break;
-        default:
-          fieldSchema = z.string();
-      }
+        switch (field.type) {
+          case 'string':
+            fieldSchema = z.string();
+            if (field.enumValues) {
+              fieldSchema = z.enum(field.enumValues as [string, ...string[]]);
+            }
+            break;
+          case 'number':
+            fieldSchema = z.number();
+            if (field.validation?.min !== undefined) {
+              fieldSchema = fieldSchema.min(field.validation.min);
+            }
+            if (field.validation?.max !== undefined) {
+              fieldSchema = fieldSchema.max(field.validation.max);
+            }
+            break;
+          case 'boolean':
+            fieldSchema = z.boolean();
+            break;
+          case 'date':
+            fieldSchema = z.date();
+            break;
+          case 'array':
+            if (field.arrayType === 'string') {
+              fieldSchema = z.array(z.string());
+            } else if (field.arrayType === 'number') {
+              fieldSchema = z.array(z.number());
+            } else if (field.arrayType === 'object') {
+              // For arrays of objects, use a more flexible schema
+              fieldSchema = z.array(z.record(z.any()));
+            } else {
+              fieldSchema = z.array(z.string());
+            }
+            break;
+          case 'object':
+            // For nested objects, use a flexible record schema
+            fieldSchema = z.record(z.any());
+            break;
+          default:
+            fieldSchema = z.string();
+        }
 
-      if (field.optional) {
-        fieldSchema = fieldSchema.optional();
-      }
+        if (field.optional) {
+          fieldSchema = fieldSchema.optional();
+        }
 
-      if (field.defaultValue !== undefined) {
-        fieldSchema = fieldSchema.default(field.defaultValue);
-      }
+        if (field.defaultValue !== undefined) {
+          fieldSchema = fieldSchema.default(field.defaultValue);
+        }
 
-      schemaObject[field.name] = fieldSchema;
-    });
+        schemaObject[field.name] = fieldSchema;
+      });
 
-    return z.object(schemaObject);
-  };
+      return z.object(schemaObject);
+    };
 
-  const zodSchema = createZodSchema(schema.fields);
+    return createZodSchema(schema.fields);
+  }, [schema.fields]);
 
   // Preprocess the data to handle date fields and other conversions
   const processedDefaultValues = useMemo(() => {
@@ -645,8 +647,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     control,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
-    setValue,
+    formState: { errors },
     getValues
   } = useForm({
     resolver: zodResolver(zodSchema),
@@ -654,22 +655,16 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     mode: 'onChange'
   });
 
-  // Watch all form values for onChange callback
-  const watchedValues = watch();
-  
-  // Use a ref to track the previous values to prevent unnecessary calls
-  const prevValuesRef = useRef<Record<string, any>>();
-  
-  // Memoize the onChange callback to prevent it from changing on every render
-  const memoizedOnChange = useCallback(onChange || (() => {}), []);
-
+  // Use watch subscription to prevent re-rendering the entire form on every change
   useEffect(() => {
-    // Only call onChange if values have actually changed
-    if (memoizedOnChange && JSON.stringify(watchedValues) !== JSON.stringify(prevValuesRef.current)) {
-      prevValuesRef.current = watchedValues;
-      memoizedOnChange(watchedValues);
-    }
-  }, [watchedValues, memoizedOnChange]);
+    if (!onChange) return;
+
+    const subscription = watch((value) => {
+      onChange(value as Record<string, any>);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, onChange]);
 
   // Register submit function with parent
   useEffect(() => {
