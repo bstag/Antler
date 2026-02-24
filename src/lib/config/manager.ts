@@ -83,6 +83,17 @@ export class ConfigManager {
         configToSave.customization.logo.svgContent = DOMPurify.sanitize(configToSave.customization.logo.svgContent);
       }
 
+      // Sentinel: Sanitize custom social link icons to prevent Stored XSS
+      if (Array.isArray(configToSave.customization?.social?.custom)) {
+        const window = new JSDOM('').window;
+        const DOMPurify = createDOMPurify(window as any);
+
+        for (const socialLink of configToSave.customization.social.custom) {
+          if (socialLink && typeof socialLink.icon === 'string') {
+            socialLink.icon = DOMPurify.sanitize(socialLink.icon);
+          }
+        }
+      }
       await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(configToSave, null, 2), 'utf-8');
       this.cachedConfig = configToSave;
       
