@@ -47,7 +47,7 @@ describe('ConfigManager Security', () => {
     const writtenContent = JSON.parse(callArgs[1] as string);
 
     // Check if the script tag was removed
-    // Currently it should FAIL because we haven't implemented sanitization yet
+    // This test should pass when SVG content is properly sanitized
     expect(writtenContent.customization.logo.svgContent).not.toContain('<script>');
     expect(writtenContent.customization.logo.svgContent).toContain('<rect');
   });
