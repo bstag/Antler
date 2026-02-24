@@ -534,7 +534,7 @@ interface DynamicFormProps {
   registerSubmitRef?: (submitFn: () => void) => void;
 }
 
-export const DynamicForm: React.FC<DynamicFormProps> = ({
+export const DynamicForm = React.memo<DynamicFormProps>(({
   schema,
   defaultValues = {},
   data,
@@ -722,7 +722,9 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       </div>
     </form>
   );
-};
+});
+
+DynamicForm.displayName = 'DynamicForm';
 
 // File Upload Button Component
 interface FileUploadButtonProps {

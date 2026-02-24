@@ -20,6 +20,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
   const [success, setSuccess] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'frontmatter' | 'content'>('frontmatter');
   const [frontmatter, setFrontmatter] = useState<Record<string, any>>({});
+  const [formDefaultValues, setFormDefaultValues] = useState<Record<string, any>>({});
   const [content, setContent] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
   const formSubmitRef = useRef<(() => void) | null>(null);
@@ -54,6 +55,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
         });
         
         setFrontmatter(defaultFrontmatter);
+        setFormDefaultValues(defaultFrontmatter);
         setContent('');
         setLoading(false);
       } else {
@@ -62,7 +64,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     }
   }, [collection, id, schema, isNew]);
 
-  const loadItem = async () => {
+  const loadItem = useCallback(async () => {
     if (!collection || !id || isNew) return;
 
     try {
@@ -81,6 +83,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
         const data: ContentItem = result.data;
         setItem(data);
         setFrontmatter(data.frontmatter);
+        setFormDefaultValues(data.frontmatter);
         setContent(data.content || '');
       } else {
         throw new Error(result.error || 'Failed to load content');
@@ -91,9 +94,9 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [collection, id, isNew]);
 
-  const handleSaveDirect = async (frontmatterData: Record<string, any>, contentData: string) => {
+  const handleSaveDirect = useCallback(async (frontmatterData: Record<string, any>, contentData: string) => {
     if (!collection || !schema) return;
 
     try {
@@ -157,7 +160,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     } finally {
       setSaving(false);
     }
-  };
+  }, [collection, schema, isNew, id, isResumeContext, loadItem]);
 
   const handleSave = async () => {
     // Always save with current state - both frontmatter and content
@@ -185,6 +188,22 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
     setSuccess(null); // Clear success message when making changes
   }, []);
 
+  const handleTabSwitch = useCallback((tab: 'frontmatter' | 'content') => {
+    if (tab === 'frontmatter' && activeTab !== 'frontmatter') {
+      setFormDefaultValues(frontmatter);
+    }
+    setActiveTab(tab);
+  }, [activeTab, frontmatter]);
+
+  const handleFormSubmit = useCallback((data: Record<string, any>) => {
+    // Always use the current content state when saving from frontmatter tab
+    handleSaveDirect(data, content);
+  }, [handleSaveDirect, content]);
+
+  const handleRegisterSubmitRef = useCallback((submitFn: () => void) => {
+    formSubmitRef.current = submitFn;
+  }, []);
+
   const handleCancel = () => {
     if (hasChanges && !confirm('You have unsaved changes. Are you sure you want to leave?')) {
       return;
@@ -198,8 +217,8 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
   useEffect(() => {
     saveRef.current = handleSave;
     cancelRef.current = handleCancel;
-    setTabRef.current = setActiveTab;
-  }, [handleSave, handleCancel]);
+    setTabRef.current = handleTabSwitch;
+  }, [handleSave, handleCancel, handleTabSwitch]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -347,13 +366,13 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
       <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-8">
           <button
-            onClick={() => setActiveTab('frontmatter')}
+            onClick={() => handleTabSwitch('frontmatter')}
             className={`tab-button ${activeTab === 'frontmatter' ? 'active' : ''}`}
           >
             Metadata
           </button>
           <button
-            onClick={() => setActiveTab('content')}
+            onClick={() => handleTabSwitch('content')}
             className={`tab-button ${activeTab === 'content' ? 'active' : ''}`}
           >
             Content
@@ -367,13 +386,10 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({ schemas }) => {
           <div className="p-6">
             <DynamicForm
               schema={schema}
-              data={frontmatter}
+              data={formDefaultValues}
               onChange={handleFrontmatterChange}
-              onSubmit={(data) => {
-                // Always use the current content state when saving from frontmatter tab
-                handleSaveDirect(data, content);
-              }}
-              registerSubmitRef={(submitFn) => formSubmitRef.current = submitFn}
+              onSubmit={handleFormSubmit}
+              registerSubmitRef={handleRegisterSubmitRef}
               loading={saving}
               submitLabel={isNew ? 'Create Post' : 'Update Post'}
             />
