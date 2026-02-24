@@ -20,6 +20,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, schemas }) =
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-gray-800 focus:text-blue-600 focus:shadow-md focus:rounded-md font-medium"
+      >
+        Skip to main content
+      </a>
       {/* Sidebar */}
       <div className={`bg-white dark:bg-gray-800 shadow-sm border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${
         sidebarOpen ? 'w-64' : 'w-16'
@@ -228,7 +234,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, schemas }) =
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto admin-scrollbar">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto admin-scrollbar">
           <div className="p-6">
             {children}
           </div>

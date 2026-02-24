@@ -19,4 +19,22 @@ describe('AdminLayout Accessibility', () => {
     const toggleButton = screen.getByLabelText('Close sidebar');
     expect(toggleButton).toBeInTheDocument();
   });
+
+  test('has skip to main content link', () => {
+    render(
+      <BrowserRouter>
+        <AdminLayout schemas={mockSchemas}>
+          <div>Content</div>
+        </AdminLayout>
+      </BrowserRouter>
+    );
+
+    const skipLink = screen.getByText('Skip to main content');
+    expect(skipLink).toBeInTheDocument();
+    expect(skipLink).toHaveAttribute('href', '#main-content');
+
+    const main = screen.getByRole('main');
+    expect(main).toHaveAttribute('id', 'main-content');
+    expect(main).toHaveAttribute('tabIndex', '-1');
+  });
 });
