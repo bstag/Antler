@@ -1,5 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { JSDOM } from 'jsdom';
+import createDOMPurify from 'dompurify';
 import type { SiteConfig, SiteTemplate, ConfigValidationResult } from '../../types/config';
 import { DEFAULT_SITE_CONFIG, SITE_TEMPLATES } from './defaults';
 import { validateSiteConfig } from './validation';
@@ -72,6 +74,14 @@ export class ConfigManager {
         ...config,
         lastModified: new Date().toISOString()
       };
+
+      // Sentinel: Sanitize SVG logo content to prevent Stored XSS
+      if (configToSave.customization?.logo?.type === 'svg' && configToSave.customization.logo.svgContent) {
+        // Initialize DOMPurify with JSDOM window for Node.js environment
+        const window = new JSDOM('').window;
+        const DOMPurify = createDOMPurify(window as any);
+        configToSave.customization.logo.svgContent = DOMPurify.sanitize(configToSave.customization.logo.svgContent);
+      }
 
       await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(configToSave, null, 2), 'utf-8');
       this.cachedConfig = configToSave;

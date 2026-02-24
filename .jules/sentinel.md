@@ -14,3 +14,8 @@
 **Prevention:**
 1.  Implemented `validateCollection` in `src/lib/file-security.ts` to enforce a strict whitelist regex (`^[a-zA-Z0-9_-]+$`).
 2.  Used `resolveSafePath` for all file operations to ensure the resolved path stays within the intended root directory.
+
+## 2025-02-06 - Stored XSS in Site Configuration (SVG Logo)
+**Vulnerability:** The Admin Site Configuration API allowed saving raw SVG content for the site logo (\`config.customization.logo.svgContent\`). This content was rendered unsanitized on the public site using \`set:html\`, allowing Stored XSS if an admin (or compromised account) injected malicious scripts.
+**Learning:** Configuration values that are rendered as raw HTML must be sanitized, even if they originate from a trusted admin interface. "Trusted user" models fail if accounts are compromised or CSRF exists.
+**Prevention:** Implemented server-side sanitization using \`DOMPurify\` (with \`jsdom\`) in \`ConfigManager.saveConfig\` to strip malicious scripts from SVG content before saving.
