@@ -102,22 +102,18 @@ const AdminApp: React.FC<AdminAppProps> = () => {
   const loadSchemas = async () => {
     try {
       setLoading(true);
-      const collections = ['blog', 'projects', 'docs', 'resumePersonal', 'resumeExperience', 'resumeEducation', 'resumeSkills', 'resumeCertifications', 'resumeLanguages', 'resumeProjects'];
-      const schemaPromises = collections.map(async (collection) => {
-        const response = await adminFetch(`admin/api/schema/${collection}`);
-        if (response.ok) {
-          const data = await response.json();
-          return [collection, data.data];
+      const response = await adminFetch('admin/api/schema');
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setSchemas(result.data);
+        } else {
+          throw new Error(result.error || 'Failed to parse schemas');
         }
-        return [collection, null];
-      });
-
-      const results = await Promise.all(schemaPromises);
-      const schemasMap = Object.fromEntries(
-        results.filter(([, schema]) => schema !== null)
-      );
-
-      setSchemas(schemasMap);
+      } else {
+        throw new Error('Failed to load schemas');
+      }
     } catch (err) {
       setError('Failed to load content schemas');
       logger.error('Schema loading error:', err);
