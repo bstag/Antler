@@ -19,3 +19,8 @@
 **Vulnerability:** The Admin Site Configuration API allowed saving raw SVG content for the site logo (\`config.customization.logo.svgContent\`). This content was rendered unsanitized on the public site using \`set:html\`, allowing Stored XSS if an admin (or compromised account) injected malicious scripts.
 **Learning:** Configuration values that are rendered as raw HTML must be sanitized, even if they originate from a trusted admin interface. "Trusted user" models fail if accounts are compromised or CSRF exists.
 **Prevention:** Implemented server-side sanitization using \`DOMPurify\` (with \`jsdom\`) in \`ConfigManager.saveConfig\` to strip malicious scripts from SVG content before saving.
+
+## 2025-02-06 - Bypass of Security Controls via Direct File Write
+**Vulnerability:** The API endpoint `/api/theme/set-default` explicitly wrote user data to `site.config.json` via file system operations (`fs.writeFileSync`), bypassing centralized security validations and sanitization processes (like SVG XSS sanitization) implemented in `ConfigManager`.
+**Learning:** Bypassing established configuration management layers using direct file I/O undermines all application-level security mechanisms. A vulnerability patched in one place (e.g., SVG XSS in ConfigManager) can easily re-emerge if the secure path is circumvented.
+**Prevention:** Centralized configuration state management. Update endpoints (like `/api/theme/set-default`) to utilize the established `ConfigManager.updateConfig()` mechanism exclusively, and remove raw `fs` usage for configuration updates.
