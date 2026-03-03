@@ -5,8 +5,7 @@
  */
 
 import type { APIRoute } from 'astro';
-import fs from 'fs';
-import path from 'path';
+import { configManager } from '../../../lib/config/manager';
 import { logger } from '../../../lib/utils/logger';
 
 export const prerender = false;
@@ -54,29 +53,39 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Read current config
-    const configPath = path.join(process.cwd(), 'site.config.json');
-    const configData = fs.readFileSync(configPath, 'utf-8');
-    const config = JSON.parse(configData);
+    const config = await configManager.getConfig();
 
     // Update theme default
-    if (!config.customization) {
-      config.customization = {};
-    }
-    if (!config.customization.theme) {
-      config.customization.theme = {
+    const currentCustomization = config.customization || {};
+    const updatedCustomization = {
+      ...currentCustomization,
+      theme: currentCustomization.theme ? {
+        ...currentCustomization.theme,
+        default: theme
+      } : {
         default: theme,
         allowUserOverride: true,
         availableThemes: VALID_THEMES,
-      };
-    } else {
-      config.customization.theme.default = theme;
-    }
-
-    // Update lastModified
-    config.lastModified = new Date().toISOString();
+      }
+    };
 
     // Write updated config
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
+    const updateResult = await configManager.updateConfig({ customization: updatedCustomization });
+
+    if (!updateResult.valid) {
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid configuration updates',
+          errors: updateResult.errors
+        }),
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
 
     return new Response(
       JSON.stringify({
