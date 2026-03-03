@@ -16,8 +16,7 @@ export const GET: APIRoute = async () => {
         schemasData[collection] = {
           collection,
           type: collectionSchema.type,
-          fields,
-          schema: zodSchema
+          fields
         };
       }
     }
