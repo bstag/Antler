@@ -390,6 +390,7 @@ const ContentTypesTab: React.FC<{
                   onClick={() => contentType?.id && onToggleContentType(contentType.id)}
                   disabled={saving || !contentType?.id}
                   className={`toggle-switch ${contentType?.enabled ? 'active' : ''} ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  aria-label={`${contentType?.enabled ? 'Disable' : 'Enable'} ${contentType?.name || 'content type'}`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -595,6 +596,7 @@ const NavigationTab: React.FC<{
                     disabled={index === 0 || saving}
                     className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move up"
+                    aria-label={`Move ${item?.label || 'item'} up`}
                   >
                     ↑
                   </button>
@@ -603,6 +605,7 @@ const NavigationTab: React.FC<{
                     disabled={index === navigation.length - 1 || saving}
                     className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move down"
+                    aria-label={`Move ${item?.label || 'item'} down`}
                   >
                     ↓
                   </button>
@@ -613,6 +616,7 @@ const NavigationTab: React.FC<{
                     disabled={saving}
                     className={`toggle-switch toggle-switch-sm ${item?.enabled ? 'active' : ''} ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={item?.enabled ? 'Hide from navigation' : 'Show in navigation'}
+                    aria-label={`${item?.enabled ? 'Hide' : 'Show'} ${item?.label || 'item'}`}
                   >
                     <span
                       className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
@@ -627,6 +631,7 @@ const NavigationTab: React.FC<{
                     disabled={saving}
                     className="p-1 text-red-400 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Remove item"
+                    aria-label={`Remove ${item?.label || 'item'}`}
                   >
                     ✕
                   </button>
