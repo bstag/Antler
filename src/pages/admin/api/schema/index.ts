@@ -65,12 +65,14 @@ function parseZodSchema(schema: any) {
       innerDef = innerDef._def.innerType;
     }
 
+    const rawDefaultValue = fieldDef._def.defaultValue?.();
+
     const field = {
       name: key,
       type: getZodType(fieldDef),
       required: !fieldDef.isOptional(),
       optional: fieldDef.isOptional(),
-      defaultValue: fieldDef._def.defaultValue?.() || undefined
+      defaultValue: rawDefaultValue ?? undefined
     };
 
     // Handle array types (check inner type for wrapped arrays)
