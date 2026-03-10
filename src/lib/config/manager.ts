@@ -113,10 +113,6 @@ export class ConfigManager {
         }
       }
 
-      if (domPurifyInstance) {
-        // Remove the hook so it doesn't leak or affect other potential instances
-        domPurifyInstance.removeAllHooks();
-      }
       await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(configToSave, null, 2), 'utf-8');
       this.cachedConfig = configToSave;
       
