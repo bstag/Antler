@@ -50,9 +50,9 @@ describe('Admin API - Stats Endpoint', () => {
     const body = await response.json();
     expect(body.success).toBe(true);
     expect(body.data).toEqual({
-      blog: { total: 5 },
-      projects: { total: 3 },
-      docs: { total: 10 }
+      blog: { total: 5, recent: 0, featured: 0 },
+      projects: { total: 3, recent: 0, featured: 0 },
+      docs: { total: 10, recent: 0, featured: 0 }
     });
   });
 
@@ -69,7 +69,7 @@ describe('Admin API - Stats Endpoint', () => {
 
     const body = await response.json();
     expect(body.success).toBe(true);
-    expect(body.data.blog).toEqual({ total: 0 });
-    expect(body.data.projects).toEqual({ total: 0 });
+    expect(body.data.blog).toEqual({ total: 0, recent: 0, featured: 0 });
+    expect(body.data.projects).toEqual({ total: 0, recent: 0, featured: 0 });
   });
 });

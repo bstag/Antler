@@ -73,29 +73,27 @@ export const ResumeManager: React.FC<ResumeManagerProps> = ({ schemas }) => {
   const loadStats = async () => {
     try {
       setLoading(true);
-      const statsPromises = resumeCollections.map(async (collection) => {
-        try {
-          const response = await adminFetch(`admin/api/content/${collection}`);
-          if (response.ok) {
-            const data = await response.json();
-            const items = data.data?.items || []; // Fix: Access items from data.data.items
-            return [collection, {
-              total: items.length,
-              recent: items.filter((item: any) => {
-                const date = new Date(item.lastModified || item.createdAt || 0);
-                const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                return date > weekAgo;
-              }).length
-            }];
-          }
-          return [collection, { total: 0, recent: 0 }];
-        } catch {
-          return [collection, { total: 0, recent: 0 }];
-        }
-      });
+      // Batch stats fetching into a single request
+      const response = await adminFetch('admin/api/stats');
+      if (response.ok) {
+        const data = await response.json();
+        const apiStats = data.data;
 
-      const results = await Promise.all(statsPromises);
-      setStats(Object.fromEntries(results));
+        // Transform the API response to the format expected by the component
+        const statsMap: Record<string, CollectionStats> = {};
+
+        resumeCollections.forEach(collection => {
+          const collectionStats = apiStats[collection] || { total: 0, recent: 0 };
+          statsMap[collection] = {
+            total: collectionStats.total,
+            recent: collectionStats.recent || 0
+          };
+        });
+
+        setStats(statsMap);
+      } else {
+        logger.error('Failed to load resume stats');
+      }
     } catch (error) {
       logger.error('Failed to load resume stats:', error);
     } finally {
