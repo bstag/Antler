@@ -75,25 +75,44 @@ export class ConfigManager {
         lastModified: new Date().toISOString()
       };
 
+      // Sentinel: Setup DOMPurify lazily only when needed to avoid performance overhead
+      let domPurifyInstance: ReturnType<typeof createDOMPurify> | null = null;
+      const getDOMPurify = () => {
+        if (!domPurifyInstance) {
+          const window = new JSDOM('').window;
+          domPurifyInstance = createDOMPurify(window as any);
+
+          // Add a hook to remove potentially dangerous data: URIs in SVGs
+          // We explicitly allow data:image/ URIs for embedding safe base64 images
+          // but prevent execution of data:text/html or other dangerous payloads
+          domPurifyInstance.addHook('uponSanitizeAttribute', function (node, data) {
+            if (['href', 'xlink:href', 'src'].includes(data.attrName.toLowerCase())) {
+              const val = data.attrValue.trim().toLowerCase();
+              if (val.startsWith('data:') && !val.startsWith('data:image/')) {
+                data.keepAttr = false;
+              }
+            }
+          });
+        }
+        return domPurifyInstance;
+      };
+
       // Sentinel: Sanitize SVG logo content to prevent Stored XSS
       if (configToSave.customization?.logo?.type === 'svg' && configToSave.customization.logo.svgContent) {
-        // Initialize DOMPurify with JSDOM window for Node.js environment
-        const window = new JSDOM('').window;
-        const DOMPurify = createDOMPurify(window as any);
-        configToSave.customization.logo.svgContent = DOMPurify.sanitize(configToSave.customization.logo.svgContent);
+        const purifer = getDOMPurify();
+        configToSave.customization.logo.svgContent = purifer.sanitize(configToSave.customization.logo.svgContent);
       }
 
       // Sentinel: Sanitize custom social link icons to prevent Stored XSS
       if (Array.isArray(configToSave.customization?.social?.custom)) {
-        const window = new JSDOM('').window;
-        const DOMPurify = createDOMPurify(window as any);
-
         for (const socialLink of configToSave.customization.social.custom) {
           if (socialLink && typeof socialLink.icon === 'string') {
-            socialLink.icon = DOMPurify.sanitize(socialLink.icon);
+            const purifer = getDOMPurify();
+            socialLink.icon = purifer.sanitize(socialLink.icon);
           }
         }
       }
+
       await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(configToSave, null, 2), 'utf-8');
       this.cachedConfig = configToSave;
       

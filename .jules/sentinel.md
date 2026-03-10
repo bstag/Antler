@@ -24,3 +24,8 @@
 **Vulnerability:** The API endpoint `/api/theme/set-default` explicitly wrote user data to `site.config.json` via file system operations (`fs.writeFileSync`), bypassing centralized security validations and sanitization processes (like SVG XSS sanitization) implemented in `ConfigManager`.
 **Learning:** Bypassing established configuration management layers using direct file I/O undermines all application-level security mechanisms. A vulnerability patched in one place (e.g., SVG XSS in ConfigManager) can easily re-emerge if the secure path is circumvented.
 **Prevention:** Centralized configuration state management. Update endpoints (like `/api/theme/set-default`) to utilize the established `ConfigManager.updateConfig()` mechanism exclusively, and remove raw `fs` usage for configuration updates.
+
+## 2024-03-10 - [DOMPurify SVG data: URI Stored XSS Gap]
+**Vulnerability:** DOMPurify allows `data:` URLs inside `href`, `xlink:href`, and `src` attributes by default to support inline images in SVGs, meaning `data:text/html;base64,...` payloads can be executed as a Stored XSS vulnerability in specific contexts.
+**Learning:** `ALLOW_DATA_URI` doesn't restrict to `image/*` mimetypes alone. Any payload in a `data:` URI might bypass sanitization and execute JS if the browser interprets the link/source as HTML/SVG when accessed.
+**Prevention:** Always add a strict `uponSanitizeAttribute` hook to DOMPurify instances handling SVGs that enforces `data:` URLs explicitly start with `data:image/` (e.g. `data:image/png;base64,...`) and block everything else.
