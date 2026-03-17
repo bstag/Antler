@@ -312,12 +312,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
 
           <button
             onClick={loadStats}
-            aria-label="Refresh statistics"
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow group text-left"
           >
             <div className="flex items-center">
               <div className="p-2 admin-icon-box rounded-lg mr-3">
-                <svg className="w-5 h-5 admin-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 admin-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                         d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
