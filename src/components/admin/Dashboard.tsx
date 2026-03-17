@@ -312,6 +312,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ schemas }) => {
 
           <button
             onClick={loadStats}
+            aria-label="Refresh statistics"
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow group text-left"
           >
             <div className="flex items-center">
