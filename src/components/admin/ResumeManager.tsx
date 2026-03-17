@@ -281,10 +281,9 @@ export const ResumeManager: React.FC<ResumeManagerProps> = ({ schemas }) => {
           
           <button
             onClick={loadStats}
-            aria-label="Refresh statistics"
             className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
           >
-            <span className="text-2xl">🔄</span>
+            <span className="text-2xl" aria-hidden="true">🔄</span>
             <div>
               <div className="font-medium text-gray-900 dark:text-white">
                 Refresh Data
