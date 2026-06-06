@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import node from '@astrojs/node';
+import tailwindcss from '@tailwindcss/vite';
 import { unified } from '@astrojs/markdown-remark';
 import rehypeAddBaseUrl from './src/lib/rehype-add-base-url.mjs';
 
@@ -10,7 +10,6 @@ export default defineConfig({
   output: 'static',
 
   integrations: [
-    tailwind(),
     react()
   ],
 
@@ -34,6 +33,7 @@ export default defineConfig({
   },
 
   vite: {
+    plugins: [tailwindcss()],
     optimizeDeps: {
       exclude: ['supabase/supabase-js']
     }

@@ -185,9 +185,14 @@ const socialIcons: Record<string, string> = {
   </div>
 </footer>
 
-<style>
+<style is:global>
   .footer-link {
-    @apply text-gray-600 dark:text-gray-400 transition-colors duration-200;
+    color: var(--color-gray-600);
+    transition: color 0.2s ease-in-out;
+  }
+
+  :where(.dark, [data-theme="dark"]) .footer-link {
+    color: var(--color-gray-400);
   }
 
   .footer-link:hover {

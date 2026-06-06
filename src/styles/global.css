@@ -1,6 +1,726 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, [data-theme="dark"]));
+
+@theme {
+  /* Custom colors — overrides default Tailwind palette */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  /* Custom gray scale (Slate-based) */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+
+  /* Font family */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.6s ease-out;
+  --animate-slide-up: slideUp 0.6s ease-out;
+  --animate-scale-in: scaleIn 0.4s ease-out;
+
+  /* Typography plugin customization */
+  --prose-body: var(--color-text);
+  --prose-headings: var(--color-text);
+  --prose-links: var(--color-primary);
+  --prose-code: var(--color-text);
+  --prose-pre-bg: var(--color-surface);
+  --prose-max-width: none;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility btn {
+  /* Enhanced Component Class Library */
+
+  /* Button Components */
+  @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+@utility btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  &:active {
+    background-color: var(--color-primary-active);
+  }
+}
+
+@utility btn-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 hover:shadow-xs disabled:opacity-50 disabled:cursor-not-allowed;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-strong);
+  }
+
+  &:active {
+    background-color: var(--color-surface-active);
+  }
+}
+
+@utility btn-outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  @apply hover:shadow-xs focus:ring-blue-500;
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+  }
+}
+
+@utility btn-ghost {
+  background-color: transparent;
+  color: var(--color-text);
+  @apply hover:shadow-xs focus:ring-gray-500;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+}
+
+@utility btn-danger {
+  background-color: var(--color-error);
+  color: var(--color-text-on-primary);
+  @apply hover:shadow-md focus:ring-red-500;
+
+  &:hover {
+    background-color: var(--color-error-dark);
+  }
+}
+
+@utility btn-success {
+  background-color: var(--color-success);
+  color: var(--color-text-on-primary);
+  @apply hover:shadow-md focus:ring-green-500;
+
+  &:hover {
+    background-color: var(--color-success-dark);
+  }
+}
+
+@utility btn-sm {
+  /* Button Sizes */
+  @apply text-sm py-1.5 px-3;
+}
+
+@utility btn-lg {
+  @apply text-lg py-3 px-6;
+}
+
+@utility btn-xl {
+  @apply text-xl py-4 px-8;
+}
+
+@utility card {
+  /* Card Components */
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  @apply rounded-lg shadow-xs p-6;
+}
+
+@utility card-hover {
+  @apply card transition-all duration-200 hover:shadow-md;
+
+  &:hover {
+    box-shadow:
+      0 10px 15px -3px var(--color-shadow),
+      0 4px 6px -2px var(--color-shadow-light);
+    transform: translateY(-1px);
+  }
+}
+
+@utility card-interactive {
+  @apply card-hover cursor-pointer;
+
+  &:active {
+    transform: translateY(0);
+    box-shadow:
+      0 4px 6px -1px var(--color-shadow),
+      0 2px 4px -1px var(--color-shadow-light);
+  }
+}
+
+@utility card-header {
+  border-bottom: 1px solid var(--color-border);
+  @apply p-4 rounded-t-lg;
+}
+
+@utility card-body {
+  @apply p-4;
+}
+
+@utility card-footer {
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  @apply p-4 rounded-b-lg;
+}
+
+@utility prose-custom {
+  @apply prose prose-lg prose-gray dark:prose-invert max-w-none;
+
+  & h1 {
+    @apply text-3xl font-bold mb-4;
+  }
+
+  & h2 {
+    @apply text-2xl font-semibold mb-3 mt-8;
+  }
+
+  & h3 {
+    @apply text-xl font-medium mb-2 mt-6;
+  }
+
+  & p {
+    @apply mb-4 leading-relaxed;
+  }
+
+  & code {
+    @apply bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded-sm text-sm;
+  }
+
+  & pre {
+    @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto;
+  }
+}
+
+@utility nav-link {
+  /* Navigation Components */
+  color: var(--color-text-secondary);
+  @apply px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:no-underline;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  /* Navigation styles for React components */
+
+  &.active {
+    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+}
+
+@utility nav-link-active {
+  color: var(--color-primary);
+  @apply font-medium;
+}
+
+@utility nav-link-mobile {
+  @apply nav-link block py-2 px-4 rounded-md;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+}
+
+@utility form-input {
+  /* Form Components */
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  @apply w-full px-3 py-2 rounded-md transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+
+  &:focus {
+    border-color: var(--color-border-focus);
+  }
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+}
+
+@utility form-label {
+  color: var(--color-text);
+  @apply block text-sm font-medium mb-1;
+}
+
+@utility form-error {
+  color: var(--color-error);
+  @apply text-sm mt-1;
+}
+
+@utility form-help {
+  color: var(--color-text-muted);
+  @apply text-sm mt-1;
+}
+
+@utility badge {
+  /* Badge Components */
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+@utility badge-primary {
+  background-color: var(--color-primary-light);
+  color: var(--color-text-on-primary);
+}
+
+@utility badge-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+@utility badge-success {
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+@utility badge-error {
+  background-color: var(--color-error-light);
+  color: var(--color-error-dark);
+}
+
+@utility badge-warning {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+@utility badge-info {
+  background-color: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+@utility alert {
+  /* Alert Components */
+  @apply p-4 rounded-md border;
+}
+
+@utility alert-success {
+  background-color: var(--color-success-light);
+  border-color: var(--color-border-success);
+  color: var(--color-success-dark);
+}
+
+@utility alert-error {
+  background-color: var(--color-error-light);
+  border-color: var(--color-border-error);
+  color: var(--color-error-dark);
+}
+
+@utility alert-warning {
+  background-color: var(--color-warning-light);
+  border-color: var(--color-border-warning);
+  color: var(--color-warning-dark);
+}
+
+@utility alert-info {
+  background-color: var(--color-info-light);
+  border-color: var(--color-info);
+  color: var(--color-info-dark);
+}
+
+@utility text-primary {
+  /* Typography Components */
+  color: var(--color-primary);
+}
+
+@utility text-secondary {
+  color: var(--color-text-secondary);
+}
+
+@utility text-muted {
+  color: var(--color-text-muted);
+}
+
+@utility text-disabled {
+  color: var(--color-text-disabled);
+}
+
+@utility text-success {
+  color: var(--color-success);
+}
+
+@utility text-error {
+  color: var(--color-error);
+}
+
+@utility text-warning {
+  color: var(--color-warning);
+}
+
+@utility text-info {
+  color: var(--color-info);
+}
+
+@utility bg-primary {
+  /* Background Components */
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+@utility bg-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text-on-secondary);
+}
+
+@utility bg-surface {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+@utility bg-surface-elevated {
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text);
+}
+
+@utility border-primary {
+  /* Border Components */
+  border-color: var(--color-primary);
+}
+
+@utility border-secondary {
+  border-color: var(--color-border);
+}
+
+@utility border-strong {
+  border-color: var(--color-border-strong);
+}
+
+@utility border-light {
+  border-color: var(--color-border-light);
+}
+
+@utility focus-ring {
+  /* Focus Components */
+  @apply focus:outline-hidden focus:ring-2 focus:ring-offset-2;
+  --tw-ring-color: var(--color-border-focus);
+}
+
+@utility focus-ring-error {
+  @apply focus:outline-hidden focus:ring-2 focus:ring-offset-2;
+  --tw-ring-color: var(--color-error);
+}
+
+@utility focus-ring-success {
+  @apply focus:outline-hidden focus:ring-2 focus:ring-offset-2;
+  --tw-ring-color: var(--color-success);
+}
+
+@utility active {
+  /* Navigation styles for React components */
+
+  &.nav-link {
+    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+
+  &.mobile-nav-link {
+    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+
+  &.tab-button {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  &.toggle-switch {
+    background-color: var(--color-primary);
+  }
+}
+
+@utility mobile-nav-link {
+  @apply text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200;
+
+  &.active {
+    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+}
+
+@utility tab-button {
+  /* Admin interface styles */
+  @apply flex items-center px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200;
+
+  &.active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+
+@utility quick-action-btn {
+  @apply flex items-center justify-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200;
+}
+
+@utility template-card {
+  &:hover {
+    @apply transform scale-105;
+  }
+}
+
+@utility admin-welcome-banner {
+  /* Admin dashboard styles */
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+}
+
+@utility admin-welcome-text {
+  color: var(--color-primary-lighter);
+}
+
+@utility admin-resume-card {
+  background: linear-gradient(
+    to bottom right,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+}
+
+@utility admin-card-text {
+  color: var(--color-primary-lighter);
+}
+
+@utility admin-card-icon {
+  color: var(--color-primary-light);
+}
+
+@utility admin-link-hover {
+  @apply group-hover:text-primary;
+}
+
+@utility admin-link-icon-hover {
+  @apply group-hover:text-primary;
+}
+
+@utility admin-icon-box {
+  background-color: var(--color-primary-lighter);
+
+  :global(.dark) & {
+    background-color: var(--color-primary-darker);
+    opacity: 0.3;
+  }
+}
+
+@utility dark {
+  :global(&) .admin-icon-box {
+    background-color: var(--color-primary-darker);
+    opacity: 0.3;
+  }
+
+  :global(&) .admin-icon-svg {
+    color: var(--color-primary-light);
+  }
+
+  & .admin-nav-active {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light) !important;
+    border-right-color: var(--color-primary);
+    opacity: 0.8;
+  }
+
+  :global(&) .tag-input-tag {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light);
+    opacity: 0.8;
+  }
+
+  :global(&) .tag-input-remove:hover {
+    color: var(--color-primary-light);
+  }
+
+  :global(&) .keyboard-shortcuts-box {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light);
+    opacity: 0.8;
+  }
+
+  :global(&) .keyboard-shortcut-key {
+    background-color: var(--color-primary-dark);
+    color: var(--color-primary-lighter);
+  }
+
+  & .theme-card-active {
+    background-color: var(--color-primary-darker);
+    opacity: 0.9;
+  }
+}
+
+@utility admin-icon-svg {
+  color: var(--color-primary-dark);
+
+  :global(.dark) & {
+    color: var(--color-primary-light);
+  }
+}
+
+@utility admin-nav-active {
+  background-color: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+  border-right: 2px solid var(--color-primary);
+
+  .dark & {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light) !important;
+    border-right-color: var(--color-primary);
+    opacity: 0.8;
+  }
+}
+
+@utility form-checkbox {
+  /* Form Components - Additional Styles */
+  @apply h-4 w-4 border-gray-300 rounded-sm;
+  color: var(--color-primary);
+
+  &:focus {
+    --tw-ring-color: var(--color-primary);
+  }
+}
+
+@utility tag-input-wrapper {
+  /* Tag Input Component */
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  @apply rounded-md p-2 min-h-[42px];
+
+  &:focus-within {
+    border-color: var(--color-border-focus);
+    --tw-ring-color: var(--color-border-focus);
+    @apply ring-1;
+  }
+}
+
+@utility tag-input-tag {
+  background-color: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+  @apply inline-flex items-center px-2 py-1 rounded-md text-xs font-medium;
+
+  :global(.dark) & {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light);
+    opacity: 0.8;
+  }
+}
+
+@utility tag-input-remove {
+  color: var(--color-primary);
+  @apply ml-1 transition-colors;
+
+  &:hover {
+    color: var(--color-primary-dark);
+  }
+
+  :global(.dark) &:hover {
+    color: var(--color-primary-light);
+  }
+}
+
+@utility keyboard-shortcuts-box {
+  /* Keyboard Shortcuts Help */
+  background-color: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+  @apply rounded-lg p-4;
+
+  :global(.dark) & {
+    background-color: var(--color-primary-darker);
+    color: var(--color-primary-light);
+    opacity: 0.8;
+  }
+}
+
+@utility keyboard-shortcut-key {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-darker);
+  @apply px-1 py-0.5 rounded-sm text-xs;
+
+  :global(.dark) & {
+    background-color: var(--color-primary-dark);
+    color: var(--color-primary-lighter);
+  }
+}
+
+@utility toggle-switch {
+  /* Toggle Switch Components */
+  @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-hidden;
+  background-color: var(--color-surface-hover);
+
+  &:focus {
+    --tw-ring-color: var(--color-border-focus);
+    @apply ring-2 ring-offset-2;
+  }
+
+  &.active {
+    background-color: var(--color-primary);
+  }
+}
+
+@utility toggle-switch-sm {
+  @apply h-5 w-9;
+}
+
+@utility theme-card {
+  /* Theme Card Components */
+  border-color: var(--color-border);
+  background-color: var(--color-surface);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+}
+
+@utility theme-card-active {
+  border-color: var(--color-primary) !important;
+  background-color: var(--color-primary-lighter);
+
+  .dark & {
+    background-color: var(--color-primary-darker);
+    opacity: 0.9;
+  }
+}
+
+/* Animation utilities */
+@utility animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+@utility animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+@utility animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
 
 /* Theme colors are loaded from separate theme CSS files in src/styles/themes/ */
 /* This allows for swappable color schemes without changing this file */
@@ -30,592 +750,6 @@
   
   a:hover {
     color: var(--color-primary-light);
-  }
-}
-
-@layer components {
-  /* Enhanced Component Class Library */
-
-  /* Button Components */
-  .btn {
-    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .btn-primary {
-    background-color: var(--color-primary);
-    color: var(--color-text-on-primary);
-    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .btn-primary:hover {
-    background-color: var(--color-primary-hover);
-  }
-
-  .btn-primary:active {
-    background-color: var(--color-primary-active);
-  }
-
-  .btn-secondary {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .btn-secondary:hover {
-    background-color: var(--color-surface-hover);
-    border-color: var(--color-border-strong);
-  }
-
-  .btn-secondary:active {
-    background-color: var(--color-surface-active);
-  }
-
-  .btn-outline {
-    background-color: transparent;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-    @apply hover:shadow-sm focus:ring-blue-500;
-  }
-
-  .btn-outline:hover {
-    background-color: var(--color-primary);
-    color: var(--color-text-on-primary);
-  }
-
-  .btn-ghost {
-    background-color: transparent;
-    color: var(--color-text);
-    @apply hover:shadow-sm focus:ring-gray-500;
-  }
-
-  .btn-ghost:hover {
-    background-color: var(--color-surface-hover);
-  }
-
-  .btn-danger {
-    background-color: var(--color-error);
-    color: var(--color-text-on-primary);
-    @apply hover:shadow-md focus:ring-red-500;
-  }
-
-  .btn-danger:hover {
-    background-color: var(--color-error-dark);
-  }
-
-  .btn-success {
-    background-color: var(--color-success);
-    color: var(--color-text-on-primary);
-    @apply hover:shadow-md focus:ring-green-500;
-  }
-
-  .btn-success:hover {
-    background-color: var(--color-success-dark);
-  }
-
-  /* Button Sizes */
-  .btn-sm {
-    @apply text-sm py-1.5 px-3;
-  }
-
-  .btn-lg {
-    @apply text-lg py-3 px-6;
-  }
-
-  .btn-xl {
-    @apply text-xl py-4 px-8;
-  }
-
-  /* Card Components */
-  .card {
-    background-color: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    @apply rounded-lg shadow-sm p-6;
-  }
-
-  .card-hover {
-    @apply card transition-all duration-200 hover:shadow-md;
-  }
-
-  .card-hover:hover {
-    box-shadow: 0 10px 15px -3px var(--color-shadow), 0 4px 6px -2px var(--color-shadow-light);
-    transform: translateY(-1px);
-  }
-
-  .card-interactive {
-    @apply card-hover cursor-pointer;
-  }
-
-  .card-interactive:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 6px -1px var(--color-shadow), 0 2px 4px -1px var(--color-shadow-light);
-  }
-
-  .card-header {
-    border-bottom: 1px solid var(--color-border);
-    @apply p-4 rounded-t-lg;
-  }
-
-  .card-body {
-    @apply p-4;
-  }
-
-  .card-footer {
-    border-top: 1px solid var(--color-border);
-    background-color: var(--color-surface);
-    @apply p-4 rounded-b-lg;
-  }
-  
-  .prose-custom {
-    @apply prose prose-lg prose-gray dark:prose-invert max-w-none;
-  }
-  
-  .prose-custom h1 {
-    @apply text-3xl font-bold mb-4;
-  }
-  
-  .prose-custom h2 {
-    @apply text-2xl font-semibold mb-3 mt-8;
-  }
-  
-  .prose-custom h3 {
-    @apply text-xl font-medium mb-2 mt-6;
-  }
-  
-  .prose-custom p {
-    @apply mb-4 leading-relaxed;
-  }
-  
-  .prose-custom code {
-    @apply bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm;
-  }
-  
-  .prose-custom pre {
-    @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto;
-  }
-
-  /* Navigation Components */
-  .nav-link {
-    color: var(--color-text-secondary);
-    @apply px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:no-underline;
-  }
-
-  .nav-link:hover {
-    color: var(--color-primary);
-  }
-
-  .nav-link-active {
-    color: var(--color-primary);
-    @apply font-medium;
-  }
-
-  .nav-link-mobile {
-    @apply nav-link block py-2 px-4 rounded-md;
-  }
-
-  .nav-link-mobile:hover {
-    background-color: var(--color-surface-hover);
-  }
-
-  /* Form Components */
-  .form-input {
-    background-color: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    @apply w-full px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
-  }
-
-  .form-input:focus {
-    border-color: var(--color-border-focus);
-  }
-
-  .form-input::placeholder {
-    color: var(--color-text-muted);
-  }
-
-  .form-label {
-    color: var(--color-text);
-    @apply block text-sm font-medium mb-1;
-  }
-
-  .form-error {
-    color: var(--color-error);
-    @apply text-sm mt-1;
-  }
-
-  .form-help {
-    color: var(--color-text-muted);
-    @apply text-sm mt-1;
-  }
-
-  /* Badge Components */
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  .badge-primary {
-    background-color: var(--color-primary-light);
-    color: var(--color-text-on-primary);
-  }
-
-  .badge-secondary {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-  }
-
-  .badge-success {
-    background-color: var(--color-success-light);
-    color: var(--color-success-dark);
-  }
-
-  .badge-error {
-    background-color: var(--color-error-light);
-    color: var(--color-error-dark);
-  }
-
-  .badge-warning {
-    background-color: var(--color-warning-light);
-    color: var(--color-warning-dark);
-  }
-
-  .badge-info {
-    background-color: var(--color-info-light);
-    color: var(--color-info-dark);
-  }
-
-  /* Alert Components */
-  .alert {
-    @apply p-4 rounded-md border;
-  }
-
-  .alert-success {
-    background-color: var(--color-success-light);
-    border-color: var(--color-border-success);
-    color: var(--color-success-dark);
-  }
-
-  .alert-error {
-    background-color: var(--color-error-light);
-    border-color: var(--color-border-error);
-    color: var(--color-error-dark);
-  }
-
-  .alert-warning {
-    background-color: var(--color-warning-light);
-    border-color: var(--color-border-warning);
-    color: var(--color-warning-dark);
-  }
-
-  .alert-info {
-    background-color: var(--color-info-light);
-    border-color: var(--color-info);
-    color: var(--color-info-dark);
-  }
-
-  /* Typography Components */
-  .text-primary {
-    color: var(--color-primary);
-  }
-
-  .text-secondary {
-    color: var(--color-text-secondary);
-  }
-
-  .text-muted {
-    color: var(--color-text-muted);
-  }
-
-  .text-disabled {
-    color: var(--color-text-disabled);
-  }
-
-  .text-success {
-    color: var(--color-success);
-  }
-
-  .text-error {
-    color: var(--color-error);
-  }
-
-  .text-warning {
-    color: var(--color-warning);
-  }
-
-  .text-info {
-    color: var(--color-info);
-  }
-
-  /* Background Components */
-  .bg-primary {
-    background-color: var(--color-primary);
-    color: var(--color-text-on-primary);
-  }
-
-  .bg-secondary {
-    background-color: var(--color-secondary);
-    color: var(--color-text-on-secondary);
-  }
-
-  .bg-surface {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-  }
-
-  .bg-surface-elevated {
-    background-color: var(--color-surface-elevated);
-    color: var(--color-text);
-  }
-
-  /* Border Components */
-  .border-primary {
-    border-color: var(--color-primary);
-  }
-
-  .border-secondary {
-    border-color: var(--color-border);
-  }
-
-  .border-strong {
-    border-color: var(--color-border-strong);
-  }
-
-  .border-light {
-    border-color: var(--color-border-light);
-  }
-
-  /* Focus Components */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-    --tw-ring-color: var(--color-border-focus);
-  }
-
-  .focus-ring-error {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-    --tw-ring-color: var(--color-error);
-  }
-
-  .focus-ring-success {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-    --tw-ring-color: var(--color-success);
-  }
-
-  /* Navigation styles for React components */
-  
-  .nav-link.active {
-    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
-  }
-  
-  .mobile-nav-link {
-    @apply text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200;
-  }
-  
-  .mobile-nav-link.active {
-    @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
-  }
-
-  /* Admin interface styles */
-  .tab-button {
-    @apply flex items-center px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-200;
-  }
-
-  .tab-button.active {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-  }
-
-  .quick-action-btn {
-    @apply flex items-center justify-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200;
-  }
-
-  .template-card:hover {
-    @apply transform scale-105;
-  }
-
-  /* Admin dashboard styles */
-  .admin-welcome-banner {
-    background: linear-gradient(to right, var(--color-primary), var(--color-primary-dark));
-  }
-
-  .admin-welcome-text {
-    color: var(--color-primary-lighter);
-  }
-
-  .admin-resume-card {
-    background: linear-gradient(to bottom right, var(--color-primary), var(--color-primary-dark));
-  }
-
-  .admin-card-text {
-    color: var(--color-primary-lighter);
-  }
-
-  .admin-card-icon {
-    color: var(--color-primary-light);
-  }
-
-  .admin-link-hover {
-    @apply group-hover:text-primary;
-  }
-
-  .admin-link-icon-hover {
-    @apply group-hover:text-primary;
-  }
-
-  .admin-icon-box {
-    background-color: var(--color-primary-lighter);
-  }
-
-  :global(.dark) .admin-icon-box {
-    background-color: var(--color-primary-darker);
-    opacity: 0.3;
-  }
-
-  .admin-icon-svg {
-    color: var(--color-primary-dark);
-  }
-
-  :global(.dark) .admin-icon-svg {
-    color: var(--color-primary-light);
-  }
-
-  .admin-nav-active {
-    background-color: var(--color-primary-lighter);
-    color: var(--color-primary-dark);
-    border-right: 2px solid var(--color-primary);
-  }
-
-  .dark .admin-nav-active {
-    background-color: var(--color-primary-darker);
-    color: var(--color-primary-light) !important;
-    border-right-color: var(--color-primary);
-    opacity: 0.8;
-  }
-
-  /* Form Components - Additional Styles */
-  .form-checkbox {
-    @apply h-4 w-4 border-gray-300 rounded;
-    color: var(--color-primary);
-  }
-
-  .form-checkbox:focus {
-    --tw-ring-color: var(--color-primary);
-  }
-
-  /* Tag Input Component */
-  .tag-input-wrapper {
-    background-color: var(--color-surface-elevated);
-    border: 1px solid var(--color-border);
-    @apply rounded-md p-2 min-h-[42px];
-  }
-
-  .tag-input-wrapper:focus-within {
-    border-color: var(--color-border-focus);
-    --tw-ring-color: var(--color-border-focus);
-    @apply ring-1;
-  }
-
-  .tag-input-tag {
-    background-color: var(--color-primary-lighter);
-    color: var(--color-primary-dark);
-    @apply inline-flex items-center px-2 py-1 rounded-md text-xs font-medium;
-  }
-
-  :global(.dark) .tag-input-tag {
-    background-color: var(--color-primary-darker);
-    color: var(--color-primary-light);
-    opacity: 0.8;
-  }
-
-  .tag-input-remove {
-    color: var(--color-primary);
-    @apply ml-1 transition-colors;
-  }
-
-  .tag-input-remove:hover {
-    color: var(--color-primary-dark);
-  }
-
-  :global(.dark) .tag-input-remove:hover {
-    color: var(--color-primary-light);
-  }
-
-  /* Keyboard Shortcuts Help */
-  .keyboard-shortcuts-box {
-    background-color: var(--color-primary-lighter);
-    color: var(--color-primary-dark);
-    @apply rounded-lg p-4;
-  }
-
-  :global(.dark) .keyboard-shortcuts-box {
-    background-color: var(--color-primary-darker);
-    color: var(--color-primary-light);
-    opacity: 0.8;
-  }
-
-  .keyboard-shortcut-key {
-    background-color: var(--color-primary-light);
-    color: var(--color-primary-darker);
-    @apply px-1 py-0.5 rounded text-xs;
-  }
-
-  :global(.dark) .keyboard-shortcut-key {
-    background-color: var(--color-primary-dark);
-    color: var(--color-primary-lighter);
-  }
-
-  /* Toggle Switch Components */
-  .toggle-switch {
-    @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none;
-    background-color: var(--color-surface-hover);
-  }
-
-  .toggle-switch:focus {
-    --tw-ring-color: var(--color-border-focus);
-    @apply ring-2 ring-offset-2;
-  }
-
-  .toggle-switch.active {
-    background-color: var(--color-primary);
-  }
-
-  .toggle-switch-sm {
-    @apply h-5 w-9;
-  }
-
-  /* Theme Card Components */
-  .theme-card {
-    border-color: var(--color-border);
-    background-color: var(--color-surface);
-  }
-
-  .theme-card:hover {
-    border-color: var(--color-border-strong);
-  }
-
-  .theme-card-active {
-    border-color: var(--color-primary) !important;
-    background-color: var(--color-primary-lighter);
-  }
-
-  .dark .theme-card-active {
-    background-color: var(--color-primary-darker);
-    opacity: 0.9;
-  }
-}
-
-/* Animation utilities */
-@layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out;
-  }
-  
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
-  }
-  
-  .animate-scale-in {
-    animation: scaleIn 0.4s ease-out;
   }
 }
 
