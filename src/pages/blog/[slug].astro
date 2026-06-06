@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
@@ -8,13 +8,13 @@ import { withBaseAsset } from '../../lib/utils/base-url';
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 
 // Get all posts for navigation
 const allPosts = await getCollection('blog');
@@ -22,7 +22,7 @@ const sortedPosts = allPosts.sort((a, b) =>
   new Date(b.data.publicationDate).getTime() - new Date(a.data.publicationDate).getTime()
 );
 
-const currentIndex = sortedPosts.findIndex(p => p.slug === post.slug);
+const currentIndex = sortedPosts.findIndex(p => p.id === post.id);
 const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
@@ -122,7 +122,7 @@ const keywords = Array.isArray(post.data.keywords)
             <div class="group">
               <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Previous Article</p>
               <a
-                href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog/${prevPost.slug}`}
+                href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog/${prevPost.id}`}
                 class="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-slate-200 dark:border-slate-700"
               >
                 <h3 class="font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
@@ -139,7 +139,7 @@ const keywords = Array.isArray(post.data.keywords)
             <div class="group md:text-right">
               <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Next Article</p>
               <a
-                href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog/${nextPost.slug}`}
+                href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog/${nextPost.id}`}
                 class="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-slate-200 dark:border-slate-700"
               >
                 <h3 class="font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">

@@ -1,7 +1,9 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
+import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -16,7 +18,7 @@ const blog = defineCollection({
 });
 
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
     projectName: z.string(),
     projectImage: z.string(),
@@ -30,7 +32,7 @@ const projects = defineCollection({
 });
 
 const docs = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/docs' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -40,9 +42,9 @@ const docs = defineCollection({
   }),
 });
 
-// Resume Collections - Separate collections for each resume section
+// Resume Collections
 const resumePersonal = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumePersonal' }),
   schema: z.object({
     name: z.string(),
     title: z.string(),
@@ -58,7 +60,7 @@ const resumePersonal = defineCollection({
 });
 
 const resumeExperience = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumeExperience' }),
   schema: z.object({
     title: z.string(),
     company: z.string(),
@@ -73,7 +75,7 @@ const resumeExperience = defineCollection({
 });
 
 const resumeEducation = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumeEducation' }),
   schema: z.object({
     degree: z.string(),
     school: z.string(),
@@ -87,7 +89,7 @@ const resumeEducation = defineCollection({
 });
 
 const resumeCertifications = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumeCertifications' }),
   schema: z.object({
     name: z.string(),
     issuer: z.string(),
@@ -100,7 +102,7 @@ const resumeCertifications = defineCollection({
 });
 
 const resumeSkills = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumeSkills' }),
   schema: z.object({
     category: z.string(),
     skills: z.array(z.string()),
@@ -109,7 +111,7 @@ const resumeSkills = defineCollection({
 });
 
 const resumeLanguages = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumeLanguages' }),
   schema: z.object({
     name: z.string(),
     proficiency: z.string(),
@@ -118,7 +120,7 @@ const resumeLanguages = defineCollection({
 });
 
 const resumeProjects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resumeProjects' }),
   schema: z.object({
     name: z.string(),
     description: z.string(),

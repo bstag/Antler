@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
@@ -7,13 +7,13 @@ import ConditionalRoute from '../../components/ConditionalRoute.astro';
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
   return docs.map((doc) => ({
-    params: { slug: doc.slug },
+    params: { slug: doc.id },
     props: { doc },
   }));
 }
 
 const { doc } = Astro.props;
-const { Content } = await doc.render();
+const { Content } = await render(doc);
 
 // Get all docs for navigation
 const allDocs = await getCollection('docs');
@@ -30,7 +30,7 @@ const groupedDocs = sortedDocs.reduce((acc, docItem) => {
 }, {} as Record<string, typeof allDocs>);
 
 // Find current doc index for navigation
-const currentIndex = sortedDocs.findIndex(d => d.slug === doc.slug);
+const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 const prevDoc = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
 const nextDoc = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
 
@@ -78,9 +78,9 @@ const keywords = doc.data.keywords;
                         {docs.map(docItem => (
                           <li>
                             <a
-                              href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/docs/${docItem.slug}`}
+                              href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/docs/${docItem.id}`}
                               class={`block px-3 py-2 text-sm rounded-lg transition-colors ${
-                                docItem.slug === doc.slug
+                                docItem.id === doc.id
                                   ? 'nav-item-active font-medium'
                                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
                               }`}
@@ -139,7 +139,7 @@ const keywords = doc.data.keywords;
                 <div class="flex flex-col sm:flex-row justify-between gap-4">
                   {prevDoc ? (
                     <a 
-                      href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/docs/${prevDoc.slug}`}
+                      href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/docs/${prevDoc.id}`}
                       class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow group"
                     >
                       <svg class="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ const keywords = doc.data.keywords;
 
                   {nextDoc && (
                     <a 
-                      href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/docs/${nextDoc.slug}`}
+                      href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/docs/${nextDoc.id}`}
                       class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow group text-right"
                     >
                       <div>

@@ -19,11 +19,18 @@ vi.mock('astro:content', () => ({
 }));
 
 // Mock config to ensure we have a known set of collections
-vi.mock('../../../../content/config', () => ({
+vi.mock('../../../../content.config', () => ({
   collections: {
     blog: {},
     projects: {},
-    docs: {}
+    docs: {},
+    resumePersonal: {},
+    resumeExperience: {},
+    resumeEducation: {},
+    resumeCertifications: {},
+    resumeSkills: {},
+    resumeLanguages: {},
+    resumeProjects: {}
   }
 }));
 
@@ -52,7 +59,14 @@ describe('Admin API - Stats Endpoint', () => {
     expect(body.data).toEqual({
       blog: { total: 5, recent: 0, featured: 0 },
       projects: { total: 3, recent: 0, featured: 0 },
-      docs: { total: 10, recent: 0, featured: 0 }
+      docs: { total: 10, recent: 0, featured: 0 },
+      resumePersonal: { total: 0, recent: 0, featured: 0 },
+      resumeExperience: { total: 0, recent: 0, featured: 0 },
+      resumeEducation: { total: 0, recent: 0, featured: 0 },
+      resumeCertifications: { total: 0, recent: 0, featured: 0 },
+      resumeSkills: { total: 0, recent: 0, featured: 0 },
+      resumeLanguages: { total: 0, recent: 0, featured: 0 },
+      resumeProjects: { total: 0, recent: 0, featured: 0 }
     });
   });
 
