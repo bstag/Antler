@@ -14,6 +14,7 @@ const ResumeManager = lazy(() => import('./ResumeManager').then(module => ({ def
 const ResumeLayout = lazy(() => import('./ResumeLayout').then(module => ({ default: module.ResumeLayout })));
 const SiteConfiguration = lazy(() => import('./SiteConfiguration').then(module => ({ default: module.SiteConfiguration })));
 const ThemeManager = lazy(() => import('./ThemeManager').then(module => ({ default: module.ThemeManager })));
+const PublishManager = lazy(() => import('./PublishManager').then(module => ({ default: module.PublishManager })));
 
 // Global styles for admin interface
 const adminStyles = `
@@ -192,6 +193,7 @@ const AdminApp: React.FC<AdminAppProps> = () => {
                 <Route path="/files" element={<FileManager />} />
                 <Route path="/theme-settings" element={<ThemeManager />} />
                 <Route path="/site-config" element={<SiteConfiguration />} />
+                <Route path="/publish" element={<PublishManager />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>

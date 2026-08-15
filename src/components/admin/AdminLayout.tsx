@@ -185,6 +185,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, schemas }) =
                   {sidebarOpen && 'Site Configuration'}
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/publish"
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive('/publish')
+                      ? 'admin-nav-active'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <span className="text-lg mr-3">🚀</span>
+                  {sidebarOpen && 'Publish & Deploy'}
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>
