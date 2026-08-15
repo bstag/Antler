@@ -6,9 +6,20 @@ import matter from 'gray-matter';
 import { logger } from '../../../../../lib/utils/logger';
 import { resolveSafePath, validateCollection } from '../../../../../lib/file-security';
 
-export const prerender = false;
+export async function getStaticPaths() {
+  return [];
+}
 
 export const GET: APIRoute = async ({ params }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   const { collection, id } = params;
 
   if (!collection || !id) {
@@ -87,6 +98,15 @@ export const GET: APIRoute = async ({ params }) => {
 };
 
 export const PUT: APIRoute = async ({ params, request }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   const { collection, id } = params;
 
   if (!collection || !id) {

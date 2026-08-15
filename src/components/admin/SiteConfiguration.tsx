@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import { configClient } from '../../lib/config/client';
 import type { SiteConfig, SiteTemplate, HeroConfig, HeroAction, HeroFeature } from '../../types/config';
 import { logger } from '../../lib/utils/logger';
+import { IconPicker } from './IconPicker';
 
 interface SiteConfigurationProps {}
 
@@ -640,7 +641,7 @@ const NavigationTab: React.FC<{
 
               {/* Content form */}
               <div className="p-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Label
@@ -649,7 +650,7 @@ const NavigationTab: React.FC<{
                       type="text"
                       value={item?.label || ''}
                       onChange={(e) => updateItem(index, 'label', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
                       placeholder="Navigation label"
                     />
                   </div>
@@ -661,8 +662,15 @@ const NavigationTab: React.FC<{
                       type="text"
                       value={item?.href || ''}
                       onChange={(e) => updateItem(index, 'href', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
                       placeholder="/page-url"
+                    />
+                  </div>
+                  <div>
+                    <IconPicker
+                      label="Icon"
+                      value={item?.icon || ''}
+                      onChange={(val) => updateItem(index, 'icon', val)}
                     />
                   </div>
                 </div>
@@ -901,15 +909,10 @@ const HeroTab: React.FC<{
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Badge Icon (Lucide Icon Name)
-              </label>
-              <input
-                type="text"
+              <IconPicker
+                label="Badge Icon"
                 value={hero.badge.icon}
-                onChange={(e) => updateHero('badge.icon', e.target.value)}
-                className="form-input w-full"
-                placeholder="Zap"
+                onChange={(val) => updateHero('badge.icon', val)}
               />
             </div>
           </div>
@@ -944,13 +947,10 @@ const HeroTab: React.FC<{
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Icon</label>
-                <input
-                  type="text"
+                <IconPicker
+                  label="Icon"
                   value={hero.actions.primary.icon || ''}
-                  onChange={(e) => updateHero('actions.primary.icon', e.target.value)}
-                  className="form-input w-full text-sm"
-                  placeholder="ArrowRight"
+                  onChange={(val) => updateHero('actions.primary.icon', val)}
                 />
               </div>
             </div>
@@ -979,13 +979,10 @@ const HeroTab: React.FC<{
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Icon</label>
-                <input
-                  type="text"
+                <IconPicker
+                  label="Icon"
                   value={hero.actions.secondary.icon || ''}
-                  onChange={(e) => updateHero('actions.secondary.icon', e.target.value || null)}
-                  className="form-input w-full text-sm"
-                  placeholder="(Optional)"
+                  onChange={(val) => updateHero('actions.secondary.icon', val || null)}
                 />
               </div>
             </div>
@@ -1012,12 +1009,10 @@ const HeroTab: React.FC<{
                     />
                   </div>
                   <div className="md:col-span-1">
-                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Icon</label>
-                    <input
-                      type="text"
+                    <IconPicker
+                      label="Icon"
                       value={feature.icon}
-                      onChange={(e) => updateFeature(index, 'icon', e.target.value)}
-                      className="form-input w-full text-sm"
+                      onChange={(val) => updateFeature(index, 'icon', val)}
                     />
                   </div>
                   <div className="md:col-span-1">

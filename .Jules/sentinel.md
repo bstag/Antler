@@ -1,4 +1,31 @@
-## 2024-05-23 - [SSR vs Static Security Nuance]
-**Vulnerability:** Admin interface exposed in production without auth if SSR adapter is used.
-**Learning:** Even with 'output: static', 'prerender = false' routes with an adapter enable SSR. User belief of 'local only' is fragile.
-**Prevention:** Defense in Depth: Secure the routes via middleware regardless of deployment target. Use opt-in config to avoid breaking static workflow.
+## 2025-02-05 - Path Traversal Vulnerability in File API
+**Vulnerability:** The Admin File API (list and upload endpoints) blindly accepted the `directory` query parameter and used it to construct file paths without validation, allowing path traversal (e.g., `directory=../../etc`).
+**Learning:** Even internal admin tools must sanitize file paths. Relying on the assumption that only trusted users will access the API is insufficient.
+**Prevention:** Created a centralized `resolveSafePath` utility that verifies the resolved path is within the intended root directory using `path.resolve` and `startsWith`.
+
+## 2025-02-06 - Stored XSS via SVG Upload
+**Vulnerability:** The Admin File Upload API allowed uploading `.svg` files (MIME `image/svg+xml`). SVGs can contain executable JavaScript which executes when viewed in a browser. Since uploads are served from the same domain, this created a Stored XSS vulnerability.
+**Learning:** File upload restrictions must consider not just "executable" extensions (like .php, .exe) but also client-side executable formats like SVG. Content-Type validation alone is insufficient; context (viewing in browser) matters.
+**Prevention:** Removed `image/svg+xml` from the allowed file types in the upload endpoint. SVG usage should be restricted to sanitized inputs or text-based configuration where possible.
+
+## 2024-05-22 - Path Traversal in Admin Content API
+**Vulnerability:** The Admin API content endpoints (`GET`, `POST`, `PUT`, `DELETE` in `src/pages/admin/api/content/[collection].ts` and `[collection]/[id].ts`) accepted raw `collection` and `id` parameters which were directly concatenated into file paths. This allowed path traversal (e.g., `collection=../../`).
+**Learning:** Even when using higher-level abstractions like Astro's `getCollection`, manual file system operations in API endpoints must always validate and sanitize user inputs against a whitelist or use secure path resolution helpers.
+**Prevention:**
+1.  Implemented `validateCollection` in `src/lib/file-security.ts` to enforce a strict whitelist regex (`^[a-zA-Z0-9_-]+$`).
+2.  Used `resolveSafePath` for all file operations to ensure the resolved path stays within the intended root directory.
+
+## 2025-02-06 - Stored XSS in Site Configuration (SVG Logo)
+**Vulnerability:** The Admin Site Configuration API allowed saving raw SVG content for the site logo (\`config.customization.logo.svgContent\`). This content was rendered unsanitized on the public site using \`set:html\`, allowing Stored XSS if an admin (or compromised account) injected malicious scripts.
+**Learning:** Configuration values that are rendered as raw HTML must be sanitized, even if they originate from a trusted admin interface. "Trusted user" models fail if accounts are compromised or CSRF exists.
+**Prevention:** Implemented server-side sanitization using \`DOMPurify\` (with \`jsdom\`) in \`ConfigManager.saveConfig\` to strip malicious scripts from SVG content before saving.
+
+## 2025-02-06 - Bypass of Security Controls via Direct File Write
+**Vulnerability:** The API endpoint `/api/theme/set-default` explicitly wrote user data to `site.config.json` via file system operations (`fs.writeFileSync`), bypassing centralized security validations and sanitization processes (like SVG XSS sanitization) implemented in `ConfigManager`.
+**Learning:** Bypassing established configuration management layers using direct file I/O undermines all application-level security mechanisms. A vulnerability patched in one place (e.g., SVG XSS in ConfigManager) can easily re-emerge if the secure path is circumvented.
+**Prevention:** Centralized configuration state management. Update endpoints (like `/api/theme/set-default`) to utilize the established `ConfigManager.updateConfig()` mechanism exclusively, and remove raw `fs` usage for configuration updates.
+
+## 2024-03-10 - [DOMPurify SVG data: URI Stored XSS Gap]
+**Vulnerability:** DOMPurify allows `data:` URLs inside `href`, `xlink:href`, and `src` attributes by default to support inline images in SVGs, meaning `data:text/html;base64,...` payloads can be executed as a Stored XSS vulnerability in specific contexts.
+**Learning:** `ALLOW_DATA_URI` doesn't restrict to `image/*` mimetypes alone. Any payload in a `data:` URI might bypass sanitization and execute JS if the browser interprets the link/source as HTML/SVG when accessed.
+**Prevention:** Always add a strict `uponSanitizeAttribute` hook to DOMPurify instances handling SVGs that enforces `data:` URLs explicitly start with `data:image/` (e.g. `data:image/png;base64,...`) and block everything else.

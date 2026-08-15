@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Contact form', () => {
-  test('Submits via serverless fallback with interception', async ({ page }) => {
+  test('Submits via serverless fallback with interception', async ({ page, request }) => {
     await page.route(
       '**/functions/contact', 
       async route => {
@@ -13,9 +13,9 @@ test.describe('Contact form', () => {
       }
     )
 
-    const check = await request.get('http://localhost:4321/Antler/contact')
+    const check = await request.get('/contact')
     expect(check.status()).toBe(200)
-    await page.goto('/Antler/contact', { waitUntil: 'domcontentloaded' })
+    await page.goto('/contact', { waitUntil: 'domcontentloaded' })
     await page.fill('#name', 'Test User')
     await page.fill('#email', 'test@example.com')
     await page.fill('#subject', 'Testing')

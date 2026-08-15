@@ -6,9 +6,21 @@ import matter from 'gray-matter';
 import { generateSlug } from '../../../../lib/utils/slug';
 import { resolveSafePath, validateCollection } from '../../../../lib/file-security';
 
-export const prerender = false;
+export async function getStaticPaths() {
+  return [];
+}
 
 export const GET: APIRoute = async ({ params, url }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   const { collection } = params;
   const searchParams = url.searchParams;
   const page = parseInt(searchParams.get('page') || '1');
@@ -93,6 +105,16 @@ export const GET: APIRoute = async ({ params, url }) => {
 };
 
 export const POST: APIRoute = async ({ params, request }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   const { collection } = params;
 
   if (!collection) {
@@ -163,6 +185,16 @@ export const POST: APIRoute = async ({ params, request }) => {
 };
 
 export const PUT: APIRoute = async ({ params, request }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   const { collection } = params;
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
@@ -225,6 +257,16 @@ export const PUT: APIRoute = async ({ params, request }) => {
 };
 
 export const DELETE: APIRoute = async ({ params, request }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   const { collection } = params;
   const url = new URL(request.url);
   const id = url.searchParams.get('id');

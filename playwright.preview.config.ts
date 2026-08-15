@@ -3,12 +3,16 @@ import fs from 'fs'
 
 const raw = fs.readFileSync('site.config.json', 'utf-8')
 const siteConfig = JSON.parse(raw)
-const basePath = siteConfig?.customization?.urls?.basePath || ''
+const basePath = process.env.BASE_PATH || ''
 const baseURL = `http://localhost:4321${basePath}`
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  testMatch: ['tests/e2e/preview-*.spec.ts'],
+  testMatch: [
+    'tests/e2e/preview-*.spec.ts',
+    'tests/e2e/custom-deploy-preview.spec.ts',
+    'tests/e2e/site-sections-customization.spec.ts'
+  ],
   fullyParallel: false,
   workers: 1,
   reporter: [
@@ -24,7 +28,7 @@ export default defineConfig({
   webServer: {
     command: 'npm run preview',
     url: baseURL,
-    reuseExistingServer: false,
+    reuseExistingServer: true,
     timeout: 120000
   },
   projects: [

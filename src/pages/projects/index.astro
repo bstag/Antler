@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import ConditionalRoute from '../../components/ConditionalRoute.astro';
 import { withBaseAsset } from '../../lib/utils/base-url';
+import { getSiteConfig } from '../../lib/config/static';
 
 const allProjects: CollectionEntry<'projects'>[] = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => 
@@ -13,22 +14,27 @@ const sortedProjects = allProjects.sort((a, b) =>
 // Get all unique technologies
 const allTechnologies: string[] = [...new Set(allProjects.flatMap(project => project.data.technologies))];
 
-const title = 'Projects';
-const description = 'Explore my portfolio of web development projects and technical achievements.';
+// Get SEO config
+const config = await getSiteConfig();
+const pageSEO = config.customization?.pages?.projects || {};
+const title = pageSEO.title || 'Projects';
+const description = pageSEO.description || 'Explore my portfolio of web development projects and technical achievements.';
+const image = pageSEO.image;
+const keywords = pageSEO.keywords || [];
 ---
 
 <ConditionalRoute contentTypeId="projects">
-  <BaseLayout title={title} description={description}>
+  <BaseLayout title={title} description={description} image={image} keywords={keywords}>
     <Header />
     <main class="min-h-screen bg-surface">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-          Projects
+          {title}
         </h1>
         <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-          A showcase of my technical projects, from web applications to open-source contributions
+          {description}
         </p>
       </div>
 

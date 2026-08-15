@@ -9,32 +9,32 @@ test.describe('Resume-only mode', () => {
   })
 
   test('Routes enabled/disabled as expected', async ({ request, page }) => {
-    const home = await request.get('http://localhost:4321/Antler/')
+    const home = await request.get('/')
     expect(home.status()).toBe(200)
 
-    const resume = await request.get('http://localhost:4321/Antler/resume')
+    const resume = await request.get('/resume')
     expect(resume.status()).toBe(200)
 
-    const contact = await request.get('http://localhost:4321/Antler/contact')
+    const contact = await request.get('/contact')
     expect(contact.status()).toBe(200)
 
-    const blog = await request.get('http://localhost:4321/Antler/blog')
+    const blog = await request.get('/blog')
     expect(blog.status()).toBe(404)
 
-    const proj = await request.get('http://localhost:4321/Antler/projects')
+    const proj = await request.get('/projects')
     expect(proj.status()).toBe(404)
 
-    const docs = await request.get('http://localhost:4321/Antler/docs')
+    const docs = await request.get('/docs')
     expect(docs.status()).toBe(404)
 
-    await page.goto('/Antler/', { waitUntil: 'domcontentloaded' })
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
     await page.screenshot({ path: 'test-results/e2e/resume-home.png', fullPage: true })
   })
 
   test('Resume page loads', async ({ request, page }) => {
-    const response = await request.get('http://localhost:4321/Antler/resume')
+    const response = await request.get('/resume')
     expect(response.status()).toBe(200)
-    await page.goto('/Antler/resume', { waitUntil: 'domcontentloaded' })
+    await page.goto('/resume', { waitUntil: 'domcontentloaded' })
     await page.screenshot({ path: 'test-results/e2e/resume-page.png', fullPage: true })
   })
 })

@@ -8,7 +8,7 @@ test.describe('Slug 404 checks', () => {
       '/docs/not-a-real-doc'
     ]
     for (const path of routes) {
-      const resp = await request.get(`http://localhost:4321/Antler${path}`)
+      const resp = await request.get(path)
       expect(resp.status()).toBe(404)
     }
   })

@@ -3,7 +3,7 @@ import fs from 'fs'
 
 const raw = fs.readFileSync('site.config.json', 'utf-8')
 const siteConfig = JSON.parse(raw)
-const basePath = siteConfig?.customization?.urls?.basePath || ''
+const basePath = process.env.BASE_PATH || ''
 const baseURL = `http://localhost:4321${basePath}`
 
 export default defineConfig({
@@ -23,7 +23,7 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev',
     url: baseURL,
-    reuseExistingServer: false,
+    reuseExistingServer: true,
     timeout: 120000
   },
   projects: [

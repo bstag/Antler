@@ -11,6 +11,14 @@ export const authMiddleware: MiddlewareHandler = async (context, next) => {
                           startsWithBase(url.pathname, '/api/config') ||
                           startsWithBase(url.pathname, '/api/theme');
 
+  // In production mode, admin interface and APIs are strictly disabled
+  if (isProtectedPath && !isDev()) {
+    return new Response(null, {
+      status: 404,
+      statusText: 'Not Found'
+    });
+  }
+
   // If no password configured, proceed
   // In a real production environment, we might want to default to denying access,
   // but to avoid breaking existing deployments that haven't set the env var yet,

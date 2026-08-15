@@ -9,17 +9,21 @@ test.describe('Preview build pages', () => {
     const disabled = config.contentTypes.filter((ct: any) => !ct.enabled)
 
     // Root should always be 200
-    const root = await request.get('http://localhost:4321/Antler/')
+    const root = await request.get('/')
     expect(root.status()).toBe(200)
 
     for (const ct of enabled) {
-      const resp = await request.get(`http://localhost:4321/Antler${ct.route}`)
+      const resp = await request.get(ct.route)
       expect(resp.status()).toBe(200)
     }
 
     for (const ct of disabled) {
-      const resp = await request.get(`http://localhost:4321/Antler${ct.route}`)
+      const resp = await request.get(ct.route)
       expect(resp.status()).toBe(404)
     }
+
+    // Admin interface should strictly return 404 in production static preview
+    const admin = await request.get('/admin')
+    expect(admin.status()).toBe(404)
   })
 })

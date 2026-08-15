@@ -16,12 +16,12 @@ test.describe('Blog tag filter', () => {
       publicationDate: new Date().toISOString(),
       tags: ['e2e-tag']
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/blog', {
+    await request.post('/admin/api/content/blog', {
       data: { frontmatter, content: 'Body' }
     })
 
     // Navigate and click tag button
-    await page.goto('/Antler/blog', { waitUntil: 'domcontentloaded' })
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' })
     const tagButton = page.locator('button.tag-filter', { hasText: 'e2e-tag' })
     await tagButton.click({ force: true })
 

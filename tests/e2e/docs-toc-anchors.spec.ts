@@ -11,7 +11,7 @@ test.describe('Docs TOC and anchors', () => {
     if (test.info().project.name !== 'documentation') test.skip()
     const fm = { title: 'E2E Anchor Doc', description: 'Anchors', group: 'Guides', order: 2 }
     const md = '## Section 1\n\n[Go to Section 2](#section-2)\n\n## Section 2\n\nEnd'
-    const create = await request.post('http://localhost:4321/Antler/admin/api/content/docs', {
+    const create = await request.post('/admin/api/content/docs', {
       data: { frontmatter: fm, content: md }
     })
     expect(create.status()).toBe(201)
@@ -21,13 +21,13 @@ test.describe('Docs TOC and anchors', () => {
 
     let ok = false
     for (let i = 0; i < 20; i++) {
-      const resp = await request.get(`http://localhost:4321/Antler/docs/${slug}`)
+      const resp = await request.get(`/docs/${slug}`)
       if (resp.status() === 200) { ok = true; break }
       await new Promise(r => setTimeout(r, 500))
     }
     expect(ok).toBeTruthy()
 
-    await page.goto(`/Antler/docs/${slug}`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`/docs/${slug}`, { waitUntil: 'domcontentloaded' })
     const link = page.locator('a[href="#section-2"]')
     await expect(link).toBeVisible()
     await link.click()

@@ -18,11 +18,11 @@ for (const mode of modes) {
 
     test('Enabled routes return 200; disabled return 404', async ({ request }) => {
       for (const path of mode.enabled) {
-        const resp = await request.get(`http://localhost:4321/Antler${path}`)
+        const resp = await request.get(path)
         expect(resp.status()).toBe(200)
       }
       for (const path of mode.disabled) {
-        const resp = await request.get(`http://localhost:4321/Antler${path}`)
+        const resp = await request.get(path)
         expect(resp.status()).toBe(404)
       }
     })

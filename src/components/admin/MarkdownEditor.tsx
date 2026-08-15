@@ -11,7 +11,12 @@ import {
   Heading3,
   List,
   ListOrdered,
-  Quote
+  Quote,
+  Image,
+  Columns,
+  Eye,
+  Edit3,
+  UploadCloud
 } from 'lucide-react';
 
 interface MarkdownEditorProps {
@@ -25,10 +30,13 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
   onChange,
   placeholder = 'Write your content here...'
 }) => {
-  const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
+  const [activeTab, setActiveTab] = useState<'edit' | 'split' | 'preview'>('edit');
   const [previewHtml, setPreviewHtml] = useState('');
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -39,9 +47,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
     }
   }, [value]);
 
-  // Generate preview when switching to preview tab
+  // Generate preview when switching tab or when value changes in split mode
   useEffect(() => {
-    if (activeTab === 'preview') {
+    if (activeTab === 'preview' || activeTab === 'split') {
       generatePreview();
     }
   }, [activeTab, value]);
@@ -54,8 +62,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
 
     setIsPreviewLoading(true);
     try {
-      // Simple markdown to HTML conversion
-      // In a real implementation, you might want to use a proper markdown parser
       let html = value
         // Headers
         .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold mt-6 mb-3">$1</h3>')
@@ -66,38 +72,34 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
         // Code blocks
-        .replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-100 rounded p-4 overflow-x-auto my-4"><code>$1</code></pre>')
-        .replace(/`(.*?)`/g, '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">$1</code>')
+        .replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-100 dark:bg-gray-900 rounded p-4 overflow-x-auto my-4 text-sm font-mono"><code>$1</code></pre>')
+        .replace(/`(.*?)`/g, '<code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono">$1</code>')
         // Links
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline">$1</a>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline" target="_blank" rel="noopener noreferrer">$1</a>')
         // Images
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded my-4" />')
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded my-4 shadow" />')
         // Lists
         .replace(/^\* (.*$)/gim, '<li class="ml-4">$1</li>')
         .replace(/^- (.*$)/gim, '<li class="ml-4">$1</li>')
         .replace(/^\d+\. (.*$)/gim, '<li class="ml-4">$1</li>')
         // Blockquotes
-        .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-gray-300 pl-4 italic my-4">$1</blockquote>')
+        .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-primary pl-4 italic my-4 text-gray-600 dark:text-gray-400">$1</blockquote>')
         // Line breaks
         .replace(/\n\n/g, '</p><p class="mb-4">')
         .replace(/\n/g, '<br>');
 
-      // Wrap in paragraphs
       html = '<p class="mb-4">' + html + '</p>';
 
-      // Clean up empty paragraphs and fix list wrapping
       html = html
         .replace(/<p class="mb-4"><\/p>/g, '')
         .replace(/(<li class="ml-4">.*?<\/li>)/g, (match) => {
           return match.replace(/<\/?p[^>]*>/g, '');
         });
 
-      // Wrap consecutive list items in ul tags
       html = html.replace(/(<li class="ml-4">.*?<\/li>)(\s*<li class="ml-4">.*?<\/li>)*/g, (match) => {
-        return '<ul class="list-disc list-inside my-4">' + match + '</ul>';
+        return '<ul class="list-disc list-inside my-4 space-y-1">' + match + '</ul>';
       });
 
-      // Sentinel: Sanitize HTML to prevent XSS
       const cleanHtml = DOMPurify.sanitize(html);
       setPreviewHtml(cleanHtml);
     } catch (error) {
@@ -115,24 +117,86 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
 
-    // Optimization: Read from textarea.value so we don't need to depend on the value prop.
-    // If value were included in the useCallback dependency array, this function would be
-    // recreated on every keystroke, defeating the purpose of memoizing it.
     const val = textarea.value;
     const selectedText = val.substring(start, end);
     const newText = val.substring(0, start) + before + selectedText + after + val.substring(end);
     
     onChange(newText);
     
-    // Restore cursor position
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(start + before.length, end + before.length);
     }, 0);
   }, [onChange]);
 
+  // Upload an image file and insert markdown image tag
+  const uploadImageFile = useCallback(async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file (PNG, JPG, SVG, WebP, GIF)');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('directory', 'images');
+
+      const response = await fetch('/admin/api/files/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed with status ${response.status}`);
+      }
+
+      const result = await response.json();
+      const imagePath = result?.data?.path || `/images/${file.name}`;
+      const altText = file.name.replace(/\.[^/.]+$/, '');
+      
+      insertText(`![${altText}](${imagePath})`);
+    } catch (err) {
+      logger.error('Failed to upload image:', err);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  }, [insertText]);
+
+  // Handle Drag and Drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        await uploadImageFile(file);
+      }
+    }
+  };
+
+  // Handle Clipboard Paste
+  const handlePaste = async (e: React.ClipboardEvent) => {
+    if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+      const file = e.clipboardData.files[0];
+      if (file.type.startsWith('image/')) {
+        e.preventDefault();
+        await uploadImageFile(file);
+      }
+    }
+  };
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    // Handle keyboard shortcuts
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
         case 'b':
@@ -150,7 +214,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
       }
     }
 
-    // Handle tab for indentation
     if (e.key === 'Tab') {
       e.preventDefault();
       insertText('  ');
@@ -175,6 +238,12 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
       icon: <Link className="w-4 h-4" />,
       action: () => insertText('[', '](url)'),
       shortcut: 'Ctrl+K'
+    },
+    {
+      label: 'Image',
+      icon: <Image className="w-4 h-4" />,
+      action: () => fileInputRef.current?.click(),
+      shortcut: 'Upload Image'
     },
     {
       label: 'Code',
@@ -222,77 +291,166 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
 
   return (
     <div className="space-y-4">
-      {/* Tab Navigation */}
+      {/* Hidden File Input for Image Upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            uploadImageFile(e.target.files[0]);
+          }
+        }}
+      />
+
+      {/* Tab Navigation & Mode Switcher */}
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-        <nav className="-mb-px flex space-x-8">
+        <nav className="-mb-px flex space-x-4">
           <button
+            type="button"
             onClick={() => setActiveTab('edit')}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+            className={`flex items-center gap-1.5 py-2 px-2 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'edit'
                 ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            Edit
+            <Edit3 className="w-4 h-4" />
+            <span>Edit</span>
           </button>
           <button
-            onClick={() => setActiveTab('preview')}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'preview'
+            type="button"
+            onClick={() => setActiveTab('split')}
+            className={`flex items-center gap-1.5 py-2 px-2 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'split'
                 ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            Preview
+            <Columns className="w-4 h-4" />
+            <span>Split Preview</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('preview')}
+            className={`flex items-center gap-1.5 py-2 px-2 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'preview'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            <span>Preview</span>
           </button>
         </nav>
         
-        {activeTab === 'edit' && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {value.length} characters
-          </div>
-        )}
+        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+          {isUploading && (
+            <span className="flex items-center gap-1 text-primary animate-pulse">
+              <UploadCloud className="w-3.5 h-3.5" />
+              Uploading image...
+            </span>
+          )}
+          <span>{value.length} characters</span>
+        </div>
       </div>
 
-      {activeTab === 'edit' ? (
-        <div className="space-y-3">
-          {/* Toolbar */}
-          <div className="flex flex-wrap gap-1 p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-            {toolbarButtons.map((button, index) => (
-              <button
-                key={index}
-                onClick={button.action}
-                title={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ''}`}
-                aria-label={button.label}
-                className="px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-              >
-                {button.icon}
-              </button>
-            ))}
-          </div>
+      {/* Toolbar */}
+      {activeTab !== 'preview' && (
+        <div className="flex flex-wrap gap-1 p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+          {toolbarButtons.map((button, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={button.action}
+              title={`${button.label}${button.shortcut ? ` (${button.shortcut})` : ''}`}
+              aria-label={button.label}
+              className="px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {button.icon}
+            </button>
+          ))}
+        </div>
+      )}
 
-          {/* Editor */}
-          <div className="relative">
+      {/* Editor Content Area */}
+      {activeTab === 'edit' && (
+        <div className="space-y-3">
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`relative rounded-md transition-all ${
+              isDragging ? 'ring-2 ring-primary ring-offset-2 border-primary' : ''
+            }`}
+          >
             <textarea
               ref={textareaRef}
               value={value}
               onChange={(e) => onChange(e.target.value)}
               onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
               placeholder={placeholder}
               className="block w-full min-h-[400px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               style={{ lineHeight: '1.5' }}
             />
+            {isDragging && (
+              <div className="absolute inset-0 bg-blue-500/10 backdrop-blur-[1px] flex items-center justify-center rounded-md pointer-events-none border-2 border-dashed border-blue-500 text-blue-600 font-semibold text-sm">
+                Drop image here to upload & insert
+              </div>
+            )}
           </div>
-
-          {/* Help Text */}
           <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-            <p><strong>Markdown shortcuts:</strong> **bold**, *italic*, `code`, # heading, - list, &gt; quote</p>
-            <p><strong>Keyboard shortcuts:</strong> Ctrl+B (bold), Ctrl+I (italic), Ctrl+K (link), Tab (indent)</p>
+            <p><strong>Pro-tip:</strong> Drag & drop or paste (Ctrl+V) images directly into the editor. Use toolbar for formatting.</p>
           </div>
         </div>
-      ) : (
+      )}
+
+      {activeTab === 'split' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`relative rounded-md transition-all ${
+              isDragging ? 'ring-2 ring-primary ring-offset-2 border-primary' : ''
+            }`}
+          >
+            <textarea
+              ref={textareaRef}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              placeholder={placeholder}
+              className="block w-full min-h-[450px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              style={{ lineHeight: '1.5' }}
+            />
+            {isDragging && (
+              <div className="absolute inset-0 bg-blue-500/10 backdrop-blur-[1px] flex items-center justify-center rounded-md pointer-events-none border-2 border-dashed border-blue-500 text-blue-600 font-semibold text-sm">
+                Drop image here to upload
+              </div>
+            )}
+          </div>
+
+          <div className="min-h-[450px] max-h-[600px] overflow-y-auto p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 shadow-inner">
+            {isPreviewLoading ? (
+              <div className="flex items-center justify-center h-32">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : (
+              <div 
+                className="prose prose-sm max-w-none dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: previewHtml }}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'preview' && (
         <div className="space-y-3">
-          {/* Preview */}
           <div className="min-h-[400px] p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800">
             {isPreviewLoading ? (
               <div className="flex items-center justify-center h-32">
@@ -305,11 +463,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
               />
             )}
           </div>
-
-          {/* Preview Info */}
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            <p>This is a basic markdown preview. The actual rendering may vary depending on your site's styling.</p>
-          </div>
         </div>
       )}
     </div>
@@ -317,3 +470,4 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = React.memo(({
 });
 
 MarkdownEditor.displayName = 'MarkdownEditor';
+

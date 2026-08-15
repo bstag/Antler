@@ -5,6 +5,7 @@ import '../styles/animations.css';
 
 // Import static config helper
 import { getSiteConfig } from '../lib/config/static';
+import DevToolbar from '../components/DevToolbar.astro';
 
 export interface Props {
   title: string;
@@ -132,6 +133,7 @@ const availableThemes = theme.availableThemes;
   </head>
   <body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
     <slot />
+    <DevToolbar />
     
     <!-- Intersection Observer for scroll animations -->
     <script>

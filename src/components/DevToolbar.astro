@@ -1,0 +1,123 @@
+---
+/**
+ * DevToolbar.astro
+ * Development-only floating bar providing quick access to admin, site customization, and instant theme previewing.
+ * Statically stripped from production builds.
+ */
+import { getSiteConfig } from '../lib/config/static';
+
+const config = await getSiteConfig();
+const availableThemes = config.customization?.theme?.availableThemes || [
+  'blue', 'indigo', 'purple', 'pink', 'rose', 'red', 'orange', 'amber',
+  'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'slate'
+];
+const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '');
+---
+
+{import.meta.env.DEV && (
+  <div id="antler-dev-toolbar" class="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-slate-900/90 dark:bg-slate-800/90 text-white backdrop-blur-md px-3 py-2 rounded-full shadow-2xl border border-slate-700/80 text-xs transition-all duration-200">
+    <div class="flex items-center gap-1.5 font-semibold text-primary pl-1">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>Antler Dev</span>
+    </div>
+
+    <div class="h-4 w-px bg-slate-700"></div>
+
+    <a
+      href={`${basePath}/admin`}
+      class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 hover:text-white transition-colors"
+      title="Open Local Admin Dashboard"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      </svg>
+      <span>Admin</span>
+    </a>
+
+    <a
+      href={`${basePath}/admin#/site-config`}
+      class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 hover:text-white transition-colors"
+      title="Customize Site Settings & Hero"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+      </svg>
+      <span>Customize</span>
+    </a>
+
+    <div class="relative group">
+      <button
+        id="dev-theme-picker-btn"
+        type="button"
+        class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 hover:text-white transition-colors"
+        title="Quick Theme Previewer"
+      >
+        <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 5 5 0 015-5h1.26a8 8 0 1115.74 3.74A9.953 9.953 0 0117 19.5a4.004 4.004 0 01-3.5 1.5H7z"></path>
+        </svg>
+        <span>Theme</span>
+      </button>
+
+      <div class="hidden group-hover:block absolute bottom-full right-0 mb-2 p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-48 max-h-64 overflow-y-auto z-50">
+        <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5 px-2">Quick Preview Theme</div>
+        <div class="grid grid-cols-2 gap-1">
+          {availableThemes.map(themeName => (
+            <button
+              type="button"
+              data-theme-name={themeName}
+              class="dev-theme-select-btn text-left px-2 py-1 rounded text-[11px] capitalize hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+            >
+              <span class={`w-2.5 h-2.5 rounded-full bg-${themeName}-500 border border-white/20 inline-block`}></span>
+              <span>{themeName}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <button
+      id="dev-toolbar-toggle"
+      type="button"
+      class="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors"
+      title="Minimize toolbar"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const themeBtns = document.querySelectorAll('.dev-theme-select-btn');
+      themeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const themeName = (e.currentTarget as HTMLElement).getAttribute('data-theme-name');
+          if (themeName) {
+            const themeLink = document.getElementById('theme-stylesheet') as HTMLLinkElement;
+            const baseUrl = (document.querySelector('meta[name="base-url"]') as HTMLMetaElement)?.content || '';
+            const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+            if (themeLink) {
+              themeLink.href = `${cleanBase}/styles/themes/theme-${themeName}.css`;
+            }
+            localStorage.setItem('colorTheme', themeName);
+          }
+        });
+      });
+
+      const toggleBtn = document.getElementById('dev-toolbar-toggle');
+      const toolbar = document.getElementById('antler-dev-toolbar');
+      if (toggleBtn && toolbar) {
+        toggleBtn.addEventListener('click', () => {
+          toolbar.style.opacity = '0.3';
+          toolbar.style.transform = 'scale(0.85)';
+          toolbar.addEventListener('mouseenter', () => {
+            toolbar.style.opacity = '1';
+            toolbar.style.transform = 'scale(1)';
+          });
+        });
+      }
+    });
+  </script>
+)}

@@ -8,13 +8,13 @@ test.describe('Admin file upload', () => {
     form.append('file', file)
     form.append('directory', 'images')
 
-    const upload = await request.post('http://localhost:4321/Antler/admin/api/files/upload', { multipart: form as any })
+    const upload = await request.post('/admin/api/files/upload', { multipart: form as any })
     expect(upload.status()).toBe(200)
     const json = await upload.json()
     const path = json?.data?.path
     expect(path).toBeTruthy()
 
-    const asset = await request.get(`http://localhost:4321/Antler${path}`)
+    const asset = await request.get(path)
     expect(asset.status()).toBe(200)
   })
 })

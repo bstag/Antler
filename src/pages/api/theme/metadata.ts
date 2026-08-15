@@ -7,8 +7,6 @@ import type { APIRoute } from 'astro';
 import { getAllThemeMetadata } from '../../../lib/theme/theme-registry';
 import { logger } from '../../../lib/utils/logger';
 
-export const prerender = false;
-
 export const GET: APIRoute = async () => {
   try {
     const themes = getAllThemeMetadata();

@@ -58,8 +58,8 @@ A modern, high-performance static site generator built with Astro that transform
 │   │   ├── blog/            # Blog post markdown files
 │   │   ├── docs/            # Documentation markdown files
 │   │   ├── projects/        # Project showcase markdown files
-│   │   ├── resume*/         # Resume section collections
-│   │   └── config.ts        # Content collection schemas
+│   │   └── resume*/         # Resume section collections
+│   ├── content.config.ts    # Content collection schemas & glob loaders
 │   ├── layouts/
 │   │   ├── BaseLayout.astro
 │   │   └── MainLayout.astro
@@ -75,8 +75,8 @@ A modern, high-performance static site generator built with Astro that transform
 │   │       ├── static.ts
 │   │       └── validation.ts
 │   ├── pages/
-│   │   ├── admin/           # Admin interface routes
-│   │   │   ├── api/         # Admin API endpoints
+│   │   ├── admin/           # Admin interface routes (Dev-only)
+│   │   │   ├── api/         # Admin API endpoints (Dev-only)
 │   │   │   └── [...slug].astro
 │   │   ├── api/             # Public API endpoints
 │   │   │   └── config/
@@ -111,17 +111,17 @@ A modern, high-performance static site generator built with Astro that transform
    ```
    The site will be available at [http://localhost:4321](http://localhost:4321)
 
-   Access the admin interface at [http://localhost:4321/admin](http://localhost:4321/admin)
+   Access the local admin interface at [http://localhost:4321/admin](http://localhost:4321/admin)
 
 3. **Build for Production**
    ```bash
    npm run build
    ```
-   The static site will be generated in `./dist/`
+   The static site will be generated in `./dist/` (The `/admin` UI and authoring APIs are strictly excluded from production builds).
 
 ## Admin Interface
 
-The admin interface provides a complete content management system accessible at `/admin`:
+The admin interface provides a complete content management system accessible at `/admin` during **local development (`npm run dev`)**:
 
 ### Dashboard
 - Overview of all content collections
@@ -186,7 +186,7 @@ Antler supports multiple content types through Astro's Content Collections:
 - Languages
 - Projects
 
-Each collection is defined with Zod schemas in `src/content/config.ts` for type safety and validation.
+Each collection is defined with Zod schemas in `src/content.config.ts` for type safety and validation.
 
 ## Configuration
 
@@ -322,7 +322,7 @@ The admin interface runs separately:
 
 ### Adding New Content Types
 
-1. Define schema in `src/content/config.ts`
+1. Define schema in `src/content.config.ts`
 2. Create collection directory in `src/content/`
 3. Admin interface auto-generates forms from schema
 4. Create display pages in `src/pages/`

@@ -3,9 +3,17 @@ import fs from 'fs/promises';
 import path from 'path';
 import { resolveSafePath } from '../../../../lib/file-security';
 
-export const prerender = false;
-
 export const GET: APIRoute = async ({ url }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const searchParams = url.searchParams;
     const directory = searchParams.get('directory') || 'images';

@@ -8,8 +8,6 @@ import type { APIRoute } from 'astro';
 import { configManager } from '../../../lib/config/manager';
 import { logger } from '../../../lib/utils/logger';
 
-export const prerender = false;
-
 // List of valid theme names
 const VALID_THEMES = [
   'blue', 'indigo', 'purple', 'pink', 'rose', 'red',
@@ -18,6 +16,18 @@ const VALID_THEMES = [
 ];
 
 export const POST: APIRoute = async ({ request }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(
+      JSON.stringify({
+        error: 'Theme modification API only available in local development mode',
+      }),
+      {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
   try {
     // Parse request body
     const body = await request.json();

@@ -16,14 +16,14 @@ test.describe('Admin create docs content', () => {
       order: 1
     }
     const content = '## Section 1\n\nContent A\n\n## Section 2\n\nContent B'
-    const create = await request.post('http://localhost:4321/Antler/admin/api/content/docs', {
+    const create = await request.post('/admin/api/content/docs', {
       data: { frontmatter, content }
     })
     expect(create.status()).toBe(201)
 
     let ok = false
     for (let i = 0; i < 20; i++) {
-      const resp = await request.get('http://localhost:4321/Antler/docs')
+      const resp = await request.get('/docs')
       if (resp.status() === 200) {
         const html = await resp.text()
         if (html.includes('Guides') && html.includes('E2E Doc A')) { ok = true; break }
@@ -32,7 +32,7 @@ test.describe('Admin create docs content', () => {
     }
     expect(ok).toBeTruthy()
 
-    await page.goto('/Antler/docs', { waitUntil: 'domcontentloaded' })
+    await page.goto('/docs', { waitUntil: 'domcontentloaded' })
     await expect(page.getByText('Guides')).toBeVisible()
     await expect(page.getByText('E2E Doc A')).toBeVisible()
     await page.screenshot({ path: 'test-results/e2e/admin-docs-index.png', fullPage: true })

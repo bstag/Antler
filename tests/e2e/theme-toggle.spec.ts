@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test('Theme toggle updates class and stylesheet', async ({ page }) => {
-  await page.goto('/Antler/', { waitUntil: 'domcontentloaded' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   const before = await page.evaluate(() => ({
     dark: document.documentElement.classList.contains('dark'),
     sheet: (document.getElementById('theme-stylesheet') as HTMLLinkElement)?.href || ''

@@ -10,10 +10,10 @@ test.describe('Full-site mode', () => {
 
   test('All primary routes load', async ({ request, page }) => {
     for (const path of ['/', '/blog', '/projects', '/resume', '/docs', '/contact']) {
-      const resp = await request.get(`http://localhost:4321/Antler${path}`)
+      const resp = await request.get(path)
       expect(resp.status()).toBe(200)
     }
-    await page.goto('/Antler/', { waitUntil: 'domcontentloaded' })
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
     await page.screenshot({ path: 'test-results/e2e/fullsite-home.png', fullPage: true })
   })
 })

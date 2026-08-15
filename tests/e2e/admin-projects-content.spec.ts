@@ -17,7 +17,7 @@ test.describe('Admin create project content', () => {
     }
     const content = 'Project details body.'
 
-    const create = await request.post('http://localhost:4321/Antler/admin/api/content/projects', {
+    const create = await request.post('/admin/api/content/projects', {
       data: { frontmatter, content }
     })
     expect(create.status()).toBe(201)
@@ -28,7 +28,7 @@ test.describe('Admin create project content', () => {
     // Poll until listing reflects the new project
     let ok = false
     for (let i = 0; i < 10; i++) {
-      const resp = await request.get('http://localhost:4321/Antler/projects')
+      const resp = await request.get('/projects')
       if (resp.status() === 200) {
         const html = await resp.text()
         if (html.includes('E2E Test Project')) { ok = true; break }
@@ -37,7 +37,7 @@ test.describe('Admin create project content', () => {
     }
     expect(ok).toBeTruthy()
 
-    await page.goto('/Antler/projects', { waitUntil: 'domcontentloaded' })
+    await page.goto('/projects', { waitUntil: 'domcontentloaded' })
     await page.screenshot({ path: 'test-results/e2e/admin-projects-list.png', fullPage: true })
   })
 })

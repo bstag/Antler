@@ -8,8 +8,6 @@ import fs from 'fs';
 import path from 'path';
 import { logger } from '../../../lib/utils/logger';
 
-export const prerender = false;
-
 export const GET: APIRoute = async ({ request }) => {
   try {
     // Read site.config.json

@@ -30,22 +30,23 @@ Antler is a modern static site generator (SSG) built with Astro, designed to tra
 ## Architecture
 
 ### Content Collections System
-The project uses Astro's Content Collections for organized, type-safe content management:
+The project uses Astro 6's Content Collections API for organized, type-safe content management:
 
 - **Blog** (`src/content/blog/`): Articles with metadata including publication date, tags, featured images, and reading time
 - **Projects** (`src/content/projects/`): Portfolio items with technologies, GitHub links, and live URLs
 - **Documentation** (`src/content/docs/`): Technical docs with grouping and ordering
+- **Resume Sections** (`src/content/resume*/`): Resume collections for personal info, experience, education, certifications, skills, languages, and projects
 
-Content schemas are defined in `src/content/config.ts` using Zod validation for type safety.
+Content schemas are defined in `src/content.config.ts` using Zod validation for type safety.
 
 ### Component Architecture
-- **Astro Components** (`.astro`): Server-side rendered components for layouts and static content
-- **React Components** (`.tsx`): Client-side interactive components (ContactForm, ThemeToggle, admin forms)
+- **Astro Components** (`.astro`): Pre-rendered static components for layouts and public pages
+- **React Components** (`.tsx`): Interactive client-side components (ContactForm, ThemeToggle, Admin App)
 - **Layout System**: BaseLayout provides global structure, MainLayout for content pages
-- **Admin System**: Dynamic admin interface for content management with schema-driven forms (in `src/components/admin/` and `src/lib/admin/`)
+- **Admin System**: Local-only React SPA (`/admin`) for content authoring during development (`npm run dev`). Automatically excluded from production static builds (`npm run build`).
 
 ### Styling & Theming
-- **Tailwind CSS** with custom animations and transitions
+- **Tailwind CSS v4** with `@tailwindcss/vite` integration and custom CSS `@theme` variables in `src/styles/global.css`
 - **Dark Mode**: Built-in theme switching with localStorage persistence and system preference detection
 - **Responsive Design**: Mobile-first approach with breakpoint-based layouts
 - **Animations**: Custom CSS classes defined in `src/styles/animations.css` for scroll-triggered animations
@@ -63,9 +64,9 @@ The contact form supports multiple deployment strategies:
 ## Key Files
 
 ### Configuration
-- `astro.config.mjs` - Astro configuration with integrations for Tailwind and React
-- `src/content/config.ts` - Content collection schemas and validation rules
-- `tailwind.config.mjs` - Tailwind CSS configuration and custom theme
+- `astro.config.mjs` - Astro configuration with integrations for Tailwind v4 and React (configured for pure static output)
+- `src/content.config.ts` - Content collection schemas and `glob()` loaders
+- `src/styles/global.css` - Global styles and Tailwind CSS v4 `@theme` configuration
 
 ### Core Components
 - `src/layouts/BaseLayout.astro` - Global layout with SEO meta tags and theme script
@@ -86,7 +87,7 @@ The contact form supports multiple deployment strategies:
 
 ### Adding New Content
 1. Create `.md` file in appropriate collection directory (`blog/`, `projects/`, `docs/`)
-2. Include required frontmatter fields as defined in `src/content/config.ts`
+2. Include required frontmatter fields as defined in `src/content.config.ts`
 3. Use Markdown syntax for content body
 4. Images should be placed in `public/images/` or referenced externally
 

@@ -3,8 +3,6 @@ import { configManager } from '../../../lib/config/manager';
 import type { SiteConfig } from '../../../types/config';
 import { logger } from '../../../lib/utils/logger';
 
-export const prerender = false;
-
 export const GET: APIRoute = async ({ request }) => {
   try {
     const config = await configManager.getConfig();
@@ -32,6 +30,15 @@ export const GET: APIRoute = async ({ request }) => {
 };
 
 export const POST: APIRoute = async ({ request }) => {
+  if (!import.meta.env.DEV) {
+    return new Response(JSON.stringify({
+      error: 'Configuration mutation API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const body = await request.json();
     const config = body as SiteConfig;
@@ -77,6 +84,15 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 export const PATCH: APIRoute = async ({ request }) => {
+  if (!import.meta.env.DEV) {
+    return new Response(JSON.stringify({
+      error: 'Configuration mutation API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const body = await request.json();
     const updates = body as Partial<SiteConfig>;

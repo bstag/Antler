@@ -15,7 +15,7 @@ test.describe('Contact form error handling', () => {
     )
 
     // Go to contact page
-    await page.goto('/Antler/contact', { waitUntil: 'domcontentloaded' })
+    await page.goto('/contact', { waitUntil: 'domcontentloaded' })
 
     // Fill the form
     await page.fill('#name', 'Error Tester')

@@ -3,9 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import ConditionalRoute from '../components/ConditionalRoute.astro';
 import { getCollection } from 'astro:content';
+import { getSiteConfig } from '../lib/config/static';
 
-const title = 'Resume';
-const description = 'Professional experience, skills, and achievements in web development and software engineering.';
+const config = await getSiteConfig();
+const pageSEO = config.customization?.pages?.resume || {};
+const title = pageSEO.title || 'Resume';
+const description = pageSEO.description || 'Professional experience, skills, and achievements in web development and software engineering.';
+const image = pageSEO.image;
+const keywords = pageSEO.keywords || [];
+
+const resumeSettings = config.contentTypes?.find(c => c.id === 'resume')?.settings || {};
+const showDownloadButton = resumeSettings.showDownloadButton ?? true;
+const pdfPath = resumeSettings.pdfPath || '/resume.pdf';
 
 // Get resume data from separate collections
 const personalInfoEntries = await getCollection('resumePersonal');
@@ -13,7 +22,6 @@ const experienceEntries = await getCollection('resumeExperience');
 const educationEntries = await getCollection('resumeEducation');
 const skillsEntries = await getCollection('resumeSkills');
 const certificationsEntries = await getCollection('resumeCertifications');
-
 
 // Extract data from collections
 const personalInfo = personalInfoEntries[0]?.data || {};
@@ -32,37 +40,46 @@ const skills = skillsEntries
 const certifications = certificationsEntries
   .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
   .map(entry => entry.data);
-
 ---
 
 <ConditionalRoute contentTypeId="resume">
-  <BaseLayout title={title} description={description}>
+  <BaseLayout title={title} description={description} image={image} keywords={keywords}>
     <Header />
     <main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
     <div class="container mx-auto px-4 py-16">
       <!-- Header -->
       <div class="text-center mb-16">
         <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-          {personalInfo.name}
+          {personalInfo.name || title}
         </h1>
-        <h2 class="text-2xl text-primary font-semibold mb-4">
-          {personalInfo.title}
-        </h2>
-        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-8">
-          {personalInfo.summary}
-        </p>
+        {personalInfo.title && (
+          <h2 class="text-2xl text-primary font-semibold mb-4">
+            {personalInfo.title}
+          </h2>
+        )}
+        {personalInfo.summary && (
+          <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-8">
+            {personalInfo.summary}
+          </p>
+        )}
         
         <!-- Action Buttons -->
         <div class="flex flex-wrap justify-center gap-4">
-          <button class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            Download PDF
-          </button>
+          {showDownloadButton && (
+            <a
+              href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}${pdfPath}`}
+              download
+              class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Download PDF
+            </a>
+          )}
           
           <a 
-            href={`${import.meta.env.BASE_URL}/contact`} 
+            href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/contact`} 
             class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

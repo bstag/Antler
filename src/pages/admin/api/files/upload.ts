@@ -3,8 +3,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { resolveSafePath } from '../../../../lib/file-security';
 
-export const prerender = false;
-
 // Security: Validate file extension matches the declared MIME type
 // This prevents uploading 'malicious.php' as 'image/png'
 const MIME_TYPE_EXTENSIONS: Record<string, string[]> = {
@@ -18,6 +16,16 @@ const MIME_TYPE_EXTENSIONS: Record<string, string[]> = {
 };
 
 export const POST: APIRoute = async ({ request }) => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;

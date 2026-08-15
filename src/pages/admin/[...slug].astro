@@ -2,8 +2,9 @@
 import { AdminApp } from '../../components/admin/AdminApp';
 import '../../styles/global.css';
 
-// Tell Astro this page is dynamic and should not be pre-rendered
-export const prerender = false;
+export async function getStaticPaths() {
+  return [];
+}
 ---
 
 <!DOCTYPE html>

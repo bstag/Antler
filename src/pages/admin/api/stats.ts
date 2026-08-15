@@ -2,9 +2,17 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { collections } from '../../../content.config';
 
-export const prerender = false;
-
 export const GET: APIRoute = async () => {
+  if (!import.meta.env.DEV && process.env.NODE_ENV !== 'test') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin API only available in local development mode'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const collectionKeys = Object.keys(collections);
     const stats: Record<string, { total: number; recent?: number; featured?: number }> = {};

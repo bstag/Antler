@@ -16,7 +16,7 @@ test.describe('Admin create blog content', () => {
     }
     const content = 'This is the E2E test post body.'
 
-    const create = await request.post('http://localhost:4321/Antler/admin/api/content/blog', {
+    const create = await request.post('/admin/api/content/blog', {
       data: { frontmatter, content }
     })
     expect(create.status()).toBe(201)
@@ -27,20 +27,20 @@ test.describe('Admin create blog content', () => {
     // Poll until slug page is available
     let ok = false
     for (let i = 0; i < 10; i++) {
-      const resp = await request.get(`http://localhost:4321/Antler/blog/${slug}`)
+      const resp = await request.get(`/blog/${slug}`)
       if (resp.status() === 200) { ok = true; break }
       await new Promise(r => setTimeout(r, 500))
     }
     expect(ok).toBeTruthy()
 
     // Verify index shows the post
-    const indexResp = await request.get('http://localhost:4321/Antler/blog')
+    const indexResp = await request.get('/blog')
     expect(indexResp.status()).toBe(200)
     const body = await indexResp.text()
     expect(body).toContain('E2E Test Post')
 
     // Capture screenshot of the slug page
-    await page.goto(`/Antler/blog/${slug}`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`/blog/${slug}`, { waitUntil: 'domcontentloaded' })
     await page.screenshot({ path: 'test-results/e2e/admin-blog-slug.png', fullPage: true })
   })
 })

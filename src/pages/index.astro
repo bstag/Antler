@@ -6,10 +6,27 @@ import Hero from '../components/Hero.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
 import Footer from '../components/Footer.astro';
 import { withBaseAsset } from '../lib/utils/base-url';
+import { getSiteConfig } from '../lib/config/static';
+
+const config = await getSiteConfig();
+const siteName = config.customization?.siteName || 'Antler';
+const siteDescription = config.customization?.description || 'A modern, fast, and flexible static site generator built with Astro';
+
+const isProjectsEnabled = config.contentTypes?.find(ct => ct.id === 'projects')?.enabled ?? true;
+const isBlogEnabled = config.contentTypes?.find(ct => ct.id === 'blog')?.enabled ?? true;
+
+const projectsSEO = config.customization?.pages?.projects || {};
+const blogSEO = config.customization?.pages?.blog || {};
+
+const projectsSectionTitle = projectsSEO.title || 'Featured Projects';
+const projectsSectionDesc = projectsSEO.description || 'Explore some of our latest and most exciting projects';
+
+const blogSectionTitle = blogSEO.title || 'Latest Blog Posts';
+const blogSectionDesc = blogSEO.description || 'Stay updated with the latest insights and tutorials';
 
 // Get featured blog posts and projects
-const blogPosts = await getCollection('blog');
-const projects = await getCollection('projects');
+const blogPosts = isBlogEnabled ? await getCollection('blog') : [];
+const projects = isProjectsEnabled ? await getCollection('projects') : [];
 
 const featuredPosts = blogPosts
   .filter(post => post.data.featured)
@@ -26,105 +43,109 @@ const featuredProjects = projects
   .slice(0, 3);
 ---
 
-<BaseLayout title="Home - Antler" description="A modern, fast, and flexible static site generator built with Astro">
+<BaseLayout title={`Home - ${siteName}`} description={siteDescription}>
   <Header />
   <Hero />
   
   <!-- Featured Projects Section -->
-  <section class="py-20 bg-surface">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16 fade-in-on-scroll">
-        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-          Featured Projects
-        </h2>
-        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-          Explore some of our latest and most exciting projects
-        </p>
+  {isProjectsEnabled && (
+    <section class="py-20 bg-surface">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16 fade-in-on-scroll">
+          <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            {projectsSectionTitle}
+          </h2>
+          <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            {projectsSectionDesc}
+          </p>
+        </div>
+        
+        <div class="animate-stagger">
+          <FeaturedProjects projects={featuredProjects} />
+        </div>
+        
+        <div class="text-center mt-12 fade-in-on-scroll">
+          <a
+            href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/projects`}
+            class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover-lift btn-animate"
+          >
+            View All Projects
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
       </div>
-      
-      <div class="animate-stagger">
-        <FeaturedProjects projects={featuredProjects} />
-      </div>
-      
-      <div class="text-center mt-12 fade-in-on-scroll">
-        <a
-          href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/projects`}
-          class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover-lift btn-animate"
-        >
-          View All Projects
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <!-- Featured Blog Posts Section -->
-  <section class="py-20 bg-surface-elevated">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16 fade-in-on-scroll">
-        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-          Latest Blog Posts
-        </h2>
-        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-          Stay updated with the latest insights and tutorials
-        </p>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-stagger">
-        {featuredPosts.map(post => (
-          <article class="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden card-hover fade-in-on-scroll">
-            {post.data.featuredImage && (
-              <div class="overflow-hidden">
-                <img
-                  src={withBaseAsset(post.data.featuredImage)}
-                  alt={post.data.title}
-                  class="w-full h-48 object-cover hover-scale transition-transform duration-300"
-                />
-              </div>
-            )}
-            <div class="p-6">
-              <div class="flex items-center gap-2 mb-3">
-                {post.data.tags?.slice(0, 2).map(tag => (
-                  <span class="badge badge-primary text-xs">
-                    {tag}
-                  </span>
-                ))}
-              </div>
+  {isBlogEnabled && (
+    <section class="py-20 bg-surface-elevated">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16 fade-in-on-scroll">
+          <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            {blogSectionTitle}
+          </h2>
+          <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            {blogSectionDesc}
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-stagger">
+          {featuredPosts.map(post => (
+            <article class="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden card-hover fade-in-on-scroll">
+              {post.data.featuredImage && (
+                <div class="overflow-hidden">
+                  <img
+                    src={withBaseAsset(post.data.featuredImage)}
+                    alt={post.data.title}
+                    class="w-full h-48 object-cover hover-scale transition-transform duration-300"
+                  />
+                </div>
+              )}
+              <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                  {post.data.tags?.slice(0, 2).map(tag => (
+                    <span class="badge badge-primary text-xs">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-              <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                <a href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog/${post.slug}`} class="hover:text-primary transition-colors">
-                  {post.data.title}
-                </a>
-              </h3>
-              
-              <p class="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
-                {post.data.description}
-              </p>
-              
-              <div class="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-                <span>{new Date(post.data.publicationDate).toLocaleDateString()}</span>
-                <span>{post.data.readingTime} min read</span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                  <a href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog/${post.slug}`} class="hover:text-primary transition-colors">
+                    {post.data.title}
+                  </a>
+                </h3>
+                
+                <p class="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
+                  {post.data.description}
+                </p>
+                
+                <div class="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+                  <span>{new Date(post.data.publicationDate).toLocaleDateString()}</span>
+                  <span>{post.data.readingTime} min read</span>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
+        
+        <div class="text-center mt-12 fade-in-on-scroll">
+          <a
+            href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog`}
+            class="inline-flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-lg font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-300 hover-lift btn-animate"
+          >
+            Read More Posts
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
       </div>
-      
-      <div class="text-center mt-12 fade-in-on-scroll">
-        <a
-          href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}/blog`}
-          class="inline-flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-lg font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-300 hover-lift btn-animate"
-        >
-          Read More Posts
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <Footer />
 </BaseLayout>

@@ -15,7 +15,7 @@ test.beforeAll(async ({ request }) => {
       title: 'QA Engineer',
       summary: 'Ensures end-to-end quality.'
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumePersonal', {
+    await request.post('/admin/api/content/resumePersonal', {
       data: { frontmatter: personal, content: '' }
     })
 
@@ -29,7 +29,7 @@ test.beforeAll(async ({ request }) => {
       order: 1,
       current: true
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumeExperience', {
+    await request.post('/admin/api/content/resumeExperience', {
       data: { frontmatter: experience, content: '' }
     })
 
@@ -41,7 +41,7 @@ test.beforeAll(async ({ request }) => {
       details: 'Focus on quality assurance.',
       order: 1
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumeEducation', {
+    await request.post('/admin/api/content/resumeEducation', {
       data: { frontmatter: education, content: '' }
     })
 
@@ -50,7 +50,7 @@ test.beforeAll(async ({ request }) => {
       skills: ['Playwright', 'Vitest'],
       order: 1
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumeSkills', {
+    await request.post('/admin/api/content/resumeSkills', {
       data: { frontmatter: skills, content: '' }
     })
 
@@ -61,7 +61,7 @@ test.beforeAll(async ({ request }) => {
       credentialId: 'QA-1234',
       order: 1
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumeCertifications', {
+    await request.post('/admin/api/content/resumeCertifications', {
       data: { frontmatter: certification, content: '' }
     })
 
@@ -70,7 +70,7 @@ test.beforeAll(async ({ request }) => {
       proficiency: 'Native',
       order: 1
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumeLanguages', {
+    await request.post('/admin/api/content/resumeLanguages', {
       data: { frontmatter: language, content: '' }
     })
 
@@ -82,14 +82,14 @@ test.beforeAll(async ({ request }) => {
       githubUrl: 'https://github.com/example/qa-tooling',
       order: 1
     }
-    await request.post('http://localhost:4321/Antler/admin/api/content/resumeProjects', {
+    await request.post('/admin/api/content/resumeProjects', {
       data: { frontmatter: rproject, content: '' }
     })
 
     // Poll until /resume reflects content
-    const resumeCheck = await request.get('http://localhost:4321/Antler/resume')
+    const resumeCheck = await request.get('/resume')
     expect(resumeCheck.status()).toBe(200)
-    await page.goto('/Antler/resume', { waitUntil: 'domcontentloaded' })
+    await page.goto('/resume', { waitUntil: 'domcontentloaded' })
     await page.screenshot({ path: 'test-results/e2e/admin-resume.png', fullPage: true })
   })
 })

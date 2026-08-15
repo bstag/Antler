@@ -60,11 +60,11 @@ const getFeatureIcon = (iconName: string) => {
         {hero?.subtitle}
       </p>
 
-      <!-- CTA Buttons 
+      <!-- CTA Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-slide-up animation-delay-400">
         {hero?.actions?.primary && (
           <a
-            href={import.meta.env.BASE_URL + hero.actions.primary.link}
+            href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}${hero.actions.primary.link}`}
             class="btn-primary group inline-flex items-center px-8 py-4 text-lg font-semibold"
           >
             {hero.actions.primary.text}
@@ -73,7 +73,7 @@ const getFeatureIcon = (iconName: string) => {
         )}
         {hero?.actions?.secondary && (
           <a
-            href={import.meta.env.BASE_URL + hero.actions.secondary.link}
+            href={`${(import.meta.env.BASE_URL || '').replace(/\/$/, '')}${hero.actions.secondary.link}`}
             class="btn-secondary inline-flex items-center px-8 py-4 text-lg font-semibold"
           >
             {hero.actions.secondary.text}
