@@ -19,7 +19,6 @@
     "test:e2e:preview": "playwright test -c playwright.preview.config.ts"
   },
   "dependencies": {
-    "@astrojs/node": "^10.1.4",
     "@astrojs/react": "^5.0.7",
     "@hookform/resolvers": "^3.9.1",
     "@tailwindcss/typography": "^0.5.19",
